@@ -153,7 +153,7 @@ public class CheckInReader {
             List<CheckInJson.GeoPair> checkIns = cluster.getCheckIns();
             for (CheckInJson.GeoPair checkIn : checkIns) {
                 feature.add(new GeoJson.Feature(new GeoJson.Geometry(checkIn.getLongitude()
-                , checkIn.getLatitude()),new GeoJson.Properties(cluster.getClusterId())));
+                , checkIn.getLatitude()),new GeoJson.Properties(String.valueOf(cluster.getClusterId()))));
             }
         }
         geoJson.setFeatures(feature);

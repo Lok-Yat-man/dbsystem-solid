@@ -32,13 +32,13 @@ function getColor(clusterId,size){
 }
 
 function loadDCPGS(vueThis, location){
-    let env = "prod";
+    let env = "local";
     let basePath = "http://localhost:8080/dcpgs/";
     let geoJsonPath = "";
     let clusterPath = "";
     switch (location){
         case "Australia":
-            vueThis.clusterNums = 46;
+            vueThis.DCPGS.clusterNums = 46;
             if(env === "local") {
                 geoJsonPath = "data/geoJson/Australia.geojson";
                 clusterPath = "./data/Australia.json";
@@ -49,9 +49,9 @@ function loadDCPGS(vueThis, location){
             vueThis.getClusters(geoJsonPath, clusterPath, 3.5);
             break;
         case "Europe":
-            vueThis.clusterNums = 10;
+            vueThis.DCPGS.clusterNums = 10;
             if(env === "local"){
-                geoJsonPath = "data/geoJson/Europe.geojson";
+                geoJsonPath = "data/geoJson/EuropeTop20.geojson";
                 clusterPath = "./data/EuropeTop20.json";
             }
             else if(env === "prod") {
@@ -61,9 +61,9 @@ function loadDCPGS(vueThis, location){
             vueThis.getClusters(geoJsonPath, clusterPath, 3.5);
             break;
         case "NorthernAmerica":
-            vueThis.clusterNums = 40
+            vueThis.DCPGS.clusterNums = 40
             if(env === "local") {
-                geoJsonPath = "data/geoJson/NorthernAmerica.geojson";
+                geoJsonPath = "data/geoJson/NorthernAmericaTop40.geojson";
                 clusterPath = "./data/NorthernAmericaTop40.json";
             }
             else if(env === "prod") {
@@ -73,7 +73,7 @@ function loadDCPGS(vueThis, location){
             vueThis.getClusters(geoJsonPath, clusterPath,3.0);
             break;
         case "Africa":
-            vueThis.clusterNums = 30
+            vueThis.DCPGS.clusterNums = 30
             if(env === "local") {
                 geoJsonPath = "data/geoJson/SouthAfrica.geojson";
                 clusterPath = "./data/SouthAfrica.json";
@@ -85,7 +85,7 @@ function loadDCPGS(vueThis, location){
             vueThis.getClusters(geoJsonPath, clusterPath,5.0);
             break;
         case "SoutheastAsia":
-            vueThis.clusterNums = 30
+            vueThis.DCPGS.clusterNums = 30
             if(env === "local") {
                 geoJsonPath = "data/geoJson/SoutheastAsia.geojson";
                 clusterPath = "./data/SoutheastAsia.json";
@@ -97,7 +97,7 @@ function loadDCPGS(vueThis, location){
             vueThis.getClusters(geoJsonPath, clusterPath,3.0);
             break;
         case "WesternAsia":
-            vueThis.clusterNums = 30
+            vueThis.DCPGS.clusterNums = 30
             if(env === "local") {
                 geoJsonPath = "data/geoJson/WesternAsia.geojson";
                 clusterPath = "./data/WesternAsia.json";
@@ -107,6 +107,7 @@ function loadDCPGS(vueThis, location){
             }
             vueThis.getClusters(geoJsonPath, clusterPath,3.0);
             break;
+        
     }
 }
 
