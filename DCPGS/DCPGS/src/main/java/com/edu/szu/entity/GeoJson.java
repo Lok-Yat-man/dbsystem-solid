@@ -35,6 +35,6 @@ public class GeoJson {
     @Data
     @AllArgsConstructor
     public static class Properties{
-        long clusterId;
+        String clusterId;
     }
 }
