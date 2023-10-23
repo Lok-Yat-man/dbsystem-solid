@@ -52,7 +52,7 @@ function loadDCPGS(vueThis, location){
             vueThis.DCPGS.clusterNums = 10;
             if(env === "local"){
                 geoJsonPath = "data/geoJson/EuropeTop20.geojson";
-                clusterPath = "./data/EuropeTop20.json";
+                clusterPath = "./data/EuropeTop500.json";
             }
             else if(env === "prod") {
                 geoJsonPath = basePath + "geoJson/Europe";

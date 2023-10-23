@@ -2,11 +2,13 @@ package com.edu.szu.util;
 
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.DCPGSParams;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@Slf4j
 public class CheckInDistanceCalculator {
     private static final double INF = 1.5;
 
@@ -39,7 +41,7 @@ public class CheckInDistanceCalculator {
     public static double calculateDistance(CheckIn val1, CheckIn val2) {
         ++computeTime;
         if((computeTime & 1048575) == 0){
-            System.out.println(++mNum + " M times");
+            log.info("{} M times",++mNum);
         }
         double dp = getDp(val1,val2);
         if(dp >= 1)

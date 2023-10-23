@@ -22,7 +22,7 @@ public class DCPGSEndpoint {
                 path = "gowalla/result/Australia.json";
                 break;
             case "Europe":
-                path = "gowalla/result/EuropeTop20.json";
+                path = "gowalla/result/EuropeTop500.json";
                 break;
             case "NorthernAmerica":
                 path = "gowalla/result/NorthernAmericaTop40.json";

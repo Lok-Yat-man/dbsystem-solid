@@ -49,7 +49,18 @@ public class ReaderTest {
 
     @Test
     public void testGeoJson() throws IOException {
-        CheckInReader.parseGeoJsonTo("gowalla/result/SouthAfrica.json","SouthAfrica.geojson");
+        var files = List.of("AustinUS",
+                "GothenburgSweden",
+                "LondonUK",
+                "MalmoSweden",
+                "NewcastleUponTyneUk",
+                "OsloNorway",
+                "StockholmSweden",
+                "ZurichSwitzerland"
+        );
+        for (String file : files) {
+            CheckInReader.parseGeoJsonTo("gowalla/result/" + file + ".json","geojson/" + file + ".geojson");
+        }
     }
 
     @Test
@@ -61,6 +72,13 @@ public class ReaderTest {
                 "gowalla/checkIn4.txt",
                 "gowalla/checkIn5.txt",
                 "gowalla/checkIn6.txt");
-        CheckInReader.splitAreaTo("SouthAfrica.json",checkIns, "gowalla/splittedCheckIn/SouthAfricaCheckIn.txt");
+        CheckInReader.splitAreaTo("AustinUS.json",checkIns, "gowalla/splittedCheckIn/AustinUS.txt");
+        CheckInReader.splitAreaTo("GothenburgSweden.json",checkIns, "gowalla/splittedCheckIn/GothenburgSweden.txt");
+        CheckInReader.splitAreaTo("LondonUK.json",checkIns, "gowalla/splittedCheckIn/LondonUK.txt");
+        CheckInReader.splitAreaTo("MalmoSweden.json",checkIns, "gowalla/splittedCheckIn/MalmoSweden.txt");
+        CheckInReader.splitAreaTo("NewcastleUponTyneUk.json",checkIns, "gowalla/splittedCheckIn/NewcastleUponTyneUk.txt");
+        CheckInReader.splitAreaTo("OsloNorway.json",checkIns, "gowalla/splittedCheckIn/OsloNorway.txt");
+        CheckInReader.splitAreaTo("StockholmSweden.json",checkIns, "gowalla/splittedCheckIn/StockholmSweden.txt");
+        CheckInReader.splitAreaTo("ZurichSwitzerland.json",checkIns, "gowalla/splittedCheckIn/ZurichSwitzerland.txt");
     }
 }

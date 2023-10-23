@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
 import java.io.BufferedReader;
@@ -31,7 +32,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-@Log4j2
+@Slf4j
 public class CheckInReader {
 
     @Getter
@@ -45,7 +46,7 @@ public class CheckInReader {
         locationMap = new HashMap<>();
         Set<CheckIn> ans = new HashSet<>();
         for (String filePath : filePaths) {
-            System.out.println("reading file: " + filePath);
+            log.info("reading file: {}",filePath);
             try (var bf = new BufferedReader(new InputStreamReader(
                     new ByteArrayInputStream(IOUtils.resourceToByteArray(filePath, CheckInReader.class.getClassLoader()))))) {
                 String line;
@@ -58,7 +59,7 @@ public class CheckInReader {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            System.out.println("reading work of file:( " + filePath + " ) finished");
+            log.info("reading work of file:( {} ) finished",filePath);
         }
         return new ArrayList<>(ans);
     }
@@ -91,7 +92,7 @@ public class CheckInReader {
     }
 
     public static void splitAreaTo(String areaFileName, List<CheckIn> checkIns, String target) throws IOException {
-        System.out.println("splitting started");
+        log.info("splitting started");
         var split = splitArea(areaFileName, checkIns);
         try (var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/" + target)))) {
             for (CheckIn checkIn : split) {
@@ -99,7 +100,7 @@ public class CheckInReader {
                 bw.flush();
             }
         }
-        System.out.println("splitting finished");
+        log.info("splitting finished");
     }
 
     public static void outPutCheckIn(List<ArrayList<CheckIn>> checkIns, String target) throws Exception {
