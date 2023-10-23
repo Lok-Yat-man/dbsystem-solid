@@ -12,13 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -165,8 +159,19 @@ public class CheckInReader {
         String json = IOUtils.resourceToString(origin, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
         CheckInJson checkInJson = new Gson().fromJson(json,CheckInJson.class);
         GeoJson geoJson = parseGeoJson(checkInJson);
-        try(var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-                "src/main/resources/gowalla/" + target)))){
+        try(var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)))){
+            bw.write(new Gson().toJson(geoJson));
+            bw.flush();
+        }
+    }
+
+    public static void parseGeoJsonTo(CheckInJson checkInJson, String target) throws Exception {
+        GeoJson geoJson = parseGeoJson(checkInJson);
+        parseGeoJsonTo(geoJson,target);
+    }
+
+    public static void parseGeoJsonTo(GeoJson geoJson, String target) throws Exception {
+        try(var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)))){
             bw.write(new Gson().toJson(geoJson));
             bw.flush();
         }

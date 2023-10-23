@@ -9,13 +9,17 @@ new Vue({
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
             env: "prod",
             DCPGS: {
-                enable: true,
+                labelPosition: "right",
+                location: "",
+                disabled: true,
                 clusters: "",
                 clusterNums: 10,
-                epsilon: 0.5,
-                maxD: 120,
-                omega: 0.5,
-                tau: 0.7
+                params: {
+                    epsilon: 0.5,
+                    maxD: 120,
+                    omega: 0.5,
+                    tau: 0.7
+                }
             }
         }
     },
@@ -41,7 +45,6 @@ new Vue({
             for(let i=0;i<this.DCPGS.clusterNums;++i){
                 let clusterId = this.DCPGS.clusters[i].clusterId;
                 let color = dcpgs.getColor(clusterId,this.DCPGS.clusterNums);
-                console.log("cluster: " + i +"color: " + color);
                 let locations = this.DCPGS.clusters[i].checkIns;
                 for(let j=0;j<1;++j){
                     let checkIn = locations[j];
@@ -70,14 +73,17 @@ new Vue({
                     .style.display = "none";
                 document.getElementById("DCPGSParamsSwitch")
                     .style.display = "";
+                dcpgs.updateParams(this);
             }
         },
 
         loadDSPGS(location, zoom){
+            this.DCPGS.disabled = false;
             dcpgs.loadDCPGS(this,location, zoom);
         },
 
         loadKDV(){
+            this.DCPGS.disabled = true;
             let kdvDataPath = "data/kdv/kdv2.geojson"
             if(this.env === "local"){
                 kdvDataPath = "data/kdv/kdv2.geojson"

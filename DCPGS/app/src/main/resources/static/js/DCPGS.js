@@ -32,6 +32,7 @@ function getColor(clusterId,size){
 }
 
 function loadDCPGS(vueThis, location, zoom){
+    vueThis.DCPGS.location = location;
     let env = vueThis.env;
     let basePath = "http://localhost:8080/dcpgs/";
     let geoJsonPath = "";
@@ -48,10 +49,36 @@ function loadDCPGS(vueThis, location, zoom){
             url: basePath + "gowalla/run/" + location
         }).then(response => {
             const runningStatus = response.data;
-            console.log(runningStatus);
+            console.log("DCPGS running status: " + runningStatus);
+            getParams(vueThis,location);
             vueThis.getClusters(geoJsonPath, clusterPath, zoom);
         });
     }
+}
+
+function getParams(vueThis, location){
+    let basePath = "http://localhost:8080/dcpgs/";
+    axios({
+        method: "get",
+        url: basePath + "gowalla/params/" + location
+    }).then(response => {
+        const params = response.data;
+        console.log("location: "+ location +" params: " + params);
+        vueThis.DCPGS.params = params;
+    });
+}
+
+function updateParams(vueThis){
+    let basePath = "http://localhost:8080/dcpgs/";
+    axios({
+        method: "put",
+        data: vueThis.DCPGS.params,
+        url: basePath + "gowalla/params/" + vueThis.DCPGS.location
+    }).then(response => {
+        const status = response.data;
+        console.log("update status: " + status);
+        loadDCPGS(vueThis, vueThis.DCPGS.location, vueThis.map.getZoom());
+    });
 }
 
 function loadPoints(vueThis, geoJsonPath, zoom){
@@ -91,4 +118,5 @@ export default {
     getColor,
     loadDCPGS,
     loadPoints,
+    updateParams,
 }
