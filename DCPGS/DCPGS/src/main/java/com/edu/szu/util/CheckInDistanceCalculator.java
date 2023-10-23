@@ -2,6 +2,7 @@ package com.edu.szu.util;
 
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.DCPGSParams;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashSet;
@@ -26,6 +27,9 @@ public class CheckInDistanceCalculator {
      */
     private static Map<Long, Set<Long>> locationMap;
 
+    @Setter
+    private static DCPGSParams params;
+
 
     public static void setEdgeMap(Map<Long, Set<Long>> edgeMap) {
         CheckInDistanceCalculator.edgeMap = edgeMap;
@@ -39,17 +43,17 @@ public class CheckInDistanceCalculator {
      * 计算地理社交距离 D_{gs}
      */
     public static double calculateDistance(CheckIn val1, CheckIn val2) {
-        ++computeTime;
-        if((computeTime & 1048575) == 0){
-            log.info("{} M times",++mNum);
-        }
+//        ++computeTime;
+//        if((computeTime & 1048575) == 0){
+//            log.info("{} M times",++mNum);
+//        }
         double dp = getDp(val1,val2);
         if(dp >= 1)
             return INF;
         double ds = getDs(val1,val2);
-        if(ds >= DCPGSParams.tau)
+        if(ds >= params.getTau())
             return INF;
-        return DCPGSParams.omega * dp + (1-DCPGSParams.omega) * ds;
+        return params.getOmega() * dp + (1-params.getOmega()) * ds;
     }
 
     /**
@@ -68,7 +72,7 @@ public class CheckInDistanceCalculator {
      * @return
      */
     public static double getDp(CheckIn val1, CheckIn val2){
-        return getE(val1,val2) / DCPGSParams.maxD;
+        return getE(val1,val2) / params.getMaxD();
     }
 
     /**

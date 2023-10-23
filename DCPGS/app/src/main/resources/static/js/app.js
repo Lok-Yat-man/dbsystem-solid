@@ -1,4 +1,4 @@
-import normal from "./normal.js";
+import dcpgs from "./DCPGS.js";
 import kdv from "./kdv.js";
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uZ3dhbmciLCJhIjoiY2tjZWwxNW5uMDdoMjJ3cDZnaGF2bmJlYiJ9.NOKscgbt1C-DCo38sxtUFw';
 new Vue({
@@ -7,7 +7,7 @@ new Vue({
         return {
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "local",
+            env: "prod",
             DCPGS: {
                 enable: true,
                 clusters: "",
@@ -25,12 +25,12 @@ new Vue({
             let vueThis = this;
             axios({
                 method: "get",
-                // url: "http://localhost:8080/dcpgs/gowalla"
                 url: clusterPath
             }).then(response => {
                 const jsonData = response.data;
-                console.log(jsonData);
                 this.DCPGS.clusters = jsonData.data;
+                this.DCPGS.clusterNums = this.DCPGS.clusters.length;
+                console.log(this.DCPGS.clusterNums);
                 vueThis.initMap(geoJsonPath, zoom);
             });
         },
@@ -40,11 +40,12 @@ new Vue({
             this.map.setCenter([this.DCPGS.clusters[0].checkIns[0].longitude,this.DCPGS.clusters[0].checkIns[0].latitude]);
             for(let i=0;i<this.DCPGS.clusterNums;++i){
                 let clusterId = this.DCPGS.clusters[i].clusterId;
-                let color = normal.getColor(clusterId,this.DCPGS.clusterNums);
+                let color = dcpgs.getColor(clusterId,this.DCPGS.clusterNums);
+                console.log("cluster: " + i +"color: " + color);
                 let locations = this.DCPGS.clusters[i].checkIns;
                 for(let j=0;j<1;++j){
                     let checkIn = locations[j];
-                    let marker = normal.getDefaultMark(checkIn.longitude,checkIn.latitude, color)
+                    let marker = dcpgs.getDefaultMark(checkIn.longitude,checkIn.latitude, color)
                         .addTo(this.map);
                 }
             }
@@ -52,38 +53,7 @@ new Vue({
 
         //初始化mapbox
         initMap(geoJsonPath, zoom){
-            this.map = new mapboxgl.Map({
-                container: 'map', // container id
-                // style: 'mapbox://styles/congwang/ckm4lk51m0mle17pddig9wem1',
-                // style: 'mapbox://styles/mapbox/light-v11',
-                style: 'mapbox://styles/mapbox/streets-v12',
-                // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + this.API_TOKEN,
-                center: [-97.7575966669, 30.2634181234],
-                // starting position [lng, lat]
-                zoom: zoom
-            });
-            let vueThis = this;
-            this.map.on('load', function () {
-                // 添加 GeoJSON 数据源
-                vueThis.map.addSource('points-source', {
-                    type: 'geojson',
-                    // data: 'data/EuropeTop20G.geojson', // 替换为包含数据的文件路径或URL
-                    data: geoJsonPath
-                });
-                for(let i = 0;i<vueThis.DCPGS.clusterNums;++i){
-                    vueThis.map.addLayer({
-                        id: 'layer'+i,
-                        type: 'circle',
-                        source: 'points-source',
-                        filter: ['==', 'clusterId', i],
-                        paint: {
-                            'circle-radius': 3.5,
-                            'circle-color': normal.getColor(i,vueThis.DCPGS.clusterNums),
-                            'circle-opacity': 0.7,
-                        },
-                    });
-                }
-            });
+            dcpgs.loadPoints(this,geoJsonPath,zoom);
             this.loadMarkers();
         },
 
@@ -103,8 +73,8 @@ new Vue({
             }
         },
 
-        loadDSPGS(location){
-            normal.loadDCPGS(this,location)
+        loadDSPGS(location, zoom){
+            dcpgs.loadDCPGS(this,location, zoom);
         },
 
         loadKDV(){
@@ -112,16 +82,15 @@ new Vue({
             if(this.env === "local"){
                 kdvDataPath = "data/kdv/kdv2.geojson"
             }else if(this.env === "prod") {
-                kdvDataPath = "localhost:8080/kdv/geojson"
+                kdvDataPath = "http://localhost:8080/kdv/geojson"
             }
-            kdv.loadKDV(this,kdvDataPath);
+            kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
         }
     },
 
     //挂载
     mounted() {
         console.log("mounted")
-        // this.loadDSPGS("Europe");
         this.loadKDV();
     },
 })

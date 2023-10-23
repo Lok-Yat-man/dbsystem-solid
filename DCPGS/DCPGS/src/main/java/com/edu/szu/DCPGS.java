@@ -4,6 +4,7 @@ import com.edu.szu.entity.DCPGSParams;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import com.edu.szu.exception.DBSCANClusteringException;
+import lombok.Setter;
 import rx.Observable;
 
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class DCPGS<V extends NamedPoint> {
 
     /** index maintaining visited points */
     private final HashSet<V> visitedPoints = new HashSet<V>();
+
+    @Setter
+    private DCPGSParams params;
 
     /**
      * Creates a DBSCAN clusterer instance.
@@ -67,7 +71,7 @@ public class DCPGS<V extends NamedPoint> {
      */
     private ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
         ArrayList<V> neighbours = new ArrayList<V>();
-        Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), DCPGSParams.epsilon);
+        Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getEpsilon());
         neighbour.forEach(n -> neighbours.add(n.geometry()));
         return neighbours;
     }
@@ -111,8 +115,8 @@ public class DCPGS<V extends NamedPoint> {
             throw new DBSCANClusteringException("DBSCAN: Less than two input values cannot be clustered. Number of input values: " + inputValues.size());
         }
 
-        if (DCPGSParams.epsilon < 0) {
-            throw new DBSCANClusteringException("DBSCAN: Maximum distance of input values cannot be negative. Current value: " + DCPGSParams.epsilon);
+        if (params.getEpsilon() < 0) {
+            throw new DBSCANClusteringException("DBSCAN: Maximum distance of input values cannot be negative. Current value: " + params.getEpsilon());
         }
 
         if (minimumNumberOfClusterMembers < 2) {

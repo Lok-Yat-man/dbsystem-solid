@@ -1,9 +1,10 @@
-function loadKDV(vueThis, path){
+function loadHeatMap(vueThis, path, center, zoom){
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
-        center: [114.0253382853974,22.442117078178544],
-        zoom: 12.0
+        style: 'mapbox://styles/mapbox/streets-v12',
+        // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
+        center: center,
+        zoom: zoom
     });
     vueThis.map.on('load', function () {
         // 添加 GeoJSON 数据源
@@ -84,4 +85,4 @@ function loadKDV(vueThis, path){
     });
 }
 
-export default {loadKDV}
+export default {loadHeatMap}

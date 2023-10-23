@@ -13,6 +13,6 @@ public class DCPGSManagerTest {
         log.info("DCPGSManagerTest start");
         var edgeMap = EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt");
         dcpgsManager.setEdgeMap(edgeMap);
-        dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/SoutheastAsiaCheckIn.txt");
+        dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/SoutheastAsiaCheckIn.txt","SoutheastAsia","gpwalla");
     }
 }
