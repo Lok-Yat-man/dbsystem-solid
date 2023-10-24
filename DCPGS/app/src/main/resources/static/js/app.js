@@ -7,7 +7,7 @@ new Vue({
         return {
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "prod",
+            env: "local",//local or prod
             DCPGS: {
                 labelPosition: "right",
                 location: "",
@@ -20,46 +20,13 @@ new Vue({
                     omega: 0.5,
                     tau: 0.7
                 }
+            },
+            sideBar: {
+                switchIcon: "el-icon-arrow-right"
             }
         }
     },
     methods: {
-        //HTTP请求获取数据
-        getClusters(geoJsonPath, clusterPath, zoom){
-            let vueThis = this;
-            axios({
-                method: "get",
-                url: clusterPath
-            }).then(response => {
-                const jsonData = response.data;
-                this.DCPGS.clusters = jsonData.data;
-                this.DCPGS.clusterNums = this.DCPGS.clusters.length;
-                console.log(this.DCPGS.clusterNums);
-                vueThis.initMap(geoJsonPath, zoom);
-            });
-        },
-
-        //加载地图并添加地点标记
-        loadMarkers(){
-            this.map.setCenter([this.DCPGS.clusters[0].checkIns[0].longitude,this.DCPGS.clusters[0].checkIns[0].latitude]);
-            for(let i=0;i<this.DCPGS.clusterNums;++i){
-                let clusterId = this.DCPGS.clusters[i].clusterId;
-                let color = dcpgs.getColor(clusterId,this.DCPGS.clusterNums);
-                let locations = this.DCPGS.clusters[i].checkIns;
-                for(let j=0;j<1;++j){
-                    let checkIn = locations[j];
-                    let marker = dcpgs.getDefaultMark(checkIn.longitude,checkIn.latitude, color)
-                        .addTo(this.map);
-                }
-            }
-        },
-
-        //初始化mapbox
-        initMap(geoJsonPath, zoom){
-            dcpgs.loadPoints(this,geoJsonPath,zoom);
-            this.loadMarkers();
-        },
-
         paramsSwitch(){
             let paramsDis = document.getElementById("DCPGSParams")
                 .style.display;
@@ -77,6 +44,27 @@ new Vue({
             }
         },
 
+        sideBarSwitch(){
+            let sideBar = document.getElementById("sideBar");
+            if(sideBar.classList.contains("sideOut")){
+                sideBar.classList.add("sideIn");
+                sideBar.classList.remove("sideOut");
+            }else if(sideBar.classList.contains("sideIn")){
+                sideBar.classList.add("sideOut");
+                sideBar.classList.remove("sideIn");
+            }
+            let barSwitch = document.getElementById("sideBarSwitch");
+            if(barSwitch.classList.contains("switchOut")){
+                barSwitch.classList.add("switchIn");
+                barSwitch.classList.remove("switchOut");
+                this.sideBar.switchIcon = "el-icon-arrow-left";
+            }else if(barSwitch.classList.contains("switchIn")){
+                barSwitch.classList.add("switchOut");
+                barSwitch.classList.remove("switchIn");
+                this.sideBar.switchIcon = "el-icon-arrow-right";
+            }
+        },
+
         loadDSPGS(location, zoom){
             this.DCPGS.disabled = false;
             dcpgs.loadDCPGS(this,location, zoom);
@@ -84,19 +72,19 @@ new Vue({
 
         loadKDV(){
             this.DCPGS.disabled = true;
-            let kdvDataPath = "data/kdv/kdv2.geojson"
+            let kdvDataPath = ""
             if(this.env === "local"){
                 kdvDataPath = "data/kdv/kdv2.geojson"
             }else if(this.env === "prod") {
                 kdvDataPath = "http://localhost:8080/kdv/geojson"
             }
             kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
-        }
+        },
     },
 
     //挂载
     mounted() {
         console.log("mounted")
-        this.loadKDV();
+        this.loadDSPGS('StockholmSweden', 13)
     },
 })

@@ -1,7 +1,38 @@
 #header{
-    position: absolute;
-    background-color: rgba(153, 222, 255,0.5);
-    z-index:1000 ;
+    position:absolute;
+    background-color: rgba(255,255,255,0.6);
+    z-index:999;
     width:100%;
     height: 10%;
+    margin:left 50px;
+}
+
+
+.header-img1{
+    width:200px;
+    height:75px;
+    margin-left:3%;
+}
+
+.header-img2{
+    position:absolute;
+    width:110px;
+    height:70px;
+    left:30%;
+    top:10%;
+}
+
+.header-img3{
+    position:absolute;
+    width:180px;
+    height:85px;
+    left:60%;
+    top:0px;
+}
+
+.lang{
+    position:absolute;
+    font-size:20px;
+    left:90%;
+    top:8px;
 }
