@@ -12,7 +12,14 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/DCPGS/pom.xml" />
         <option value="$PROJECT_DIR$/k-stc/pom.xml" />
+        <option value="$PROJECT_DIR$/http/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/DCPGS/DCPGS/pom.xml" />
+        <option value="$PROJECT_DIR$/DCPGS/api/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_16" default="true" project-jdk-name="16" project-jdk-type="JavaSDK">

@@ -1,0 +1,12 @@
+.params{
+    border-radius: 3px;
+    background-color: rgba(255,255,255,0.3);
+    position: absolute;
+    right: 0.5%;
+    bottom: 2%;
+}
+#paramsSwitch{
+    position: absolute;
+    right: 1%;
+    bottom: 2.5%;
+}
