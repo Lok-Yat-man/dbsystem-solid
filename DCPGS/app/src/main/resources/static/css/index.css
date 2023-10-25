@@ -91,4 +91,10 @@ body {
     border-bottom-right-radius: 5px;
 }
 
+#DCPGSParamsCloser{
+    position: absolute;
+    top: 3%;
+    right: 5%;
+    color: black;
+}
 

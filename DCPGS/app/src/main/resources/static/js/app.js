@@ -27,7 +27,7 @@ new Vue({
         }
     },
     methods: {
-        paramsSwitch(){
+        paramsSwitch(update){
             let paramsDis = document.getElementById("DCPGSParams")
                 .style.display;
             if(paramsDis === "none"){
@@ -40,6 +40,8 @@ new Vue({
                     .style.display = "none";
                 document.getElementById("DCPGSParamsSwitch")
                     .style.display = "";
+            }
+            if(update){
                 dcpgs.updateParams(this);
             }
         },
