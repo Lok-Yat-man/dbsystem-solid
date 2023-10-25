@@ -80,7 +80,7 @@ public class DCPGSManager {
         geoJsonMap = new HashMap<>();
         paramsMap = new HashMap<>();
         cacheMap = new HashMap<>();
-        File directory = new File("DCPGS/DCPGS/src/main/resources/gowalla/result");
+        File directory = new File("DCPGS/src/main/resources/gowalla/result");
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
@@ -88,7 +88,6 @@ public class DCPGSManager {
             }
         }
         cacheMap.keySet().forEach(key -> log.info("cacheMap key: {}", key));
-        System.out.println("log test");
     }
 
     public DCPGSParams getParams(String key, String dataSet){
