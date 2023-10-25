@@ -3,10 +3,10 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/DCPGS/DCPGS/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/DCPGS/api/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/DCPGS/app/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/DCPGS/http/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/DCPGS/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/DCPGS/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/http/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/k-stc/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/k-stc/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />

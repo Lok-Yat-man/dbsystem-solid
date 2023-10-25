@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>goe-s</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/params.css">
+    <link rel="stylesheet" href="css/header.css">
+
+</head>
+<body>
+    <div id="app">
+        <div id="map"></div>
+        <div id="paramsSwitch" v-if="switchStatus === 'SWITCH'">
+            <el-button type="primary" icon="el-icon-edit" circle @click="paramsSwitch('')"></el-button>
+        </div>
+        <div class="params" v-if="switchStatus === 'DCPGS'">
+            <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
+            <el-button type="text" id="DCPGSParamsCloser" @click="paramsSwitch('SWITCH')">X</el-button>
+            <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS">
+                <el-form-item label="epsilon">
+                    <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0.3" :max="1"></el-input-number>
+                </el-form-item>
+                <el-form-item label="omega">
+                    <el-input-number v-model="DCPGS.params.omega" :precision="2" :step="0.1" :min="0.3" :max="1"></el-input-number>
+                </el-form-item>
+                <el-form-item label="tau">
+                    <el-input-number v-model="DCPGS.params.tau" :precision="2" :step="0.1" :min="0.3" :max="1" ></el-input-number>
+                </el-form-item>
+                <el-form-item label="maxD">
+                    <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="80" :max="200" ></el-input-number>
+                </el-form-item>
+                <div style="text-align: center">
+                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')">confirm</el-button>
+                </div>
+            </el-form>
+        </div>
+        <div class="params" v-if="switchStatus === 'k_stc'">
+            <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
+            <el-input v-model="k_stc.message" placeholder="请输入内容"></el-input>
+            <div style="text-align: center">
+                <el-button round @click="paramsSwitch('SWITCH')">confirm</el-button>
+            </div>
+        </div>
+        <el-button class="switchOut" size="small" :icon="sideBar.switchIcon" id="sideBarSwitch" @click="sideBarSwitch"></el-button>
+         <!-- 侧边导航栏-->
+         <el-row class="tac sideOut" id="sideBar">
+            <el-col :span="12">
+<!--              <h3 style="text-align: center">Menu</h3>-->
+              <el-menu
+                class="el-menu-vertical-demo"
+                default-active="1-1-1"
+                background-color="rgba(255,255,255,0.6)"
+              >
+                <el-submenu index="1">
+                  <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>Clustering</span>
+                  </template>
+                    <el-submenu index="1-1">
+                        <template slot="title">Geo-social network</template>
+                        <el-menu-item index="1-1-1" @click="loadDSPGS('StockholmSweden', 13)">Stockholm Sweden</el-menu-item>
+                        <el-menu-item index="1-1-2" @click="loadDSPGS('MalmoSweden', 13)">Malmo Sweden</el-menu-item>
+                        <el-menu-item index="1-1-3" @click="loadDSPGS('GothenburgSweden', 13)">Gothenburg Sweden</el-menu-item>
+                        <el-menu-item index="1-1-4" @click="loadDSPGS('AustinUS', 13)">Austin US</el-menu-item>
+                        <el-menu-item index="1-1-5" @click="loadDSPGS('LondonUK', 13)">London UK</el-menu-item>
+                        <el-menu-item index="1-1-6" @click="loadDSPGS('NewcastleUponTyneUk', 13.5)">Newcastle Upon Tyne UK</el-menu-item>
+                        <el-menu-item index="1-1-7" @click="loadDSPGS('OsloNorway', 13)">Oslo Norway</el-menu-item>
+                        <el-menu-item index="1-1-8" @click="loadDSPGS('ZurichSwitzerland', 13)">Zurich Switzerland</el-menu-item>
+                    </el-submenu>
+                    <el-submenu index="1-2">
+                       <template slot="title">Spatial textual clustering</template>
+                      <el-menu-item index="1-2-1" @click="loadKStc">1-2-1</el-menu-item>
+                    </el-submenu>
+                    <el-submenu index="1-3">
+                       <template slot="title">Textually spatial skylines</template>
+                        <el-menu-item index="1-3-1">1-3-1</el-menu-item>
+                    </el-submenu>
+                </el-submenu>
+                <el-submenu index="2">
+                  <template slot="title">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">Visualization</span>
+                   </template>
+                    <el-submenu index="2-1">
+                   <template slot="title">KDV</template>
+                  <el-menu-item index="2-1-1" @click="loadKDV">kdv</el-menu-item>
+                    </el-submenu>
+
+                    <el-submenu index="2-2">
+                   <template slot="title">Temporal KDV</template>
+                  <el-menu-item index="2-2-1">2-2-1</el-menu-item>
+                    </el-submenu>
+
+                  <el-submenu index="2-3">
+                   <template slot="title">Line KDV</template>
+                  <el-menu-item index="2-3-1">2-3-1</el-menu-item>
+                    </el-submenu>
+                </el-submenu>
+              </el-menu>
+            </el-col>
+          </el-row>
+
+          <div id="header" >
+            <a href ="https://www.szu.edu.cn/" target="_blank"> <img decoding="async" class="header-img1" src="/img/szu.png" /> </a>
+            <a href ="https://csse.szu.edu.cn/" target="_blank"><img decoding="async" class="header-img2" src="/img/college.png" /></a>
+            <a href ="https://bigdata.szu.edu.cn/" target="_blank"><img decoding="async" class="header-img3" src="/img/lab.png" /></a>
+            <p class="lang">中文</p>
+          </div>
+
+
+    </div>
+</body>
+
+<script src="js/environment/vue.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script src="js/environment/axios.js"></script>
+<script type="module" src="js/app.js"></script>
+</html>
