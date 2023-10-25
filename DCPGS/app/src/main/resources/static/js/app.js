@@ -8,10 +8,11 @@ new Vue({
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
             env: "local",//local or prod
+            switchStatus: "SWITCH",
+            currentAlgorithm: 'DCPGS',
             DCPGS: {
                 labelPosition: "right",
                 location: "",
-                disabled: true,
                 clusters: "",
                 clusterNums: 10,
                 params: {
@@ -23,26 +24,22 @@ new Vue({
             },
             sideBar: {
                 switchIcon: "el-icon-arrow-right"
+            },
+            k_stc: {
+                message: "",
             }
         }
     },
     methods: {
-        paramsSwitch(update){
-            let paramsDis = document.getElementById("DCPGSParams")
-                .style.display;
-            if(paramsDis === "none"){
-                document.getElementById("DCPGSParams")
-                    .style.display = "";
-                document.getElementById("DCPGSParamsSwitch")
-                    .style.display = "none";
-            }else{
-                document.getElementById("DCPGSParams")
-                    .style.display = "none";
-                document.getElementById("DCPGSParamsSwitch")
-                    .style.display = "";
+        paramsSwitch(state){
+            if(state === ''){
+                this.switchStatus = this.currentAlgorithm;
             }
-            if(update){
+            else if(state === 'DCPGS_UPDATE') {
                 dcpgs.updateParams(this);
+                this.switchStatus = "SWITCH";
+            }else{
+                this.switchStatus = state;
             }
         },
 
@@ -68,12 +65,11 @@ new Vue({
         },
 
         loadDSPGS(location, zoom){
-            this.DCPGS.disabled = false;
+            this.currentAlgorithm = "DCPGS";
             dcpgs.loadDCPGS(this,location, zoom);
         },
 
         loadKDV(){
-            this.DCPGS.disabled = true;
             let kdvDataPath = ""
             if(this.env === "local"){
                 kdvDataPath = "data/kdv/kdv2.geojson"
@@ -82,6 +78,10 @@ new Vue({
             }
             kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
         },
+
+        loadKStc(){
+            this.currentAlgorithm = "k_stc";
+        }
     },
 
     //挂载
