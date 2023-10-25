@@ -66,10 +66,13 @@ new Vue({
 
         loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
+            this.paramsSwitch('SWITCH');
             dcpgs.loadDCPGS(this,location, zoom);
         },
 
         loadKDV(){
+            this.currentAlgorithm = "kdv";
+            this.paramsSwitch('SWITCH');
             let kdvDataPath = ""
             if(this.env === "local"){
                 kdvDataPath = "data/kdv/kdv2.geojson"
@@ -80,6 +83,7 @@ new Vue({
         },
 
         loadKStc(){
+            this.paramsSwitch('SWITCH');
             this.currentAlgorithm = "k_stc";
         }
     },
