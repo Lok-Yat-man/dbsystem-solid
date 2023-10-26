@@ -14,7 +14,8 @@ new Vue({
                 labelPosition: "right",
                 location: "",
                 clusters: "",
-                clusterNums: 10,
+                clusterNums: 0,
+                maxClusterNums: 150,
                 params: {
                     epsilon: 0.5,
                     maxD: 120,
@@ -32,6 +33,7 @@ new Vue({
     },
     methods: {
         paramsSwitch(state){
+            this.$forceUpdate();
             if(state === ''){
                 this.switchStatus = this.currentAlgorithm;
             }
@@ -64,10 +66,16 @@ new Vue({
             }
         },
 
-        loadDSPGS(location, zoom){
+        updateClusterNums(){
+            let path = dcpgs.getPathFromLocation(this.DCPGS.location,this.env);
+            dcpgs.loadPoints(this,path[1],this.map.getZoom());
+            dcpgs.loadMarkers(this);
+        },
+
+        async loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
             this.paramsSwitch('SWITCH');
-            dcpgs.loadDCPGS(this,location, zoom);
+            await dcpgs.loadDCPGS(this,location, zoom);
         },
 
         loadKDV(){

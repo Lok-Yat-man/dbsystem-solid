@@ -20,6 +20,12 @@
             <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
             <el-button type="text" id="DCPGSParamsCloser" @click="paramsSwitch('SWITCH')">X</el-button>
             <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS">
+                <span style="color: rgb(96, 98, 102)">cluster nums: </span>
+                <el-slider
+                        v-model="DCPGS.clusterNums"
+                        :min="1" :max="DCPGS.maxClusterNums"
+                        @change="updateClusterNums">
+                </el-slider>
                 <el-form-item label="epsilon">
                     <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0.3" :max="1"></el-input-number>
                 </el-form-item>
