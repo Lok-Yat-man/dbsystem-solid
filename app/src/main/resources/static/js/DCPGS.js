@@ -29,8 +29,7 @@ async function loadDCPGS(vueThis, location, zoom) {
             getParams(vueThis, location);
         });
     }
-    let nums = await getClusters(path[1], path[0], zoom, vueThis);
-    vueThis.DCPGS.maxClusterNums = nums;
+    vueThis.DCPGS.maxClusterNums = await getClusters(path[1], path[0], zoom, vueThis);
     loadPoints(vueThis, path[1], zoom);
     loadMarkers(vueThis);
 }
@@ -103,7 +102,7 @@ function loadMarkers(vueThis) {
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
         makers.push(marker);
-        if(i < vueThis.DCPGS.maxClusterNums)
+        if(i < vueThis.DCPGS.clusterNums)
             marker.addTo(vueThis.map);
     }
     vueThis.DCPGS.markers = makers;
