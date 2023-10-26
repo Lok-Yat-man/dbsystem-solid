@@ -30,9 +30,9 @@ async function loadDCPGS(vueThis, location, zoom) {
         });
     }
     let nums = await getClusters(path[1], path[0], zoom, vueThis);
+    vueThis.DCPGS.maxClusterNums = nums;
     loadPoints(vueThis, path[1], zoom);
     loadMarkers(vueThis);
-    vueThis.DCPGS.maxClusterNums = nums;
 }
 
 async function getParams(vueThis, location) {
@@ -87,6 +87,7 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
                 },
             });
         }
+        vueThis.DCPGS.layerLoaded = vueThis.DCPGS.clusterNums;
     });
 }
 
@@ -94,16 +95,19 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
 function loadMarkers(vueThis) {
     vueThis.map.setCenter([vueThis.DCPGS.clusters[0].checkIns[0].longitude,
         vueThis.DCPGS.clusters[0].checkIns[0].latitude]);
-    for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i) {
+    let makers = [];
+    for (let i = 0; i < vueThis.DCPGS.maxClusterNums; ++i) {
         let clusterId = vueThis.DCPGS.clusters[i].clusterId;
-        let color = utils.getColor(clusterId, vueThis.DCPGS.clusterNums);
+        let color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums);
         let locations = vueThis.DCPGS.clusters[i].checkIns;
-        for (let j = 0; j < 1; ++j) {
-            let checkIn = locations[j];
-            utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color)
-                .addTo(vueThis.map);
-        }
+        let checkIn = locations[0];
+        let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
+        makers.push(marker);
+        if(i < vueThis.DCPGS.maxClusterNums)
+            marker.addTo(vueThis.map);
     }
+    vueThis.DCPGS.markers = makers;
+    console.log("maker nums: ",makers.length)
 }
 
 //HTTP请求获取数据
@@ -123,10 +127,34 @@ async function getClusters(geoJsonPath, clusterPath, zoom, vueThis) {
     return nums;
 }
 
+function updateClusterNums(vueThis){
+    let dcpgs = vueThis.DCPGS;
+    if(dcpgs.clusterNums < dcpgs.layerLoaded){
+        for(let i = dcpgs.clusterNums;i<dcpgs.layerLoaded;++i){
+            vueThis.map.removeLayer("layer"+i);
+            vueThis.DCPGS.markers[i].remove();
+        }
+    }else if(dcpgs.clusterNums > dcpgs.layerLoaded){
+        for(let i = dcpgs.layerLoaded;i<dcpgs.clusterNums;++i){
+            vueThis.map.addLayer({
+                id: 'layer' + i,
+                type: 'circle',
+                source: 'points-source',
+                filter: ['==', 'clusterId', "" + i],
+                paint: {
+                    'circle-radius': 3.5,
+                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
+                    'circle-opacity': 0.7,
+                },
+            });
+            vueThis.DCPGS.markers[i].addTo(vueThis.map);
+        }
+    }
+    dcpgs.layerLoaded = dcpgs.clusterNums;
+}
+
 export default {
     loadDCPGS,
     updateParams,
-    getPathFromLocation,
-    loadPoints,
-    loadMarkers,
+    updateClusterNums,
 }

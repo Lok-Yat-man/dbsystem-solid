@@ -15,6 +15,8 @@ new Vue({
                 location: "",
                 clusters: "",
                 clusterNums: 0,
+                layerLoaded: 0,
+                markers: [],
                 maxClusterNums: 150,
                 params: {
                     epsilon: 0.5,
@@ -67,9 +69,7 @@ new Vue({
         },
 
         updateClusterNums(){
-            let path = dcpgs.getPathFromLocation(this.DCPGS.location,this.env);
-            dcpgs.loadPoints(this,path[1],this.map.getZoom());
-            dcpgs.loadMarkers(this);
+            dcpgs.updateClusterNums(this);
         },
 
         async loadDSPGS(location, zoom){
