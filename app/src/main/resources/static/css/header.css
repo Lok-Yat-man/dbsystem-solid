@@ -10,23 +10,24 @@
 
 #header-img1{
     position: absolute;
-    width:205px;
-    top: 7.5%;
+    aspect-ratio: 2.9; /* 2.9:1 的宽高比例，可以根据需要更改 */
     height:85%;
+    top: 7.5%;
     right: 31.5%;
 }
 
 #header-img2{
     position:absolute;
-    width:70px;
-    height:70px;
+    aspect-ratio: 1; /* 1:1 的宽高比例，可以根据需要更改 */
+    height:85%;
     right:25%;
     top:5%;
 }
 
 #header-img3{
     position:absolute;
-    width:136px;
+    /*width:136px;*/
+    aspect-ratio: 1.875; /* 1.875:1 的宽高比例，可以根据需要更改 */
     height:85%;
     right: 15%;
     top:7.5%;
@@ -36,5 +37,5 @@
     position:absolute;
     font-size:20px;
     right: 7.5%;
-    top:8px;
+    top:25%;
 }
