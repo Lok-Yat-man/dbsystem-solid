@@ -1,5 +1,6 @@
 import dcpgs from "./DCPGS.js";
 import kdv from "./kdv.js";
+import kstc from "./kstc.js"
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uZ3dhbmciLCJhIjoiY2tjZWwxNW5uMDdoMjJ3cDZnaGF2bmJlYiJ9.NOKscgbt1C-DCo38sxtUFw';
 new Vue({
     el: "#app",
@@ -14,7 +15,10 @@ new Vue({
                 labelPosition: "right",
                 location: "",
                 clusters: "",
-                clusterNums: 10,
+                clusterNums: 0,
+                layerLoaded: 0,
+                markers: [],
+                maxClusterNums: 150,
                 params: {
                     epsilon: 0.5,
                     maxD: 120,
@@ -31,8 +35,8 @@ new Vue({
                 query:{
                     keyword: [],
                     location:{
-                        longitude:0,
-                        latitude:0
+                        longitude:-119.7,
+                        latitude:34.4
                     },
                     k:5,
                     epsilon: 50.0,
@@ -43,6 +47,7 @@ new Vue({
     },
     methods: {
         paramsSwitch(state){
+            this.$forceUpdate();
             if(state === ''){
                 this.switchStatus = this.currentAlgorithm;
             }
@@ -50,8 +55,8 @@ new Vue({
                 dcpgs.updateParams(this);
                 this.switchStatus = "SWITCH";
             }else if(state === 'KSTC_UPDATE'){
-
-
+                this.switchStatus = "SWITCH"
+                kstc.loadKSTC(this);
             }
             else{
                 this.switchStatus = state;
@@ -79,10 +84,15 @@ new Vue({
             }
         },
 
-        loadDSPGS(location, zoom){
+        updateClusterNums(){
+            dcpgs.updateClusterNums(this);
+        },
+
+        async loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
+
             this.paramsSwitch('DCPGS');
-            dcpgs.loadDCPGS(this,location, zoom);
+            await dcpgs.loadDCPGS(this,location, zoom);
         },
 
         loadKDV(){

@@ -17,7 +17,6 @@ import org.springframework.context.annotation.Import;
 public class DBSCANApp {
 
     public static void main(String[] args) {
-        log.info("start running");
         SpringApplication.run(DBSCANApp.class, args);
     }
 

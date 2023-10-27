@@ -1,22 +1,44 @@
 #include "alg_visual.h"
-#include <emscripten/bind.h>
-#include <emscripten/val.h>
 
-using namespace emscripten;
 alg_visual algorithm;
 char empty2[] = " ";
-int load_data()
+
+std::string testCompute(int kernel_type,int kdv_type,float bw_s,
+int row_pixels,int col_pixels,int st_id,int ed_id,float long_L,
+float long_U, float lat_L,float lat_U,float t_L,float t_U,int t_pixels,float bw_t);
+
+extern "C" char* load_data()
 {
 	char dataFileName_GPS[] = "./cases.csv";
 	char *argv_load[] = {empty2,dataFileName_GPS};
 	algorithm.load_datasets_CSV(argv_load);
-	return 0;
+	return argv_load[1];
 }
 
-std::string compute(int kernel_type,int kdv_type,float bw_s,
+extern "C" char* compute(int kernel_type,int kdv_type,float bw_s,
+                         int row_pixels,int col_pixels,int st_id,int ed_id,float long_L,
+                         float long_U, float lat_L,float lat_U,float t_L,float t_U,int t_pixels,float bw_t){
+    char empty[] = "1";
+    char* argv[] = {empty};
+    string res = testCompute(kernel_type,kdv_type,bw_s,row_pixels,
+                                                                 col_pixels,st_id,ed_id,long_L,long_U,
+                                                                 lat_L,lat_U,t_L,t_U,t_pixels,bw_t);
+    const char* c = res.c_str();
+    int len = res.length();
+    char* result = new char[len+1];
+    strncpy(result, c, len);
+    result[len] = '\0';
+    return result;
+}
+
+extern "C" char* add(int a,int b){
+    return "a+b";
+}
+
+std::string testCompute(int kernel_type,int kdv_type,float bw_s,
 int row_pixels,int col_pixels,int st_id,int ed_id,float long_L,
 float long_U, float lat_L,float lat_U,float t_L,float t_U,int t_pixels,float bw_t){
-	
+
 char pa1[32]= "./cases.csv";
 char pa2[32]= "1";
 sprintf(pa2,"%d",kdv_type);
@@ -63,10 +85,4 @@ char *argv_comp[] = {empty2,pa1,pa2,pa3,pa4,pa5,pa6,pa7,pa8,pa9,pa10,pa11,pa12,p
 
 
 return algorithm.compute(18, argv_comp);
-}
-
-
-EMSCRIPTEN_BINDINGS(module) {
-  emscripten::function("compute", &compute);
-  emscripten::function("load_data", &load_data);
 }

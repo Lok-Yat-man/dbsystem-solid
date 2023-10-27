@@ -1,42 +1,52 @@
 import utils from "./utils.js";
-function loadDCPGS(vueThis, location, zoom){
-    vueThis.DCPGS.location = location;
-    let env = vueThis.env;
+
+function getPathFromLocation(location, env) {
     let basePath = "http://localhost:8080/dcpgs/";
     let geoJsonPath = "";
     let clusterPath = "";
-    if(env === "local") {
+    if (env === "local") {
         geoJsonPath = "data/geoJson/" + location + ".geojson";
         clusterPath = "./data/" + location + ".json";
-        getClusters(geoJsonPath, clusterPath, zoom, vueThis);
-    }else if(env === "prod") {
+    } else if (env === "prod") {
         geoJsonPath = basePath + "gowalla/geoJson/" + location;
         clusterPath = basePath + "gowalla/json/" + location;
-        axios({
-            method: "get",
-            url: basePath + "gowalla/run/" + location
-        }).then(response => {
-            const runningStatus = response.data;
-            console.log("DCPGS running status: " + runningStatus);
-            getParams(vueThis,location);
-            getClusters(geoJsonPath, clusterPath, zoom, vueThis);
-        });
     }
+    return [clusterPath, geoJsonPath];
 }
 
-function getParams(vueThis, location){
+async function loadDCPGS(vueThis, location, zoom) {
+    vueThis.DCPGS.location = location;
+    let env = vueThis.env;
+    let path = getPathFromLocation(location, env);
     let basePath = "http://localhost:8080/dcpgs/";
-    axios({
+    if (env === "prod") {
+        await axios({
+            method: "get",
+            url: basePath + "gowalla/run/" + location
+        }).then((response) => {
+            const runningStatus = response.data;
+            console.log("DCPGS running status: " + runningStatus);
+            getParams(vueThis, location);
+        });
+    }
+    vueThis.DCPGS.maxClusterNums = await getClusters(path[1], path[0], zoom, vueThis);
+    loadPoints(vueThis, path[1], zoom);
+    loadMarkers(vueThis);
+}
+
+async function getParams(vueThis, location) {
+    let basePath = "http://localhost:8080/dcpgs/";
+    await axios({
         method: "get",
         url: basePath + "gowalla/params/" + location
     }).then(response => {
         const params = response.data;
-        console.log("location: "+ location +" params: " + params);
+        console.log("location: " + location + " params: " + params);
         vueThis.DCPGS.params = params;
     });
 }
 
-function updateParams(vueThis){
+function updateParams(vueThis) {
     let basePath = "http://localhost:8080/dcpgs/";
     axios({
         method: "put",
@@ -49,7 +59,7 @@ function updateParams(vueThis){
     });
 }
 
-function loadPoints(vueThis, geoJsonPath, zoom){
+function loadPoints(vueThis, geoJsonPath, zoom) {
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         // style: 'mapbox://styles/mapbox/light-v11',
@@ -63,54 +73,87 @@ function loadPoints(vueThis, geoJsonPath, zoom){
             type: 'geojson',
             data: geoJsonPath
         });
-        for(let i = 0;i<vueThis.DCPGS.clusterNums;++i){
+        for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i) {
             vueThis.map.addLayer({
-                id: 'layer'+i,
+                id: 'layer' + i,
                 type: 'circle',
                 source: 'points-source',
-                filter: ['==', 'clusterId', ""+i],
+                filter: ['==', 'clusterId', "" + i],
                 paint: {
                     'circle-radius': 3.5,
-                    'circle-color': utils.getColor(i,vueThis.DCPGS.clusterNums),
+                    'circle-color': utils.getColor(i, vueThis.DCPGS.clusterNums),
                     'circle-opacity': 0.7,
                 },
             });
         }
+        vueThis.DCPGS.layerLoaded = vueThis.DCPGS.clusterNums;
     });
 }
 
 //加载地图并添加地点标记
-function loadMarkers(vueThis){
+function loadMarkers(vueThis) {
     vueThis.map.setCenter([vueThis.DCPGS.clusters[0].checkIns[0].longitude,
         vueThis.DCPGS.clusters[0].checkIns[0].latitude]);
-    for(let i=0;i<vueThis.DCPGS.clusterNums;++i){
+    let makers = [];
+    for (let i = 0; i < vueThis.DCPGS.maxClusterNums; ++i) {
         let clusterId = vueThis.DCPGS.clusters[i].clusterId;
-        let color = utils.getColor(clusterId,vueThis.DCPGS.clusterNums);
+        let color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums);
         let locations = vueThis.DCPGS.clusters[i].checkIns;
-        for(let j=0;j<1;++j){
-            let checkIn = locations[j];
-            utils.getDefaultMark(checkIn.longitude,checkIn.latitude, color)
-                .addTo(vueThis.map);
-        }
+        let checkIn = locations[0];
+        let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
+        makers.push(marker);
+        if(i < vueThis.DCPGS.clusterNums)
+            marker.addTo(vueThis.map);
     }
+    vueThis.DCPGS.markers = makers;
+    console.log("maker nums: ",makers.length)
 }
 
 //HTTP请求获取数据
-function getClusters(geoJsonPath, clusterPath, zoom, vueThis){
-    axios({
+async function getClusters(geoJsonPath, clusterPath, zoom, vueThis) {
+    let nums = 0;
+    await axios({
         method: "get",
         url: clusterPath
     }).then(response => {
         const jsonData = response.data;
         vueThis.DCPGS.clusters = jsonData.data;
-        vueThis.DCPGS.clusterNums = vueThis.DCPGS.clusters.length;
-        console.log(vueThis.DCPGS.clusterNums);
-        loadPoints(vueThis,geoJsonPath,zoom);
-        loadMarkers(vueThis);
+        vueThis.DCPGS.maxClusterNUms = vueThis.DCPGS.clusters.length;
+        vueThis.DCPGS.clusterNums = Math.round(vueThis.DCPGS.clusters.length / 2);
+        nums = vueThis.DCPGS.clusters.length;
+        console.log("get cluster finished, clusterNums: ", vueThis.DCPGS.maxClusterNUms);
     });
+    return nums;
+}
+
+function updateClusterNums(vueThis){
+    let dcpgs = vueThis.DCPGS;
+    if(dcpgs.clusterNums < dcpgs.layerLoaded){
+        for(let i = dcpgs.clusterNums;i<dcpgs.layerLoaded;++i){
+            vueThis.map.removeLayer("layer"+i);
+            vueThis.DCPGS.markers[i].remove();
+        }
+    }else if(dcpgs.clusterNums > dcpgs.layerLoaded){
+        for(let i = dcpgs.layerLoaded;i<dcpgs.clusterNums;++i){
+            vueThis.map.addLayer({
+                id: 'layer' + i,
+                type: 'circle',
+                source: 'points-source',
+                filter: ['==', 'clusterId', "" + i],
+                paint: {
+                    'circle-radius': 3.5,
+                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
+                    'circle-opacity': 0.7,
+                },
+            });
+            vueThis.DCPGS.markers[i].addTo(vueThis.map);
+        }
+    }
+    dcpgs.layerLoaded = dcpgs.clusterNums;
 }
 
 export default {
     loadDCPGS,
     updateParams,
+    updateClusterNums,
 }
