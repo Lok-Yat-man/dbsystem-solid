@@ -42,12 +42,39 @@
             </el-form>
         </div>
 
-        <div class="params" v-if="switchStatus === 'k_stc'">
+        <div class="params" v-if="switchStatus === 'KSTC'">
             <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
-            <el-input v-model="k_stc.message" placeholder="请输入内容"></el-input>
-            <div style="text-align: center">
-                <el-button round @click="paramsSwitch('SWITCH')">confirm</el-button>
-            </div>
+
+            <el-button type="text" id="KSTCParamsCloser" @click="paramsSwitch('SWITCH')">X</el-button>
+
+            <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
+
+                <el-form-item label="keyword">
+                    <el-input v-model="KSTC.message" placeholder="以,分隔"></el-input>
+                </el-form-item>
+
+                <el-form-item label="epsilon">
+                    <el-input-number v-model="KSTC.query.epsilon" :precision="1" :step="1" :min="1" :max="100"></el-input-number>
+                </el-form-item>
+
+                <el-form-item label="k">
+                    <el-input-number v-model="KSTC.query.k" :precision="1" :step="1" :min="1" :max="20" ></el-input-number>
+                </el-form-item>
+
+                <el-form-item label="minPts">
+                    <el-input-number v-model="KSTC.query.minPts" :step="1" :min="2" :max="20" ></el-input-number>
+
+                </el-form-item><el-form-item label="longitude">
+                    <el-input-number v-model="KSTC.query.location.longitude" :step="1" :min="-180" :max="180" ></el-input-number>
+                </el-form-item>
+                <el-form-item label="latitude">
+                    <el-input-number v-model="KSTC.query.location.latitude" :step="1" :min="-90" :max="90" ></el-input-number>
+                </el-form-item>
+                <div style="text-align: center">
+                    <el-button round @click="paramsSwitch('KSTC_UPDATE')">confirm</el-button>
+                </div>
+            </el-form>
+
         </div>
 
         <el-button class="switchOut" size="small" :icon="sideBar.switchIcon" id="sideBarSwitch" @click="sideBarSwitch">
@@ -57,6 +84,7 @@
          <el-row class="tac sideOut" id="sideBar">
             <el-col :span="12">
 <!--              <h3 style="text-align: center">Menu</h3>-->
+                {{switchStatus}}
               <el-menu
                 class="el-menu-vertical-demo"
                 default-active="1-1-1"
@@ -112,9 +140,9 @@
           </el-row>
 
           <div id="header" >
-            <a href ="https://www.szu.edu.cn/" target="_blank"> <img decoding="async" class="header-img1" src="/img/szu.png" /> </a>
-            <a href ="https://csse.szu.edu.cn/" target="_blank"><img decoding="async" class="header-img2" src="/img/college.png" /></a>
-            <a href ="https://bigdata.szu.edu.cn/" target="_blank"><img decoding="async" class="header-img3" src="/img/lab.png" /></a>
+            <a href ="https://www.szu.edu.cn/" target="_blank"> <img decoding="async" class="header-img1" src="./img/szu.png" /> </a>
+            <a href ="https://csse.szu.edu.cn/" target="_blank"><img decoding="async" class="header-img2" src="./img/college.png" /></a>
+            <a href ="https://bigdata.szu.edu.cn/" target="_blank"><img decoding="async" class="header-img3" src="./img/lab.png" /></a>
             <p class="lang">中文</p>
           </div>
 

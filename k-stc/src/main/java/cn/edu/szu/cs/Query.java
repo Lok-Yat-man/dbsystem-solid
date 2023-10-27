@@ -28,7 +28,7 @@ public class Query implements Serializable {
     /**
      * @mock 50.0
      */
-    private double distanceConstraint;
+    private double epsilon;
 
     /**
      * @mock 5
@@ -37,16 +37,16 @@ public class Query implements Serializable {
 
     public Query(){}
 
-    public Query(Coordinate location, List<String> keywords, int k, double distanceConstraint, int minPts) {
+    public Query(Coordinate location, List<String> keywords, int k, double epsilon, int minPts) {
         this.location = location;
         this.keywords = keywords;
         this.k = k;
-        this.distanceConstraint = distanceConstraint;
+        this.epsilon = epsilon;
         this.minPts = minPts;
     }
 
-    public static Query create(Coordinate location, List<String> keywords, int k, double distanceConstraint, int minPts){
-        return new Query(location, keywords, Math.min(k,10), Math.min(distanceConstraint,50.0), minPts);
+    public static Query create(Coordinate location, List<String> keywords, int k, double epsilon, int minPts){
+        return new Query(location, keywords, Math.min(k,10), Math.min(epsilon,50.0), minPts);
     }
 
     public Coordinate getLocation() {
@@ -73,19 +73,19 @@ public class Query implements Serializable {
         this.k = k;
     }
 
-    public double getDistanceConstraint() {
-        return distanceConstraint;
-    }
-
-    public void setDistanceConstraint(double distanceConstraint) {
-        this.distanceConstraint = distanceConstraint;
-    }
-
     public int getMinPts() {
         return minPts;
     }
 
     public void setMinPts(int minPts) {
         this.minPts = minPts;
+    }
+
+    public double getEpsilon() {
+        return epsilon;
+    }
+
+    public void setEpsilon(double epsilon) {
+        this.epsilon = epsilon;
     }
 }

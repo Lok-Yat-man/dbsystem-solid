@@ -25,8 +25,19 @@ new Vue({
             sideBar: {
                 switchIcon: "el-icon-arrow-right"
             },
-            k_stc: {
-                message: "",
+            KSTC: {
+                labelPosition:"right",
+                message:"",
+                query:{
+                    keyword: [],
+                    location:{
+                        longitude:0,
+                        latitude:0
+                    },
+                    k:5,
+                    epsilon: 50.0,
+                    minPts:10
+                }
             }
         }
     },
@@ -38,7 +49,11 @@ new Vue({
             else if(state === 'DCPGS_UPDATE') {
                 dcpgs.updateParams(this);
                 this.switchStatus = "SWITCH";
-            }else{
+            }else if(state === 'KSTC_UPDATE'){
+
+
+            }
+            else{
                 this.switchStatus = state;
             }
         },
@@ -66,7 +81,7 @@ new Vue({
 
         loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
-            this.paramsSwitch('SWITCH');
+            this.paramsSwitch('DCPGS');
             dcpgs.loadDCPGS(this,location, zoom);
         },
 
@@ -83,8 +98,8 @@ new Vue({
         },
 
         loadKStc(){
-            this.paramsSwitch('SWITCH');
-            this.currentAlgorithm = "k_stc";
+            this.currentAlgorithm = "KSTC";
+            this.paramsSwitch('KSTC');
         }
     },
 
