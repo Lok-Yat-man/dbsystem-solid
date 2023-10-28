@@ -11,6 +11,7 @@ new Vue({
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             DCPGS: {
+                dataset: "gowalla",//gowalla or brightkite
                 labelPosition: "right",
                 location: "",
                 clusters: "",
@@ -75,6 +76,10 @@ new Vue({
         async loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
             this.paramsSwitch('SWITCH');
+            if(location === '')
+                location = this.DCPGS.location;
+            if(zoom === -1)
+                zoom = this.map.getZoom();
             await dcpgs.loadDCPGS(this,location, zoom);
         },
 
@@ -93,7 +98,7 @@ new Vue({
         loadKStc(){
             this.paramsSwitch('SWITCH');
             this.currentAlgorithm = "k_stc";
-        }
+        },
     },
 
     //挂载

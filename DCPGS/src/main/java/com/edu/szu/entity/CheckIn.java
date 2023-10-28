@@ -45,7 +45,7 @@ public class CheckIn implements NamedPoint {
      * location id
      *
      */
-    long locationId;
+    String locationId;
 
     @Override
     public String toString() {
