@@ -1,0 +1,5 @@
+{"data": [
+{"clusterId":0,"checkIns":[{"latitude":57.704765,"longitude":11.970864},{"latitude":57.704028,"longitude":11.969488},{"latitude":57.704137,"longitude":11.970938},{"latitude":57.704184,"longitude":11.968228},{"latitude":57.704202,"longitude":11.968179},{"latitude":57.70311,"longitude":11.968519},{"latitude":57.70353,"longitude":11.968743},{"latitude":57.70353,"longitude":11.968743},{"latitude":57.703895,"longitude":11.968866}]},
+{"clusterId":1,"checkIns":[{"latitude":57.708898,"longitude":11.972262},{"latitude":57.708664,"longitude":11.973381},{"latitude":57.708876,"longitude":11.973499},{"latitude":57.708355,"longitude":11.973222},{"latitude":57.708355,"longitude":11.973222}]},
+{"clusterId":2,"checkIns":[{"latitude":57.702431,"longitude":11.964905},{"latitude":57.702612,"longitude":11.963119},{"latitude":57.702606,"longitude":11.963079},{"latitude":57.702715,"longitude":11.96408},{"latitude":57.703255,"longitude":11.965733}]}
+]}
