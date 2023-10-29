@@ -25,7 +25,7 @@ public class CheckInDistanceCalculator {
     /**
      * key = locationId, value=Set of users who visit this location
      */
-    private static Map<Long, Set<Long>> locationMap;
+    private static Map<String, Set<Long>> locationMap;
 
     @Setter
     private static DCPGSParams params;
@@ -35,7 +35,7 @@ public class CheckInDistanceCalculator {
         CheckInDistanceCalculator.edgeMap = edgeMap;
     }
 
-    public static void setLocationMap(Map<Long, Set<Long>> locationMap) {
+    public static void setLocationMap(Map<String, Set<Long>> locationMap) {
         CheckInDistanceCalculator.locationMap = locationMap;
     }
 

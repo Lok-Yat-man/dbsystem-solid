@@ -1,15 +1,15 @@
 import utils from "./utils.js";
 
-function getPathFromLocation(location, env) {
-    let basePath = "http://localhost:8080/dcpgs/";
+function getPathFromLocation(location, env, dataset) {
+    let basePath = "http://localhost:8080/dcpgs/" + dataset;
     let geoJsonPath = "";
     let clusterPath = "";
     if (env === "local") {
         geoJsonPath = "data/geoJson/" + location + ".geojson";
         clusterPath = "./data/" + location + ".json";
     } else if (env === "prod") {
-        geoJsonPath = basePath + "gowalla/geoJson/" + location;
-        clusterPath = basePath + "gowalla/json/" + location;
+        geoJsonPath = basePath + "/geoJson/" + location;
+        clusterPath = basePath + "/json/" + location;
     }
     return [clusterPath, geoJsonPath];
 }
@@ -17,12 +17,12 @@ function getPathFromLocation(location, env) {
 async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.location = location;
     let env = vueThis.env;
-    let path = getPathFromLocation(location, env);
-    let basePath = "http://localhost:8080/dcpgs/";
+    let path = getPathFromLocation(location, env, vueThis.DCPGS.dataset);
+    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
     if (env === "prod") {
         await axios({
             method: "get",
-            url: basePath + "gowalla/run/" + location
+            url: basePath + "/run/" + location
         }).then((response) => {
             const runningStatus = response.data;
             console.log("DCPGS running status: " + runningStatus);
@@ -35,10 +35,10 @@ async function loadDCPGS(vueThis, location, zoom) {
 }
 
 async function getParams(vueThis, location) {
-    let basePath = "http://localhost:8080/dcpgs/";
+    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset
     await axios({
         method: "get",
-        url: basePath + "gowalla/params/" + location
+        url: basePath + "/params/" + location
     }).then(response => {
         const params = response.data;
         console.log("location: " + location + " params: " + params);
@@ -47,11 +47,11 @@ async function getParams(vueThis, location) {
 }
 
 function updateParams(vueThis) {
-    let basePath = "http://localhost:8080/dcpgs/";
+    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
     axios({
         method: "put",
         data: vueThis.DCPGS.params,
-        url: basePath + "gowalla/params/" + vueThis.DCPGS.location
+        url: basePath + "/params/" + vueThis.DCPGS.location
     }).then(response => {
         const status = response.data;
         console.log("update status: " + status);
@@ -84,7 +84,7 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
                 filter: ['==', 'clusterId', "" + i],
                 paint: {
                     'circle-radius': 3.5,
-                    'circle-color': utils.getColor(i, vueThis.DCPGS.clusterNums),
+                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
                     'circle-opacity': 0.7,
                 },
             });

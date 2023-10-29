@@ -26,13 +26,11 @@ public class DCPGSManager {
 
     private final Map<String, Boolean> cacheMap;
 
-    @Setter
-    private Map<Long, Set<Long>> edgeMap;
+    @Setter Map<String, Map<Long, Set<Long>>> edgeMapSet;
 
     public void dcpgsRun(String checkInFilePath, String key, String dataSet) throws Exception {
         //获取参数
-        paramsMap.computeIfAbsent(key,k -> new DCPGSParams());
-        var params = paramsMap.get(key);
+        var params = getParams(key,dataSet);
         //判断是否已经跑完
         String filePath = String.format("%s/result/%s_%.1f_%.1f_%.1f_%.1f.json",
                 dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
@@ -47,11 +45,12 @@ public class DCPGSManager {
                 params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD(), checkInFilePath);
         RTree<String, CheckIn> rTree = RTree.star().maxChildren(4).create();
         var checkIns = CheckInReader.getCheckInFromFile(checkInFilePath);
-        if(edgeMap == null){
+        if(edgeMapSet.get(dataSet) == null){
             throw new IllegalArgumentException("edgeMap is null");
         }
+        long timeStart = System.currentTimeMillis();
         CheckInDistanceCalculator.setParams(params);
-        CheckInDistanceCalculator.setEdgeMap(edgeMap);
+        CheckInDistanceCalculator.setEdgeMap(edgeMapSet.get(dataSet));
         CheckInDistanceCalculator.setLocationMap(CheckInReader.getLocationMap());
         for (CheckIn checkIn : checkIns) {
             rTree = rTree.add(checkIn.getName(),checkIn);
@@ -63,16 +62,18 @@ public class DCPGSManager {
         clusters.sort((list1,list2)->Integer.compare(list2.size(),list1.size()));
         //输出结果到文件
         CheckInJson checkInJson = CheckInReader.parseJson(clusters);
-        CheckInReader.outPutCheckIn(clusters, "DCPGS/DCPGS/src/main/resources/" + filePath);
+        CheckInReader.outPutCheckIn(clusters, "DCPGS/src/main/resources/" + filePath);
         var geoJsonFilePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
                 dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
         var geoJson = CheckInReader.parseGeoJson(checkInJson);
-        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/DCPGS/src/main/resources/" +
+        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/src/main/resources/" +
                 geoJsonFilePath);
         jsonMap.put(filePath,checkInJson);
         geoJsonMap.put(geoJsonFilePath,geoJson);
         cacheMap.put(filePath,true);
-        log.info("DCPGS finished with {} clusters of key: {}", clusters.size(), key);
+        long timeEnd = System.currentTimeMillis();
+        log.info("DCPGS finished with {} clusters of key: {}, using time: {} s",
+                clusters.size(), key, (timeEnd - timeStart) / 1000.0);
     }
 
     public DCPGSManager() {
@@ -87,10 +88,18 @@ public class DCPGSManager {
                 cacheMap.put("gowalla/result/" + file.getName(),true);
             }
         }
+        directory = new File("DCPGS/src/main/resources/brightkite/result");
+        files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                cacheMap.put("brightkite/result/" + file.getName(),true);
+            }
+        }
         cacheMap.keySet().forEach(key -> log.info("cacheMap key: {}", key));
     }
 
     public DCPGSParams getParams(String key, String dataSet){
+        key = dataSet + key;
         paramsMap.computeIfAbsent(key,k -> new DCPGSParams());
         return paramsMap.get(key);
     }
@@ -118,6 +127,7 @@ public class DCPGSManager {
     }
 
     public void setAllParams(String key, DCPGSParams dcpgsParams, String dataSet){
+        key = dataSet + key;
         paramsMap.put(key,dcpgsParams);
     }
 

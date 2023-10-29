@@ -40,9 +40,9 @@ public class ReaderTest {
         CheckInJson checkInJson = CheckInReader.parseJson("gowalla/gowallaTop100.json");
         System.out.println(checkInJson);
         CheckInJson json = new CheckInJson();
-        var pairsList = List.of(new CheckIn(0, "now",40.0498503951,-82.9151378351,1),
-                new CheckIn(1,"now",3.1177151833,101.6357821,2),
-                new CheckIn(2,"now",49.453724849,11.0763946275,3));
+//        var pairsList = List.of(new CheckIn(0, "now",40.0498503951,-82.9151378351,1),
+//                new CheckIn(1,"now",3.1177151833,101.6357821,2),
+//                new CheckIn(2,"now",49.453724849,11.0763946275,3));
 //        json.setData(List.of(new CheckInJson.Cluster(0,pairsList),
 //                new CheckInJson.Cluster(1,pairsList),
 //                new CheckInJson.Cluster(2,pairsList)));
@@ -69,19 +69,18 @@ public class ReaderTest {
     @Test
     public void testSplit() throws IOException {
         var checkIns = CheckInReader.getCheckInFromFile(
-                "gowalla/checkIn1.txt",
-                "gowalla/checkIn2.txt",
-                "gowalla/checkIn3.txt",
-                "gowalla/checkIn4.txt",
-                "gowalla/checkIn5.txt",
-                "gowalla/checkIn6.txt");
-        CheckInReader.splitAreaTo("AustinUS.json",checkIns, "gowalla/splittedCheckIn/AustinUS.txt");
-        CheckInReader.splitAreaTo("GothenburgSweden.json",checkIns, "gowalla/splittedCheckIn/GothenburgSweden.txt");
-        CheckInReader.splitAreaTo("LondonUK.json",checkIns, "gowalla/splittedCheckIn/LondonUK.txt");
-        CheckInReader.splitAreaTo("MalmoSweden.json",checkIns, "gowalla/splittedCheckIn/MalmoSweden.txt");
-        CheckInReader.splitAreaTo("NewcastleUponTyneUk.json",checkIns, "gowalla/splittedCheckIn/NewcastleUponTyneUk.txt");
-        CheckInReader.splitAreaTo("OsloNorway.json",checkIns, "gowalla/splittedCheckIn/OsloNorway.txt");
-        CheckInReader.splitAreaTo("StockholmSweden.json",checkIns, "gowalla/splittedCheckIn/StockholmSweden.txt");
-        CheckInReader.splitAreaTo("ZurichSwitzerland.json",checkIns, "gowalla/splittedCheckIn/ZurichSwitzerland.txt");
+                "brightkite/checkIn1.txt",
+                "brightkite/checkIn2.txt",
+                "brightkite/checkIn3.txt",
+                "brightkite/checkIn4.txt"
+                );
+        CheckInReader.splitAreaTo("AustinUS.json",checkIns, "brightkite/splittedCheckIn/AustinUS.txt");
+        CheckInReader.splitAreaTo("GothenburgSweden.json",checkIns, "brightkite/splittedCheckIn/GothenburgSweden.txt");
+        CheckInReader.splitAreaTo("LondonUK.json",checkIns, "brightkite/splittedCheckIn/LondonUK.txt");
+        CheckInReader.splitAreaTo("MalmoSweden.json",checkIns, "brightkite/splittedCheckIn/MalmoSweden.txt");
+        CheckInReader.splitAreaTo("NewcastleUponTyneUk.json",checkIns, "brightkite/splittedCheckIn/NewcastleUponTyneUk.txt");
+        CheckInReader.splitAreaTo("OsloNorway.json",checkIns, "brightkite/splittedCheckIn/OsloNorway.txt");
+        CheckInReader.splitAreaTo("StockholmSweden.json",checkIns, "brightkite/splittedCheckIn/StockholmSweden.txt");
+        CheckInReader.splitAreaTo("ZurichSwitzerland.json",checkIns, "brightkite/splittedCheckIn/ZurichSwitzerland.txt");
     }
 }

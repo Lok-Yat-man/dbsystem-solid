@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class CheckInReader {
 
     @Getter
-    private static Map<Long, Set<Long>> locationMap;
+    private static Map<String, Set<Long>> locationMap;
 
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -45,6 +45,9 @@ public class CheckInReader {
                 String line;
                 while ((line = bf.readLine()) != null) {
                     var checkIn = stringToCheckIn(line);
+                    if (checkIn == null) {
+                        continue;
+                    }
                     locationMap.computeIfAbsent(checkIn.getLocationId(), key -> new HashSet<>());
                     locationMap.get(checkIn.getLocationId()).add(checkIn.getUserId());
                     ans.add(checkIn);
@@ -60,13 +63,14 @@ public class CheckInReader {
     private static CheckIn stringToCheckIn(String line) throws ParseException {
         var params = line.split("\t");
         if (params.length != 5) {
-            throw new IllegalArgumentException("check in file format error, size should be 5 ,but: " + params.length + " \n" + line);
+            log.error("check in file format error, size should be 5 ,but: {} \n {}", params.length, line);
+            return null;
         }
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));
         Instant date = df.parse(params[1]).toInstant();
         return new CheckIn(Long.parseLong(params[0]), params[1], Double.parseDouble(params[2]),
-                Double.parseDouble(params[3]), Long.parseLong(params[4]));
+                Double.parseDouble(params[3]), params[4]);
     }
 
     public static List<CheckIn> splitArea(String areaFileName, List<CheckIn> checkIns) throws IOException {
@@ -177,35 +181,35 @@ public class CheckInReader {
     }
 
     /**
-     * split gowalla file to smaller
+     * split dataset file to smaller
      */
-//    public static void main(String[] args) {
-//        String filePath = "loc-gowalla_totalCheckins.txt";
-//        String basePath = "checkIn";
-//        try(var bf = new BufferedReader(new InputStreamReader(
-//                new ByteArrayInputStream(IOUtils.resourceToByteArray(filePath, CheckInReader.class.getClassLoader()))))) {
-//            String line;
-//            int size = 0;
-//            int index = 1;
-//            String outputName = basePath + index + ".txt";
-//            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
-//            while((line = bf.readLine()) != null){
-//                ++size;
-//                bw.write(line);
-//                bw.write("\r\n");
-//                if(size - 1200000 >= 0){
-//                    ++index;
-//                    size -= 1200000;
-//                    outputName = basePath + index + ".txt";
-//                    bw.flush();
-//                    bw.close();
-//                    bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
-//                }
-//            }
-//            bw.flush();
-//            bw.close();
-//        }catch (Exception e){
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public static void main(String[] args) {
+        String filePath = "brightkite/loc-brightkite_totalCheckins.txt";
+        String basePath = "checkIn";
+        try(var bf = new BufferedReader(new InputStreamReader(
+                new ByteArrayInputStream(IOUtils.resourceToByteArray(filePath, CheckInReader.class.getClassLoader()))))) {
+            String line;
+            int size = 0;
+            int index = 1;
+            String outputName = basePath + index + ".txt";
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
+            while((line = bf.readLine()) != null){
+                ++size;
+                bw.write(line);
+                bw.write("\r\n");
+                if(size - 1200000 >= 0){
+                    ++index;
+                    size -= 1200000;
+                    outputName = basePath + index + ".txt";
+                    bw.flush();
+                    bw.close();
+                    bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputName)));
+                }
+            }
+            bw.flush();
+            bw.close();
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -30,6 +30,9 @@
                         :min="1" :max="DCPGS.maxClusterNums"
                         @change="updateClusterNums">
                 </el-slider>
+                <span style="color: rgb(96, 98, 102)">dataset: </span>
+                <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)">gowalla</el-radio>
+                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%" @change="loadDSPGS('',-1)">brightkite</el-radio>
                 <el-form-item label="epsilon">
                     <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0.3" :max="1"></el-input-number>
                 </el-form-item>
