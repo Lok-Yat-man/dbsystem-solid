@@ -11,7 +11,7 @@ new Vue({
             baseUrl: "http://localhost:8080",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "prod",//local or prod
+            env: "local",//local or prod
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             DCPGS: {

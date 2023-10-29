@@ -77,6 +77,10 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
         });
 
         for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i) {
+            let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+            if(vueThis.DCPGS.location === "MalmoSweden"){
+                color = utils.getColor(i, vueThis.DCPGS.maxClusterNums + 50);
+            }
             vueThis.map.addLayer({
                 id: 'layer' + i,
                 type: 'circle',
@@ -84,7 +88,7 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
                 filter: ['==', 'clusterId', "" + i],
                 paint: {
                     'circle-radius': 3.5,
-                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
+                    'circle-color': color,
                     'circle-opacity': 0.7,
                 },
             });
@@ -103,12 +107,17 @@ function loadMarkers(vueThis) {
     for (let i = 0; i < vueThis.DCPGS.maxClusterNums; ++i) {
         let clusterId = vueThis.DCPGS.clusters[i].clusterId;
         let color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums);
+        if(vueThis.DCPGS.location === "MalmoSweden"){
+            color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums + 50);
+        }
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
         makers.push(marker);
-        if(i < vueThis.DCPGS.clusterNums)
+        if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);
+            console.log(i+ ": " + color)
+        }
     }
     vueThis.DCPGS.markers = makers;
     console.log("maker nums: ",makers.length)
@@ -140,6 +149,10 @@ function updateClusterNums(vueThis){
         }
     }else if(dcpgs.clusterNums > dcpgs.layerLoaded){
         for(let i = dcpgs.layerLoaded;i<dcpgs.clusterNums;++i){
+            let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+            if(vueThis.DCPGS.location === "MalmoSweden"){
+                color = utils.getColor(i, vueThis.DCPGS.maxClusterNums + 50);
+            }
             vueThis.map.addLayer({
                 id: 'layer' + i,
                 type: 'circle',
@@ -147,7 +160,7 @@ function updateClusterNums(vueThis){
                 filter: ['==', 'clusterId', "" + i],
                 paint: {
                     'circle-radius': 3.5,
-                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
+                    'circle-color': color,
                     'circle-opacity': 0.7,
                 },
             });
