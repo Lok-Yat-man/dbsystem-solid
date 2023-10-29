@@ -271,7 +271,7 @@ public final class SimpleIRTree implements IRTree {
                                                 relevantObject.getCoordinate().getLongitude(),
                                                 relevantObject.getCoordinate().getLatitude()
                                         )
-                                ) <= query.getDistanceConstraint())
+                                ) <= query.getEpsilon())
                                         .collect(Collectors.toList());
 
 

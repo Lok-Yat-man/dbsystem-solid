@@ -2,13 +2,16 @@ import dcpgs from "./DCPGS.js";
 import kdv from "./kdv.js";
 import kstc from "./kstc.js"
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uZ3dhbmciLCJhIjoiY2tjZWwxNW5uMDdoMjJ3cDZnaGF2bmJlYiJ9.NOKscgbt1C-DCo38sxtUFw';
+
+
 new Vue({
     el: "#app",
     data(){
         return {
+            baseUrl: "http://localhost:8080",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "local",//local or prod
+            env: "prod",//local or prod
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             DCPGS: {
@@ -31,16 +34,22 @@ new Vue({
             },
             KSTC: {
                 labelPosition:"right",
-                message:"",
+                location:"",
+                clusters: [],
+                clusterNums: 0,
+                layerLoaded: 0,
+                markers: [],
+                maxClusterNums: 150,
+                message:"Water",
                 query:{
-                    keyword: [],
+                    keywords: [],
                     location:{
-                        longitude:-119.7,
-                        latitude:34.4
+                        longitude:-75.1,
+                        latitude:39.9
                     },
                     k:5,
-                    epsilon: 50.0,
-                    minPts:10
+                    epsilon: 60.0,
+                    minPts:3
                 }
             }
         }

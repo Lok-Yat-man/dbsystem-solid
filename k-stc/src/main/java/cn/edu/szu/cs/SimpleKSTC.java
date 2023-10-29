@@ -124,6 +124,7 @@ public class SimpleKSTC implements KSTC{
 
     @Override
     public List<KstcCluster> kstcSearch(Query query) {
+        KstcCluster.resetId();
         return basic(query).stream()
                 .map(KstcCluster::create)
                 .collect(Collectors.toList());

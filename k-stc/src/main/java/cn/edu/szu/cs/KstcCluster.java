@@ -52,4 +52,6 @@ public class KstcCluster implements Serializable {
     public void setMembers(List<RelevantObject> members) {
         this.members = members;
     }
+
+    public static void resetId(){nextId.set(0);}
 }

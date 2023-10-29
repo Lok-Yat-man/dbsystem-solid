@@ -68,11 +68,14 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
         center: [-97.7575966669, 30.2634181234],
         zoom: zoom
     });
+
     vueThis.map.on('load', function () {
+
         vueThis.map.addSource('points-source', {
             type: 'geojson',
             data: geoJsonPath
         });
+
         for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i) {
             vueThis.map.addLayer({
                 id: 'layer' + i,
@@ -92,8 +95,10 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
 
 //加载地图并添加地点标记
 function loadMarkers(vueThis) {
+
     vueThis.map.setCenter([vueThis.DCPGS.clusters[0].checkIns[0].longitude,
         vueThis.DCPGS.clusters[0].checkIns[0].latitude]);
+
     let makers = [];
     for (let i = 0; i < vueThis.DCPGS.maxClusterNums; ++i) {
         let clusterId = vueThis.DCPGS.clusters[i].clusterId;

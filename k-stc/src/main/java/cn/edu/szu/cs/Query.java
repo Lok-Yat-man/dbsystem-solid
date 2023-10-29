@@ -88,4 +88,15 @@ public class Query implements Serializable {
     public void setEpsilon(double epsilon) {
         this.epsilon = epsilon;
     }
+
+    @Override
+    public String toString() {
+        return "Query{" +
+                "location=" + location +
+                ", keywords=" + keywords +
+                ", k=" + k +
+                ", epsilon=" + epsilon +
+                ", minPts=" + minPts +
+                '}';
+    }
 }
