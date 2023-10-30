@@ -119,9 +119,12 @@
                     </el-submenu>
                     <el-submenu index="1-2">
                        <template slot="title">Spatial textual clustering</template>
-                        <el-menu-item index="1-2-1" @click="loadKStc">Example 1</el-menu-item>
-                        <el-menu-item index="1-2-2" @click="loadKStc">Example 2</el-menu-item>
-                        <el-menu-item index="1-2-3" @click="loadKStc">Example 3</el-menu-item>
+                        <el-menu-item index="1-2-1" @click="loadKStc('eg.1')">Example 1</el-menu-item>
+                        <el-menu-item index="1-2-2" @click="loadKStc('eg.2')">Example 2</el-menu-item>
+                        <el-menu-item index="1-2-3" @click="loadKStc('eg.3')">Example 3</el-menu-item>
+                        <el-menu-item index="1-2-3" @click="loadKStc('eg.4')">Example 4</el-menu-item>
+                        <el-menu-item index="1-2-3" @click="loadKStc('')">Simple KSTC</el-menu-item>
+
                     </el-submenu>
                     <el-submenu index="1-3">
                        <template slot="title">Textually spatial skylines</template>

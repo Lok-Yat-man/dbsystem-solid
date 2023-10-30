@@ -49,8 +49,8 @@ new Vue({
                         "latitude":39.9
                     },
                     "k":5,
-                    "epsilon": 60.0,
-                    "minPts":3
+                    "epsilon": 1000,
+                    "minPts":10
                 }
             }
         }
@@ -122,10 +122,23 @@ new Vue({
             kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
         },
 
-        loadKStc(){
-
+        loadKStc(str){
             this.currentAlgorithm = "KSTC";
-            this.paramsSwitch('KSTC');
+            this.switchStatus = "KSTC"
+            if(str === 'eg.1'){
+                kstc.loadExample01(this);
+            }else if(str === 'eg.2'){
+                kstc.loadExample02(this);
+            }else if(str === 'eg.3'){
+                kstc.loadExample03(this);
+            }else if(str === 'eg.4'){
+                kstc.loadExample04(this);
+            }
+            else{
+                kstc.loadKSTC(
+                    this
+                )
+            }
         }
 
     },
