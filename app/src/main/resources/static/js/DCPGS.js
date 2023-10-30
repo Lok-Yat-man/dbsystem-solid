@@ -16,9 +16,6 @@ function getPathFromLocation(location, env, dataset) {
 
 function addLayer(i,vueThis){
     let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
-    if(vueThis.DCPGS.location === "MalmoSweden"){
-        color = utils.getColor(i, vueThis.DCPGS.maxClusterNums + 50);
-    }
     vueThis.map.addLayer({
         id: 'layer' + i,
         type: 'circle',
@@ -59,7 +56,8 @@ async function getParams(vueThis, location) {
         url: basePath + "/params/" + location
     }).then(response => {
         const params = response.data;
-        console.log("location: " + location + " params: " + params);
+        console.log("location: " + location + " params: ");
+        console.log(params);
         vueThis.DCPGS.params = params;
     });
 }
@@ -109,12 +107,10 @@ function loadMarkers(vueThis) {
     for (let i = 0; i < vueThis.DCPGS.maxClusterNums; ++i) {
         let clusterId = vueThis.DCPGS.clusters[i].clusterId;
         let color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums);
-        if(vueThis.DCPGS.location === "MalmoSweden"){
-            color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums + 50);
-        }
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
+        marker.setPopup(utils.getPopUp("cluster " + (i+1)));
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);

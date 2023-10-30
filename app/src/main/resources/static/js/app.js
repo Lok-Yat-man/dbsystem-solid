@@ -107,6 +107,7 @@ new Vue({
             if(zoom === -1)
                 zoom = this.map.getZoom();
             await dcpgs.loadDCPGS(this,location, zoom);
+            console.log("location: ",this.DCPGS.location)
         },
 
         loadKDV(){
