@@ -14,6 +14,24 @@ function getPathFromLocation(location, env, dataset) {
     return [clusterPath, geoJsonPath];
 }
 
+function addLayer(i,vueThis){
+    let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+    if(vueThis.DCPGS.location === "MalmoSweden"){
+        color = utils.getColor(i, vueThis.DCPGS.maxClusterNums + 50);
+    }
+    vueThis.map.addLayer({
+        id: 'layer' + i,
+        type: 'circle',
+        source: 'points-source',
+        filter: ['==', 'clusterId', "" + i],
+        paint: {
+            'circle-radius': 3.5,
+            'circle-color': color,
+            'circle-opacity': 0.7,
+        },
+    });
+}
+
 async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.location = location;
     let env = vueThis.env;
@@ -62,9 +80,9 @@ function updateParams(vueThis) {
 function loadPoints(vueThis, geoJsonPath, zoom) {
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        // style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/mapbox/light-v11',
         // style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
+        // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: [-97.7575966669, 30.2634181234],
         zoom: zoom
     });
@@ -75,24 +93,8 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
             type: 'geojson',
             data: geoJsonPath
         });
-
-        for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i) {
-            let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
-            if(vueThis.DCPGS.location === "MalmoSweden"){
-                color = utils.getColor(i, vueThis.DCPGS.maxClusterNums + 50);
-            }
-            vueThis.map.addLayer({
-                id: 'layer' + i,
-                type: 'circle',
-                source: 'points-source',
-                filter: ['==', 'clusterId', "" + i],
-                paint: {
-                    'circle-radius': 3.5,
-                    'circle-color': color,
-                    'circle-opacity': 0.7,
-                },
-            });
-        }
+        for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i)
+            addLayer(i,vueThis);
         vueThis.DCPGS.layerLoaded = vueThis.DCPGS.clusterNums;
     });
 }
@@ -116,7 +118,6 @@ function loadMarkers(vueThis) {
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);
-            console.log(i+ ": " + color)
         }
     }
     vueThis.DCPGS.markers = makers;
@@ -149,21 +150,7 @@ function updateClusterNums(vueThis){
         }
     }else if(dcpgs.clusterNums > dcpgs.layerLoaded){
         for(let i = dcpgs.layerLoaded;i<dcpgs.clusterNums;++i){
-            let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
-            if(vueThis.DCPGS.location === "MalmoSweden"){
-                color = utils.getColor(i, vueThis.DCPGS.maxClusterNums + 50);
-            }
-            vueThis.map.addLayer({
-                id: 'layer' + i,
-                type: 'circle',
-                source: 'points-source',
-                filter: ['==', 'clusterId', "" + i],
-                paint: {
-                    'circle-radius': 3.5,
-                    'circle-color': color,
-                    'circle-opacity': 0.7,
-                },
-            });
+            addLayer(i,vueThis);
             vueThis.DCPGS.markers[i].addTo(vueThis.map);
         }
     }

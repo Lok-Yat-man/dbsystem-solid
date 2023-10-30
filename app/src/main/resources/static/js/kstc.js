@@ -30,9 +30,9 @@ async function loadKSTC(vueThis){
 
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        // style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/mapbox/light-v11',
         // style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
+        // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: [kstc.query.location.longitude, kstc.query.location.latitude],
         zoom: 13
     });
