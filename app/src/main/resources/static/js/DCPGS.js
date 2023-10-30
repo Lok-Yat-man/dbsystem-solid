@@ -14,6 +14,21 @@ function getPathFromLocation(location, env, dataset) {
     return [clusterPath, geoJsonPath];
 }
 
+function addLayer(i,vueThis){
+    let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+    vueThis.map.addLayer({
+        id: 'layer' + i,
+        type: 'circle',
+        source: 'points-source',
+        filter: ['==', 'clusterId', "" + i],
+        paint: {
+            'circle-radius': 3.5,
+            'circle-color': color,
+            'circle-opacity': 0.7,
+        },
+    });
+}
+
 async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.location = location;
     let env = vueThis.env;
@@ -41,7 +56,8 @@ async function getParams(vueThis, location) {
         url: basePath + "/params/" + location
     }).then(response => {
         const params = response.data;
-        console.log("location: " + location + " params: " + params);
+        console.log("location: " + location + " params: ");
+        console.log(params);
         vueThis.DCPGS.params = params;
     });
 }
@@ -62,9 +78,9 @@ function updateParams(vueThis) {
 function loadPoints(vueThis, geoJsonPath, zoom) {
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        // style: 'mapbox://styles/mapbox/light-v11',
+        style: 'mapbox://styles/mapbox/light-v11',
         // style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
+        // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: [-97.7575966669, 30.2634181234],
         zoom: zoom
     });
@@ -75,20 +91,8 @@ function loadPoints(vueThis, geoJsonPath, zoom) {
             type: 'geojson',
             data: geoJsonPath
         });
-
-        for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i) {
-            vueThis.map.addLayer({
-                id: 'layer' + i,
-                type: 'circle',
-                source: 'points-source',
-                filter: ['==', 'clusterId', "" + i],
-                paint: {
-                    'circle-radius': 3.5,
-                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
-                    'circle-opacity': 0.7,
-                },
-            });
-        }
+        for (let i = 0; i < vueThis.DCPGS.clusterNums; ++i)
+            addLayer(i,vueThis);
         vueThis.DCPGS.layerLoaded = vueThis.DCPGS.clusterNums;
     });
 }
@@ -106,9 +110,11 @@ function loadMarkers(vueThis) {
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
+        marker.setPopup(utils.getPopUp("cluster " + (i+1)));
         makers.push(marker);
-        if(i < vueThis.DCPGS.clusterNums)
+        if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);
+        }
     }
     vueThis.DCPGS.markers = makers;
     console.log("maker nums: ",makers.length)
@@ -140,17 +146,7 @@ function updateClusterNums(vueThis){
         }
     }else if(dcpgs.clusterNums > dcpgs.layerLoaded){
         for(let i = dcpgs.layerLoaded;i<dcpgs.clusterNums;++i){
-            vueThis.map.addLayer({
-                id: 'layer' + i,
-                type: 'circle',
-                source: 'points-source',
-                filter: ['==', 'clusterId', "" + i],
-                paint: {
-                    'circle-radius': 3.5,
-                    'circle-color': utils.getColor(i, vueThis.DCPGS.maxClusterNums),
-                    'circle-opacity': 0.7,
-                },
-            });
+            addLayer(i,vueThis);
             vueThis.DCPGS.markers[i].addTo(vueThis.map);
         }
     }

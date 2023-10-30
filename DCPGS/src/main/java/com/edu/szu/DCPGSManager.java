@@ -106,9 +106,10 @@ public class DCPGSManager {
 
     public CheckInJson getJson(String key, String dataSet) throws IOException {
         paramsMap.computeIfAbsent(key,k -> new DCPGSParams());
-        var params = paramsMap.get(key);
+        var params = getParams(key,dataSet);
         String filePath = String.format("%s/result/%s_%.1f_%.1f_%.1f_%.1f.json",
                 dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
+        log.info("getting json: {}",filePath);
         if(jsonMap.containsKey(filePath)){
             return jsonMap.get(filePath);
         }
@@ -117,9 +118,10 @@ public class DCPGSManager {
 
     public GeoJson getGeoJson(String key, String dataSet) throws IOException {
         paramsMap.computeIfAbsent(key,k -> new DCPGSParams());
-        var params = paramsMap.get(key);
+        var params = getParams(key,dataSet);
         String filePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
                 dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
+        log.info("getting geoJson: {}",filePath);
         if(geoJsonMap.containsKey(filePath)){
             return geoJsonMap.get(filePath);
         }

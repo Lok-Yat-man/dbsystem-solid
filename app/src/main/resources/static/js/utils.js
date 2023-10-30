@@ -27,12 +27,24 @@ function getDefaultMark(lon,lat,color){
 
 //根据集群数量将0xffffff颜色均匀划分后分配
 function getColor(clusterId,size){
-    let color = Math.round((0xffffff / size) * (clusterId + 1));
+    let color = Math.round((0xffffff / 271) * (clusterId + 1));
     return "#" + color.toString(16).padStart(6,"0");
+}
+
+//message可以是html
+function getPopUp(message){
+    //添加气泡弹窗
+    let mhtml = '<div class="malert">' +
+                                    message +
+                        '</div>'
+    let popup = new mapboxgl.Popup({closeButton: false})
+        .setHTML(mhtml)
+    return popup;
 }
 
 export default {
     getCustomMark,
     getDefaultMark,
     getColor,
+    getPopUp,
 }

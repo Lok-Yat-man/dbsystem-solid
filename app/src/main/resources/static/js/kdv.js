@@ -1,7 +1,7 @@
 function loadHeatMap(vueThis, path, center, zoom){
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        style: 'mapbox://styles/mapbox/streets-v12',
+        style: 'mapbox://styles/mapbox/light-v11',
         // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: center,
         zoom: zoom
