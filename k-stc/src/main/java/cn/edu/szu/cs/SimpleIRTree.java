@@ -303,21 +303,7 @@ public final class SimpleIRTree implements IRTree {
             }
 
         }
-
-
         return list;
-    }
-
-
-
-
-    public static void main(String[] args) {
-
-        // x1 = -120.09514
-        // y1 = 27.555126
-        // x2 = -73.200455
-        // y2 = 53.679195
-
     }
 
 }

@@ -41,16 +41,16 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 maxClusterNums: 150,
-                message:"Water",
+
                 query:{
-                    keywords: [],
-                    location:{
-                        longitude:-75.1,
-                        latitude:39.9
+                    "keywords": "Water",
+                    "location":{
+                        "longitude":-75.1,
+                        "latitude":39.9
                     },
-                    k:5,
-                    epsilon: 60.0,
-                    minPts:3
+                    "k":5,
+                    "epsilon": 60.0,
+                    "minPts":3
                 }
             }
         }

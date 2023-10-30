@@ -46,7 +46,7 @@ public class Query implements Serializable {
     }
 
     public static Query create(Coordinate location, List<String> keywords, int k, double epsilon, int minPts){
-        return new Query(location, keywords, Math.min(k,10), Math.min(epsilon,50.0), minPts);
+        return new Query(location, keywords, k, epsilon, minPts);
     }
 
     public Coordinate getLocation() {

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultLeafInvertedIndex implements InvertedIndex<RelevantObject>{
 
-    private static final int MAX_SIZE = 1000;
+    private static final int MAX_SIZE = Integer.MAX_VALUE;
 
     private Map<String,List<Pair>> map;
     private IRelevantObjectService relevantObjectService;

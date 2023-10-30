@@ -1,6 +1,10 @@
 package cn.edu.szu.cs;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.LFUCache;
+
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -20,6 +24,8 @@ public class SimpleKSTC implements KSTC{
      * Used to obtain related objects according to character strings.
      */
     private final InvertedIndex<RelevantObject> invertedIndex;
+
+    private static LFUCache<String,List<KstcCluster>> cache = CacheUtil.newLFUCache(100);
 
     public SimpleKSTC(){
 
@@ -46,7 +52,7 @@ public class SimpleKSTC implements KSTC{
      */
     private List<Set<RelevantObject>> doBasic(Query query,IRTree irTree,InvertedIndex<RelevantObject> invertedIndex){
 
-        // 获取sList
+        // sList
         Set<RelevantObject> noises = new HashSet<>();
         // sort objs ascent by distance
         PriorityQueue<RelevantObject> sList = invertedIndex.getSList(
@@ -124,9 +130,18 @@ public class SimpleKSTC implements KSTC{
 
     @Override
     public List<KstcCluster> kstcSearch(Query query) {
+
+        if(cache.containsKey(query.toString())){
+            return cache.get(query.toString());
+        }
+
         KstcCluster.resetId();
-        return basic(query).stream()
+        List<KstcCluster> kstcClusters = basic(query).stream()
                 .map(KstcCluster::create)
                 .collect(Collectors.toList());
+
+        cache.put(query.toString(),kstcClusters);
+
+        return kstcClusters;
     }
 }

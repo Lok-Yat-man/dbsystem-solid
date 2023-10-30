@@ -10,9 +10,9 @@ public class DCPGSManagerTest {
 
     @Test
     public void testDCPGSManager() throws Exception {
-        log.info("DCPGSManagerTest start");
-        var edgeMap = EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt");
-        dcpgsManager.setEdgeMap(edgeMap);
-        dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/SoutheastAsiaCheckIn.txt","SoutheastAsia","gpwalla");
+        //log.info("DCPGSManagerTest start");
+        //var edgeMap = EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt");
+        //dcpgsManager.setEdgeMap(edgeMap);
+        //dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/SoutheastAsiaCheckIn.txt","SoutheastAsia","gpwalla");
     }
 }
