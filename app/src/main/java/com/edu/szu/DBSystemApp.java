@@ -14,10 +14,10 @@ import org.springframework.context.annotation.Import;
 })
 @SpringBootApplication
 @Slf4j
-public class DBSCANApp {
+public class DBSystemApp {
 
     public static void main(String[] args) {
-        SpringApplication.run(DBSCANApp.class, args);
+        SpringApplication.run(DBSystemApp.class, args);
     }
 
 
