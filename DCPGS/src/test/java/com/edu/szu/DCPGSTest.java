@@ -42,7 +42,8 @@ public class DCPGSTest {
                 "StockholmSweden",
                 "ZurichSwitzerland"
                 );
-        CheckInDistanceCalculator.setEdgeMap(EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt"));
+        var edges = EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt");
+        CheckInDistanceCalculator.setEdgeMap(edges);
         for (String file : files) {
             long timeStart = System.currentTimeMillis();
             log.info("start clustering {}",file);
