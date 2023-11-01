@@ -11,31 +11,66 @@
 #header-img1{
     position: absolute;
     aspect-ratio: 2.9; /* 2.9:1 的宽高比例，可以根据需要更改 */
-    height:85%;
+    height:95%;
     top: 7.5%;
-    right: 31.5%;
+    right: 65%;
 }
 
 #header-img2{
     position:absolute;
     aspect-ratio: 1; /* 1:1 的宽高比例，可以根据需要更改 */
-    height:85%;
-    right:25%;
-    top:5%;
+    height:70%;
+    right:58.5%;
+    top:15%;
 }
 
 #header-img3{
     position:absolute;
     /*width:136px;*/
-    aspect-ratio: 1.875; /* 1.875:1 的宽高比例，可以根据需要更改 */
-    height:85%;
-    right: 15%;
-    top:7.5%;
+    aspect-ratio: 1; /* 1.875:1 的宽高比例，可以根据需要更改 */
+    height:68%;
+    right: 28%;
+    top:15%;
 }
 
 #lang{
     position:absolute;
-    font-size:20px;
-    right: 7.5%;
-    top:25%;
+    font-size:25px;
+    right: 3%;
+    top:2%;
+}
+
+#college_name{
+    position:absolute;
+    font: 400 23px/1.5 "Microsoft YaHei", Arial, sans-serif;
+    right:39%;
+    top:0.3%;
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+#college_Ename{
+    position:absolute;
+    font: 400 13px/1.5 "Microsoft YaHei",Arial, sans-serif;
+    right:32.2%;
+    top:55%;
+    -webkit-tap-highlight-color: transparent;
+
+}
+#lab_name{
+    position:absolute;
+    font: 400 23px/1.5 "Microsoft YaHei",Arial, sans-serif;
+    right:10%;
+    top:0.3%;
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+#lab_Ename{
+    position:absolute;
+    font: 400 13px/1.5 Arial, sans-serif;
+    right:12%;
+    top:55%;
+    -webkit-tap-highlight-color: transparent;
+
 }

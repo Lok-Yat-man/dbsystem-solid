@@ -41,7 +41,6 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 maxClusterNums: 150,
-
                 query:{
                     "keywords": "Water",
                     "location":{
@@ -51,6 +50,17 @@ new Vue({
                     "k":5,
                     "epsilon": 1000,
                     "minPts":10
+                }
+            },
+            spatial_skylines:{
+                labelPosition:"right",
+                location:"",
+                layerLoaded: 0,
+                query:{
+                    params_1:0.5,
+                    params_2:0.5,
+                    params_3:0.5,
+                    params_4:0.5
                 }
             }
         }
