@@ -110,7 +110,7 @@ function loadMarkers(vueThis) {
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
-        marker.setPopup(utils.getPopUp("cluster " + (i+1)));
+        marker.setPopup(utils.getPopUp("cluster " + (i+1), true));
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);

@@ -77,7 +77,7 @@ function loadMarkers(vueThis){
             let color = utils.getColor(idx);
             let location = cl.geometry.coordinates;
             let marker = utils.getDefaultMark(location[0], location[1], color);
-            marker.setPopup(utils.getPopUp("cluster " + cl.properties.clusterId));
+            marker.setPopup(utils.getPopUp("cluster " + cl.properties.clusterId),false);
             markers.push(marker);
             idx++;
         }
@@ -107,7 +107,7 @@ async function doLoad(vueThis,url,lon,lat,zoom){
         zoom: zoom
     });
     let marker = utils.getDefaultMark(lon, lat, utils.getColor(0,1));
-    marker.setPopup(utils.getPopUp("当前位置"));
+    marker.setPopup(utils.getPopUp("当前位置",false));
     marker.addTo(vueThis.map);
 
     let markers = loadMarkers(vueThis);
