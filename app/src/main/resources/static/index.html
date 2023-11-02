@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>goe-s</title>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <link href="css/mapboxgl.css" rel="stylesheet">
+<!--    <link rel="stylesheet" href="css/elementUI.css">-->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/params.css">
@@ -27,6 +28,7 @@
                 <el-slider
                         v-model="DCPGS.clusterNums"
                         :min="1" :max="DCPGS.maxClusterNums"
+                        show-input
                         @change="updateClusterNums">
                 </el-slider>
                 <span style="color: rgb(96, 98, 102)">dataset: </span>
@@ -45,7 +47,7 @@
                     <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="80" :max="200" ></el-input-number>
                 </el-form-item>
                 <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')">confirm</el-button>
+                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading">confirm</el-button>
                 </div>
             </el-form>
         </div>
@@ -194,10 +196,10 @@
 
     </div>
 </body>
-
+<script src="js/environment/d3.js"></script>
 <script src="js/environment/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script src="js/environment/elementUI.js"></script>
+<script src="js/environment/mapboxgl.js"></script>
 <script src="js/environment/axios.js"></script>
 <script type="module" src="js/app.js"></script>
 </html>
