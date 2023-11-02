@@ -5,44 +5,40 @@
     width:100%;
     height: 100px;
     display: flex;
+    flex-direction: row-reverse;
 }
 
 .subheader{
     box-sizing: border-box;
-    height: 85%;
-    top: 7.5%;
+    height: 60px;
     display: flex;
     align-items: center;
     margin-right: 20px;
     margin-left: 20px;
+    margin-top: 17px;
 }
 
 .header_image{
-    top: 15px;
-    height: 70px;
+    height: 60px;
     margin-right: 10px;
 }
 
-#header0{
-    margin-right: 40%;
-}
-
 #lang{
-    position: absolute;
-    font-size:25px;
-    right: 3%;
-    top:2%;
+    font-size:20px;
+    margin-top: 40px;
+    margin-right: 20px;
 }
 
 .name{
     font: 400 23px/1.5 "Microsoft YaHei", Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
     font-weight: 700;
-    overflow-x: hidden;
+    letter-spacing: 3px;
+    word-break: keep-all;
 }
 
 .ename{
     font: 400 13px/1.5 "Microsoft YaHei",Arial, sans-serif;
     -webkit-tap-highlight-color: transparent;
-    overflow-x: hidden;
+    transform-origin: left;
 }
