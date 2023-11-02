@@ -62,17 +62,17 @@ async function getParams(vueThis, location) {
     });
 }
 
-function updateParams(vueThis) {
+async function updateParams(vueThis) {
     let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
-    axios({
+    await axios({
         method: "put",
         data: vueThis.DCPGS.params,
         url: basePath + "/params/" + vueThis.DCPGS.location
     }).then(response => {
         const status = response.data;
         console.log("update status: " + status);
-        loadDCPGS(vueThis, vueThis.DCPGS.location, vueThis.map.getZoom());
     });
+    await loadDCPGS(vueThis, vueThis.DCPGS.location, vueThis.map.getZoom());
 }
 
 function loadPoints(vueThis, geoJsonPath, zoom) {

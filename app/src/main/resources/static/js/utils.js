@@ -33,7 +33,7 @@ function getColor(clusterId,size){
     let colorScale = d3.scaleOrdinal()
         .domain(data) // 数据域
         .range(d3.schemeCategory10); // 使用 ColorBrewer 的 Category10 调色板
-    console.log(colorScale(clusterId));
+    // console.log(colorScale(clusterId));
     return colorScale(clusterId)
 }
 
