@@ -2,12 +2,10 @@ package com.edu.szu;
 
 import cn.edu.szu.cs.*;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.edu.szu.entity.GeoJson;
-import com.edu.szu.util.CheckInReader;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +15,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/kstc")
 @AllArgsConstructor
-@Slf4j
+@Log4j2
 public class KSTCEndpoint {
 
     private KSTC kstc;

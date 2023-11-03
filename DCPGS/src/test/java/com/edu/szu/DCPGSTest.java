@@ -8,12 +8,12 @@ import com.edu.szu.util.EdgeReader;
 import com.github.davidmoten.rtree.RTree;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 
 import java.util.List;
 
-@Slf4j
+@Log4j2
 public class DCPGSTest {
 
     private static final Gson gson = new GsonBuilder()

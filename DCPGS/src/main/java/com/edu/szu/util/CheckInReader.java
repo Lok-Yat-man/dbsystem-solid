@@ -8,7 +8,7 @@ import com.edu.szu.entity.GeoJson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.stream.Collectors;
 
-@Slf4j
+@Log4j2
 public class CheckInReader {
 
     @Getter

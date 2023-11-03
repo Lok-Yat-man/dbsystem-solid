@@ -1,14 +1,14 @@
 package com.edu.szu;
 
 import com.edu.szu.util.EdgeReader;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Slf4j
+@Log4j2
 public class DCPGSManagerTest {
     private final DCPGSManager dcpgsManager = new DCPGSManager();
 

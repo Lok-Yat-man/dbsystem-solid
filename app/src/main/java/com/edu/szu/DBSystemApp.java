@@ -1,7 +1,7 @@
 package com.edu.szu;
 
 import com.edu.szu.config.DCPGSConfig;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import;
         KDVEndpoint.class,
 })
 @SpringBootApplication
-@Slf4j
+@Log4j2
 public class DBSystemApp {
 
     public static void main(String[] args) {

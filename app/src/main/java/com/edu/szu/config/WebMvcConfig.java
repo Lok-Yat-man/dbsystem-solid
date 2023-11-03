@@ -1,13 +1,13 @@
 package com.edu.szu.config;
 
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 
-@Slf4j
+@Log4j2
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
