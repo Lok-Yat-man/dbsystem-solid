@@ -43,7 +43,7 @@ public class DCPGSManager {
         log.info("DCPGS running with params: epsilon: {}, " +
                         "omega: {}, tau: {}, maxD: {}, fileKey: {}",
                 params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD(), checkInFilePath);
-        RTree<String, CheckIn> rTree = RTree.star().maxChildren(4).create();
+        RTree<String, CheckIn> rTree = RTree.star().maxChildren(30).create();
         var checkIns = CheckInReader.getCheckInFromFile(checkInFilePath);
         if(edgeMapSet.get(dataSet) == null){
             throw new IllegalArgumentException("edgeMap is null");

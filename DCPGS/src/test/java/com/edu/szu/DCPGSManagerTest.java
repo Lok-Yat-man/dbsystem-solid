@@ -21,6 +21,6 @@ public class DCPGSManagerTest {
         edgeMap = EdgeReader.getEdges("brightkite/loc-brightkite_edges.txt");
         edgeMapSet.put("brightkite",edgeMap);
         dcpgsManager.setEdgeMapSet(edgeMapSet);
-        dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/LondonUK.txt","LondonUK","gowalla");
+        dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/OsloNorway.txt","OsloNorway","gowalla");
     }
 }
