@@ -27,6 +27,22 @@ function addLayer(i,vueThis){
             'circle-opacity': 0.7,
         },
     });
+    layerPopup(i, vueThis);
+}
+
+function layerPopup(i, vueThis){
+    vueThis.map.on('click', 'layer' + i, function (e) {
+        let coordinates = e.features[0].geometry.coordinates.slice();
+        let clusterId = e.features[0].properties.clusterId;
+        utils.getPopUp("cluster " + clusterId, false).
+        setLngLat(coordinates).addTo(vueThis.map);
+    });
+    vueThis.map.on('mouseenter', 'layer' + i, () => {
+        vueThis.map.getCanvas().style.cursor = 'pointer';
+    });
+    vueThis.map.on('mouseleave', 'layer' + i, () => {
+        vueThis.map.getCanvas().style.cursor = '';
+    });
 }
 
 async function loadDCPGS(vueThis, location, zoom) {
@@ -110,7 +126,7 @@ function loadMarkers(vueThis) {
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
-        marker.setPopup(utils.getPopUp("cluster " + (i+1), true));
+        marker.setPopup(utils.getPopUp("cluster " + (i+1), false));
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);
