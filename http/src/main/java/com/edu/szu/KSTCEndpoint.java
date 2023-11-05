@@ -1,25 +1,20 @@
 package com.edu.szu;
 
 import cn.edu.szu.cs.*;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+
 import com.edu.szu.entity.GeoJson;
-import com.edu.szu.util.CheckInReader;
+import com.edu.szu.entity.Marker;
+import com.edu.szu.service.KstcService;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
 
 @RestController
 @RequestMapping("/kstc")
@@ -27,129 +22,75 @@ import java.util.stream.Collectors;
 @Slf4j
 public class KSTCEndpoint {
 
-    private KSTC kstc;
+    private KstcService kstcService;
 
-    /**
-     * search top-k cluster
-     * @param query
-     * @return
-     */
-    @PostMapping("/search")
-    public List<KstcCluster> kstcSearch(@RequestBody Query query){
-        log.info(query.toString());
-        return kstc.kstcSearch(query);
+    @GetMapping("/markers")
+    public List<Marker> markers(
+            @RequestParam("keywords") String keywords,
+            @RequestParam("lon") Double lon,
+            @RequestParam("lat") Double lat,
+            @RequestParam("k") Integer k,
+            @RequestParam("epsilon") Double epsilon,
+            @RequestParam("minPts") Integer minPts,
+            @RequestParam("maxDist") Double maxDist
+            ){
+        if(maxDist<0){
+            maxDist=Double.MAX_VALUE;
+        }
+        Query query = Query.builder()
+                .keyword(
+                        Arrays.stream(keywords.split(",")).collect(Collectors.toList())
+                )
+                .location(
+                        Coordinate.create(
+                                lon,
+                                lat
+                        )
+                )
+                .k(k)
+                .epsilon(epsilon)
+                .minPts(minPts)
+                .maxDistance(maxDist)
+                .build();
+
+        log.info("markers: "+query.toString());
+        return kstcService.loadMarkers(
+                query
+        );
     }
 
-
-    /**
-     * search top-k cluster
-     * @return
-     */
     @GetMapping("/geojson")
-    public GeoJson kstcSearchGeoJson(
+    public GeoJson geoJson(
             @RequestParam("keywords") String keywords,
             @RequestParam("lon") Double lon,
             @RequestParam("lat") Double lat,
             @RequestParam("k") Integer k,
             @RequestParam("epsilon") Double epsilon,
-            @RequestParam("minPts") Integer minPts
+            @RequestParam("minPts") Integer minPts,
+            @RequestParam("maxDist") Double maxDist
     ){
-
-        Query query = Query.create(
-                Coordinate.create(
-                        lon,
-                        lat
-                ),
-                Arrays.stream(keywords.split(",")).collect(Collectors.toList()),
-                k,
-                epsilon,
-                minPts
+        if(maxDist<0){
+            maxDist=Double.MAX_VALUE;
+        }
+        Query query = Query.builder()
+                .keyword(
+                        Arrays.stream(keywords.split(",")).collect(Collectors.toList())
+                )
+                .location(
+                        Coordinate.create(
+                                lon,
+                                lat
+                        )
+                )
+                .k(k)
+                .epsilon(epsilon)
+                .minPts(minPts)
+                .maxDistance(maxDist)
+                .build();
+        log.info("geoJson: "+query.toString());
+        return kstcService.loadGeoJson(
+                query
         );
-
-        log.info(query.toString());
-        List<GeoJson.Feature> features = kstc.kstcSearch(query)
-                .stream()
-                .map(
-                        kstcCluster -> kstcCluster.getMembers()
-                                .stream()
-                                .map(member -> new GeoJson.Feature(
-                                        new GeoJson.Geometry(
-                                                member.getCoordinate().getLongitude(),
-                                                member.getCoordinate().getLatitude()
-                                        ),
-                                        new GeoJson.Properties(kstcCluster.getClusterId() + "")
-                                )).collect(Collectors.toList())
-                ).reduce(new ArrayList<>(), (a, b) -> {
-                    a.addAll(b);
-                    return a;
-                });
-
-        GeoJson geoJson = new GeoJson();
-        geoJson.setFeatures(features);
-
-        return geoJson;
-    }
-
-    /**
-     * search top-k cluster
-     * @return
-     */
-    @GetMapping("/save")
-    public String kstcSave(
-            @RequestParam("keywords") String keywords,
-            @RequestParam("lon") Double lon,
-            @RequestParam("lat") Double lat,
-            @RequestParam("k") Integer k,
-            @RequestParam("epsilon") Double epsilon,
-            @RequestParam("minPts") Integer minPts
-    ) throws FileNotFoundException {
-
-        Query query = Query.create(
-                Coordinate.create(
-                        lon,
-                        lat
-                ),
-                Arrays.stream(keywords.split(",")).collect(Collectors.toList()),
-                k,
-                epsilon,
-                minPts
-        );
-
-
-        log.info(query.toString());
-
-
-        List<GeoJson.Feature> features = kstc.kstcSearch(query)
-                .stream()
-                .map(
-                        kstcCluster -> kstcCluster.getMembers()
-                                .stream()
-                                .map(member -> new GeoJson.Feature(
-                                        new GeoJson.Geometry(
-                                                member.getCoordinate().getLongitude(),
-                                                member.getCoordinate().getLatitude()
-                                        ),
-                                        new GeoJson.Properties(kstcCluster.getClusterId() + "")
-                                )).collect(Collectors.toList())
-                ).reduce(new ArrayList<>(), (a, b) -> {
-                    a.addAll(b);
-                    return a;
-                });
-
-        GeoJson geoJson = new GeoJson();
-        geoJson.setFeatures(features);
-
-        String basePath = "E:\\JAVA_Files\\dbsystem-solid\\http\\src\\main\\resources\\";
-
-        String fileName = keywords+"_"+lon+"_"+lat+"_"+k+"_"+epsilon+"_"+minPts+".json";
-
-        PrintWriter printWriter = new PrintWriter(basePath + fileName);
-
-        printWriter.write(JSON.toJSONString(geoJson));
-
-        printWriter.close();
-        log.info("ok");
-        return "ok";
     }
 
     @GetMapping("/example01")
@@ -174,5 +115,19 @@ public class KSTCEndpoint {
     public GeoJson example04()throws Exception{
         String json = IOUtils.resourceToString("Food_-75.1_39.9_20_100.0_5.json", StandardCharsets.UTF_8, KSTCEndpoint.class.getClassLoader());
         return new Gson().fromJson(json,GeoJson.class);
+    }
+
+
+    public static void main(String[] args) {
+
+        System.out.println(
+                CommonAlgorithm.getDistance(
+                        112.112,
+                        23.111,
+                        112.111,
+                        23.112
+                )
+        );
+
     }
 }

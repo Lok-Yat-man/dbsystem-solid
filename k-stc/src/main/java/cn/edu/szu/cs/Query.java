@@ -1,6 +1,7 @@
 package cn.edu.szu.cs;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,19 +36,64 @@ public class Query implements Serializable {
      */
     private int minPts;
 
+
+    private double maxDistance;
+
+    public static QueryBuilder builder(){
+        return new QueryBuilder();
+    }
+    public QueryBuilder toBuilder(){
+        return new QueryBuilder(this);
+    }
+
+    public static class QueryBuilder{
+
+        private Query query;
+
+        public QueryBuilder(){
+            query=new Query();
+        }
+        public QueryBuilder(Query query){
+            this.query=query;
+        }
+
+        public QueryBuilder location(Coordinate coordinate){
+            query.setLocation(coordinate);
+            return this;
+        }
+
+        public QueryBuilder k(int k){
+            query.setK(k);
+            return this;
+        }
+        public QueryBuilder epsilon(double epsilon){
+            query.setEpsilon(epsilon);
+            return this;
+        }
+
+        public QueryBuilder minPts(int minPts){
+            query.setMinPts(minPts);
+            return this;
+        }
+
+        public QueryBuilder keyword(List<String> kwds){
+            query.setKeywords(kwds);
+            return this;
+        }
+
+        public QueryBuilder maxDistance(double maxDistance){
+            query.setMaxDistance(maxDistance);
+            return this;
+        }
+
+        public Query build(){
+            return query;
+        }
+
+    }
+
+
     public Query(){}
-
-    public Query(Coordinate location, List<String> keywords, int k, double epsilon, int minPts) {
-        this.location = location;
-        this.keywords = keywords;
-        this.k = k;
-        this.epsilon = epsilon;
-        this.minPts = minPts;
-    }
-
-    public static Query create(Coordinate location, List<String> keywords, int k, double epsilon, int minPts){
-        return new Query(location, keywords, k, epsilon, minPts);
-    }
 
     public Coordinate getLocation() {
         return location;
@@ -87,6 +133,14 @@ public class Query implements Serializable {
 
     public void setEpsilon(double epsilon) {
         this.epsilon = epsilon;
+    }
+
+    public double getMaxDistance() {
+        return maxDistance;
+    }
+
+    public void setMaxDistance(double maxDistance) {
+        this.maxDistance = maxDistance;
     }
 
     @Override

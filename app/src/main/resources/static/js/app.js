@@ -40,7 +40,6 @@ new Vue({
                 clusterNums: 0,
                 layerLoaded: 0,
                 markers: [],
-                maxClusterNums: 150,
 
                 query:{
                     "keywords": "Water",
@@ -50,7 +49,8 @@ new Vue({
                     },
                     "k":5,
                     "epsilon": 1000,
-                    "minPts":10
+                    "minPts":10,
+                    "maxDist":-1
                 }
             }
         }
@@ -65,7 +65,7 @@ new Vue({
                 dcpgs.updateParams(this);
                 this.switchStatus = "SWITCH";
             }else if(state === 'KSTC_UPDATE'){
-                this.switchStatus = "SWITCH"
+                this.switchStatus = "KSTC"
                 kstc.loadKSTC(this);
             }
             else{
@@ -139,6 +139,10 @@ new Vue({
                     this
                 )
             }
+        },
+
+        popupTest(){
+            kstc.popupTest(this);
         }
 
     },

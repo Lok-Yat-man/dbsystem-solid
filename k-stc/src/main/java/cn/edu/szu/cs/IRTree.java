@@ -2,8 +2,8 @@ package cn.edu.szu.cs;
 
 import java.util.List;
 
-public interface IRTree {
+public interface IRTree<T> {
 
-    List<RelevantObject> rangeQuery(Query query, RelevantObject p);
+    List<T> rangeQuery(List<String> keywords,Coordinate coordinate,double epsilon);
 
 }

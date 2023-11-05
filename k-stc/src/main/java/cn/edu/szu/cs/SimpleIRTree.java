@@ -1,10 +1,16 @@
 package cn.edu.szu.cs;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.LFUCache;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Assert;
 import com.github.davidmoten.rtree.*;
 import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Point;
 import com.github.davidmoten.rtree.internal.LeafDefault;
 import com.github.davidmoten.rtree.internal.NonLeafDefault;
+import rx.Observable;
+import rx.functions.Func2;
 
 
 import java.io.InputStream;
@@ -17,8 +23,7 @@ import java.util.stream.Collectors;
  * @date 2023/10/8 16:39
  * @version 1.0
  */
-public final class SimpleIRTree implements IRTree {
-
+public final class SimpleIRTree implements IRTree<RelatedObject> {
 
     /**
      * rTree
@@ -27,91 +32,38 @@ public final class SimpleIRTree implements IRTree {
     /**
      * Record the relationship between non-leaf nodes and IF
      */
-    private Map<Node<String, Geometry>,Map<String,List<NodePair>>> nodeInvertedIndexMap;
-    /**
-     * Record the relationship between leaf nodes and IF
-     */
-    private Map<Node<String, Geometry>,Map<String,List<StringPair>>> leafInvertedIndexMap;
+    private Map<Node<String,Geometry>,Map<String,List<Node<String, Geometry>>>> nodeInvertedIndexMap;
 
-    private IRelevantObjectService relevantObjectService;
+    private LFUCache<String,List<Entry<String,Geometry>>> cache = CacheUtil.newLFUCache(100);
 
+    private IRelatedObjectService relatedObjectService;
 
-    public SimpleIRTree(IRelevantObjectService relevantObjectService){
-
-        try(
-                InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("rtree.txt");
-        ){
-            // deserialize rTree
-            RTree<String, Geometry> rTree = Serializers.flatBuffers().utf8().read(
-                    inputStream,
-                    inputStream.available(),
-                    InternalStructure.DEFAULT
-            );
-
-            assert relevantObjectService != null && rTree !=null && rTree.root().isPresent();
-
-            this.rTree = rTree;
-            this.relevantObjectService = relevantObjectService;
-
-            nodeInvertedIndexMap = new HashMap<>();
-            leafInvertedIndexMap = new HashMap<>();
-
-            buildIRtree(rTree.root().get());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public SimpleIRTree(RTree<String, Geometry> rTree,IRelevantObjectService relevantObjectService) {
+    public SimpleIRTree(RTree<String, Geometry> rTree,IRelatedObjectService relevantObjectService) {
         assert relevantObjectService != null;
         assert rTree !=null && rTree.root().isPresent();
-
         this.rTree = rTree;
-        this.relevantObjectService = relevantObjectService;
-
+        this.relatedObjectService = relevantObjectService;
         nodeInvertedIndexMap = new HashMap<>();
-        leafInvertedIndexMap = new HashMap<>();
-
         buildIRtree(rTree.root().get());
 
     }
 
-    private Map<String,Double> buildIRtree(Node<String,Geometry> curNode){
+    @SuppressWarnings("unchecked")
+    private Set<String> buildIRtree(Node<String,Geometry> curNode){
 
         // Processing leaf nodes
         if(curNode instanceof LeafDefault){
-
             LeafDefault leaf = (LeafDefault) curNode;
-
-            List<Entry<String, Point>> entries = leaf.entries();
-
-            Map<String,List<StringPair>> leafIF = new HashMap<>(leaf.count());
-            Map<String,Double> ans = new HashMap<>(leaf.count());
+            List<Entry<String,Point>> entries = leaf.entries();
+            Set<String> set = new HashSet<>();
 
             for (Entry<String, Point> entry : entries) {
-
-                String id = entry.value();
-
-                relevantObjectService.getWeightsById(id).forEach(
-                        (k,v)->{
-                            // 计算当前节点的IF
-                            leafIF.putIfAbsent(k,new ArrayList<>());
-                            leafIF.get(k).add(StringPair.create(id,v));
-
-                            // 计算当前节点每个字符串的最大权重
-                            ans.put(k,Double.max(ans.getOrDefault(k,0.0),v));
-
-                        }
-                );
-
+                List<String> labels = relatedObjectService.getLabelsById(entry.value()).stream().map(String::toLowerCase).collect(Collectors.toList());
+                set.addAll(labels);
             }
-            //
-            leafInvertedIndexMap.put(curNode,leafIF);
 
             // Returns each string and the maximum weight of the current node.
-            return ans;
+            return set;
 
         }
 
@@ -119,24 +71,19 @@ public final class SimpleIRTree implements IRTree {
 
             NonLeafDefault<String,Geometry> nonLeaf = (NonLeafDefault<String,Geometry>) curNode;
 
-            Map<String,List<NodePair>> nodeIf = new HashMap<>(nonLeaf.count());
+            Map<String,List<Node<String, Geometry>>> nodeIf = new HashMap<>(nonLeaf.count());
 
-            Map<String,Double> ans = new HashMap<>(nonLeaf.count());
+            Set<String> ans = new HashSet<>();
 
             for (Object child : nonLeaf.children()) {
-
                 Node<String, Geometry> childNode = (Node<String, Geometry>) child;
+                Set<String>  stringSet = buildIRtree(childNode);
+                ans.addAll(stringSet);
+                for (String str : stringSet) {
+                    nodeIf.putIfAbsent(str,new ArrayList<>());
+                    nodeIf.get(str).add(childNode);
+                }
 
-                Map<String, Double> stringDoubleMap = buildIRtree(childNode);
-
-                stringDoubleMap.forEach(
-                        (k,v)->{
-                            nodeIf.putIfAbsent(k,new ArrayList<>());
-                            nodeIf.get(k).add(NodePair.create(childNode,v));
-
-                            ans.put(k,Double.max(ans.getOrDefault(k,0.0),v));
-                        }
-                );
             }
             //
             nodeInvertedIndexMap.put(curNode,nodeIf);
@@ -147,163 +94,109 @@ public final class SimpleIRTree implements IRTree {
         throw new IllegalArgumentException("Unsupported node type!");
     }
 
-
-    private static class StringPair{
-
-        private String key;
-
-        private Double value;
-
-        private StringPair(String key,Double value){
-            this.key=key;
-            this.value=value;
-        }
-        StringPair(){
-
-        }
-
-        public static StringPair create(String key,Double value){
-            return new StringPair(key,value);
-        }
-
-        public String getKey() {
-            return key;
-        }
-
-        public void setKey(String key) {
-            this.key = key;
-        }
-
-        public Double getValue() {
-            return value;
-        }
-
-        public void setValue(Double value) {
-            this.value = value;
-        }
-
+    private List<Node<String,Geometry>> getNodesByKeyword(Node<String, Geometry> curNode,String keyword){
+        return Optional.ofNullable(
+                nodeInvertedIndexMap.get(curNode).get(keyword)
+        ).orElse(new ArrayList<>());
     }
 
-    private static class NodePair{
+    private List<Entry<String,Geometry>> filterByKeywords(List<String> keywords){
 
-        private Node<String, Geometry> key;
-
-        private Double value;
-
-        private NodePair(Node<String, Geometry> key, Double value) {
-            this.key = key;
-            this.value = value;
+        if(CollUtil.isEmpty(keywords)){
+            return new ArrayList<>();
         }
 
-        public static NodePair create(Node<String,Geometry> node,Double value){
-            return new NodePair(node,value);
+        if(cache.containsKey(keywords.toString())){
+            return cache.get(keywords.toString());
         }
 
-        public Node<String, Geometry> getKey() {
-            return key;
+
+        Node<String, Geometry> root = rTree.root().get();
+
+        Deque<Node<String,Geometry>> que = new ArrayDeque<>();
+
+        que.add(root);
+
+        while(!que.isEmpty()){
+
+            Node<String, Geometry> node = que.peek();
+
+            if(node instanceof LeafDefault){
+                break;
+            }
+            //
+            if(node instanceof NonLeafDefault){
+                int size = que.size();
+                for (int i = 0; i < size; i++) {
+
+                    Node<String, Geometry> curNode = que.poll();
+
+                    String keyword = keywords.get(0);
+
+                    Set<Node<String,Geometry>> set = new HashSet<>(getNodesByKeyword(curNode,keyword));
+
+                    for(int j=1;j<keywords.size();j++){
+                        set.retainAll(getNodesByKeyword(curNode,keywords.get(j)));
+                    }
+                    que.addAll(set);
+                }
+            }
         }
 
-        public void setKey(Node<String, Geometry> key) {
-            this.key = key;
-        }
+        List<Entry<String, Geometry>> list = Optional.ofNullable(
+                que.stream()
+                        .map(node -> ((LeafDefault<String, Geometry>) node).entries())
+                        .reduce(new ArrayList<>(), (a, b) -> {
+                            a.addAll(b);
+                            return a;
+                        })
+        ).orElse(new ArrayList<>());
 
-        public Double getValue() {
-            return value;
-        }
+        cache.put(keywords.toString(),list);
 
-        public void setValue(Double value) {
-            this.value = value;
-        }
+        return list;
+
     }
 
     @Override
-    public synchronized List<RelevantObject> rangeQuery(Query query, RelevantObject p) {
+    public synchronized List<RelatedObject> rangeQuery(List<String> keywords,Coordinate coordinate,double epsilon) {
 
-        Optional<? extends Node<String, Geometry>> optional = rTree.root();
+        Assert.isTrue(rTree.root().isPresent(),"rtree not exist.");
+        Assert.isTrue(epsilon>0.0,"rtree not exist.");
+        Assert.checkBetween(coordinate.getLongitude(),-180.0,180.0,"wrong lon.");
+        Assert.checkBetween(coordinate.getLatitude(),-90,90,"wrong lat.");
 
-        if(!optional.isPresent()){
-            throw new RuntimeException("RTree not exists!");
+        if(keywords == null || keywords.isEmpty()){
+            return Collections.emptyList();
         }
 
-        Node<String, Geometry> node = optional.get();
+        return relatedObjectService.getByIds(
+                filterByKeywords(keywords)
+                        .stream()
+                        .filter(
+                                entry -> CommonAlgorithm.calculateDistance(
+                                        Coordinate.create(entry.geometry().mbr().x1(), entry.geometry().mbr().y1()),
+                                        coordinate
+                                ) < epsilon
+                        ).map(Entry::value)
+                        .collect(Collectors.toList())
+        ).stream().filter(
+                relatedObject -> {
 
-        GeoPointDouble geoPointDouble = GeoPointDouble.create(
-                p.getCoordinate().getLongitude(),
-                p.getCoordinate().getLatitude()
-        );
+                    String str = String.join(" ", relatedObject.getLabels()).toLowerCase();
 
-        List<RelevantObject> list = new LinkedList<>();
-
-        Deque<Node<String, Geometry>> dq = new LinkedList<>();
-
-        dq.add(node);
-
-        while(!dq.isEmpty()){
-
-            Node<String, Geometry> curNode = dq.poll();
-
-            if(curNode instanceof LeafDefault){
-
-                Map<String, List<StringPair>> leafIf = leafInvertedIndexMap.get(curNode);
-
-                List<String> objIds = Optional.ofNullable(
-                        query.getKeywords()
-                ).map(
-                        kwds -> kwds.stream()
-                                .map(leafIf::get)
-                                .filter(Objects::nonNull)
-                                .reduce(new ArrayList<>(), (a, b) -> {
-                                    a.addAll(b);
-                                    return a;
-                                })
-                                .stream()
-                                .map(StringPair::getKey)
-                                .collect(Collectors.toList())
-                ).orElse(new ArrayList<>());
-
-
-                List<RelevantObject> relevantObjects = relevantObjectService.getByIds(objIds);
-
-                relevantObjects = relevantObjects.stream()
-                                .filter(
-                                        relevantObject -> geoPointDouble.distance(
-                                        GeoPointDouble.create(
-                                                relevantObject.getCoordinate().getLongitude(),
-                                                relevantObject.getCoordinate().getLatitude()
-                                        )
-                                ) <= query.getEpsilon())
-                                        .collect(Collectors.toList());
-
-
-                list.addAll(relevantObjects);
-
-            }
-
-            if(curNode instanceof NonLeafDefault){
-
-                Map<String, List<NodePair>> nodeIf = nodeInvertedIndexMap.get(curNode);
-
-                dq.addAll(
-                        Optional.ofNullable(
-                                query.getKeywords()
-                        ).map(
-                                kwds -> kwds.stream()
-                                        .map(nodeIf::get)
-                                        .filter(Objects::nonNull)
-                                        .reduce(new ArrayList<>(), (a, b) -> {
-                                            a.addAll(b);
-                                            return a;
-                                        })
-                                        .stream()
-                                        .map(NodePair::getKey)
-                                        .collect(Collectors.toList())
-                        ).orElse(new ArrayList<>())
-                );
-
-            }
-
-        }
-        return list;
+                    for (String keyword : keywords) {
+                        if(!str.contains(keyword)){
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+        ).collect(Collectors.toList());
+        
     }
+
+
+
 
 }

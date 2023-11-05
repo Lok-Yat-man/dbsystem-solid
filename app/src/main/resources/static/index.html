@@ -72,7 +72,9 @@
 
                 <el-form-item label="minPts">
                     <el-input-number v-model="KSTC.query.minPts" :step="1" :min="2" :max="20" ></el-input-number>
-
+                </el-form-item>
+                <el-form-item label="maxDist">
+                    <el-input-number v-model="KSTC.query.maxDist" :step="1" :min="-1" ></el-input-number>
                 </el-form-item>
                 <el-form-item label="lon">
                     <el-input-number v-model="KSTC.query.location.longitude" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
@@ -119,7 +121,7 @@
                     </el-submenu>
                     <el-submenu index="1-2">
                        <template slot="title">Spatial textual clustering</template>
-                        <el-menu-item index="1-2-1" @click="loadKStc('eg.1')">Example 1</el-menu-item>
+                        <el-menu-item index="1-2-1" @click="popupTest">popupTest</el-menu-item>
                         <el-menu-item index="1-2-2" @click="loadKStc('eg.2')">Example 2</el-menu-item>
                         <el-menu-item index="1-2-3" @click="loadKStc('eg.3')">Example 3</el-menu-item>
                         <el-menu-item index="1-2-3" @click="loadKStc('eg.4')">Example 4</el-menu-item>
