@@ -27,17 +27,23 @@ function getDefaultMark(lon,lat,color){
 
 //根据集群数量将0xffffff颜色均匀划分后分配
 function getColor(clusterId,size){
-    let color = Math.round((0xffffff / 271) * (clusterId + 1));
-    return "#" + color.toString(16).padStart(6,"0");
+    // 数据集，这里假设有 n 个 div
+    let data = d3.range(size);
+    // 使用 ColorBrewer 调色板
+    let colorScale = d3.scaleOrdinal()
+        .domain(data) // 数据域
+        .range(d3.schemeCategory10); // 使用 ColorBrewer 的 Category10 调色板
+    // console.log(colorScale(clusterId));
+    return colorScale(clusterId)
 }
 
 //message可以是html
-function getPopUp(message){
+function getPopUp(message, needCloseButton){
     //添加气泡弹窗
     let mhtml = '<div class="malert">' +
                                     message +
                         '</div>'
-    let popup = new mapboxgl.Popup({closeButton: false})
+    let popup = new mapboxgl.Popup({closeButton: needCloseButton})
         .setHTML(mhtml)
     return popup;
 }

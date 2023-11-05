@@ -1,11 +1,10 @@
 package com.edu.szu;
 
-import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.CheckInJson;
 import com.edu.szu.util.CheckInReader;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
+@Log4j2
 public class ReaderTest {
 
     private static final Gson gson = new GsonBuilder()

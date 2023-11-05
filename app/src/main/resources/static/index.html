@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>goe-s</title>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <link href="css/mapboxgl.css" rel="stylesheet">
+<!--    <link rel="stylesheet" href="css/elementUI.css">-->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/params.css">
@@ -21,13 +22,13 @@
 
             <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
 
-            <el-button type="text" id="DCPGSParamsCloser" @click="paramsSwitch('SWITCH')">X</el-button>
-
+            <template><el-button id ="DCPGSParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
             <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS">
                 <span style="color: rgb(96, 98, 102)">cluster nums: </span>
                 <el-slider
                         v-model="DCPGS.clusterNums"
                         :min="1" :max="DCPGS.maxClusterNums"
+                        show-input
                         @change="updateClusterNums">
                 </el-slider>
                 <span style="color: rgb(96, 98, 102)">dataset: </span>
@@ -46,16 +47,14 @@
                     <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="80" :max="200" ></el-input-number>
                 </el-form-item>
                 <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')">confirm</el-button>
+                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading">confirm</el-button>
                 </div>
             </el-form>
         </div>
 
         <div class="params" v-if="switchStatus === 'KSTC'">
             <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
-
-            <el-button type="text" id="KSTCParamsCloser" @click="paramsSwitch('SWITCH')">X</el-button>
-
+            <template><el-button id ="KSTCParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
 
                 <el-form-item label="word">
@@ -87,6 +86,28 @@
                 </div>
             </el-form>
 
+        </div>
+
+        <div class="params" v-if="switchStatus === 'spatial_skylines'">
+            <h3 style="color: rgb(96, 98, 102)">spatial_skylines params: </h3>
+            <template><el-button id ="spatial_skylinesParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
+            <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
+                <el-form-item label="params_1">
+                    <el-input-number v-model="spatial_skylines.query.params_1" :precision="1" :step="1" :min="1" :max="100"></el-input-number>
+                </el-form-item>
+                <el-form-item label="params_2">
+                    <el-input-number v-model="spatial_skylines.query.params_2" :step="1" :min="1" :max="20" ></el-input-number>
+                </el-form-item>
+                <el-form-item label="params_3">
+                    <el-input-number v-model="spatial_skylines.query.params_3" :step="1" :min="2" :max="20" ></el-input-number>
+                </el-form-item>
+                <el-form-item label="params_4">
+                    <el-input-number v-model="spatial_skylines.query.params_4" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
+                </el-form-item>
+                <div style="text-align: center">
+                    <el-button round @click="paramsSwitch('spatial_skylines_UPDATE')">confirm</el-button>
+                </div>
+            </el-form>
         </div>
 
         <el-button class="switchOut" size="small" :icon="sideBar.switchIcon" id="sideBarSwitch" @click="sideBarSwitch">
@@ -130,7 +151,7 @@
                     </el-submenu>
                     <el-submenu index="1-3">
                        <template slot="title">Textually spatial skylines</template>
-                        <el-menu-item index="1-3-1">1-3-1</el-menu-item>
+                        <el-menu-item index="1-3-1"  @click="paramsSwitch('spatial_skylines')">1-3-1</el-menu-item>
                     </el-submenu>
                 </el-submenu>
                 <el-submenu index="2">
@@ -158,19 +179,37 @@
           </el-row>
 
           <div id="header" >
-            <a href ="https://www.szu.edu.cn/" target="_blank"> <img decoding="async" id="header-img1" src="./img/szu.png" /> </a>
-            <a href ="https://csse.szu.edu.cn/" target="_blank"><img decoding="async" id="header-img2" src="./img/college.png" /></a>
-            <a href ="https://bigdata.szu.edu.cn/" target="_blank"><img decoding="async" id="header-img3" src="./img/lab.png" /></a>
-            <p id="lang">中文</p>
-          </div>
 
+              <p id="lang">中文</p>
+
+              <div class="subheader" id="header3">
+                  <a href ="https://bigdata.szu.edu.cn/" target="_blank"><img decoding="async" class="header_image" id="header-img3" src="./img/lab.png" /></a>
+                  <div class="logo_description" id="lab_title">
+                      <div class="name" >大数据与应用数据研究所</div>
+                      <div class="ename" >Big Data Institute Shenzhen University</div>
+                  </div>
+              </div>
+
+              <div class="subheader" id="header2">
+                  <a href ="https://csse.szu.edu.cn/" target="_blank"><img decoding="async" class="header_image" id="header-img2" src="./img/college.png" /></a>
+                  <div class="logo_description" id="college_title">
+                      <div class="name" >深圳大学计算机与软件学院</div>
+                      <div class="ename" >College of Computer Science and Software Engineering, SZU</div>
+                  </div>
+              </div>
+
+              <div class="subheader" id="header1">
+                  <a href ="https://www.szu.edu.cn/" target="_blank"> <img decoding="async" class="header_image" id="header-img1" src="./img/szu.png" /> </a>
+              </div>
+
+          </div>
 
     </div>
 </body>
-
+<script src="js/environment/d3.js"></script>
 <script src="js/environment/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+<script src="js/environment/elementUI.js"></script>
+<script src="js/environment/mapboxgl.js"></script>
 <script src="js/environment/axios.js"></script>
 <script type="module" src="js/app.js"></script>
 </html>

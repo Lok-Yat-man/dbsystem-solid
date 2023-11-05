@@ -4,7 +4,7 @@ import com.edu.szu.util.CheckInDistanceCalculator;
 import com.edu.szu.util.CheckInReader;
 import com.github.davidmoten.rtree.RTree;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.CheckInJson;
 import com.edu.szu.entity.DCPGSParams;
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Slf4j
+@Log4j2
 public class DCPGSManager {
     private final Map<String, CheckInJson> jsonMap;
 
@@ -43,7 +43,7 @@ public class DCPGSManager {
         log.info("DCPGS running with params: epsilon: {}, " +
                         "omega: {}, tau: {}, maxD: {}, fileKey: {}",
                 params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD(), checkInFilePath);
-        RTree<String, CheckIn> rTree = RTree.star().maxChildren(4).create();
+        RTree<String, CheckIn> rTree = RTree.star().maxChildren(30).create();
         var checkIns = CheckInReader.getCheckInFromFile(checkInFilePath);
         if(edgeMapSet.get(dataSet) == null){
             throw new IllegalArgumentException("edgeMap is null");

@@ -62,17 +62,17 @@ async function getParams(vueThis, location) {
     });
 }
 
-function updateParams(vueThis) {
+async function updateParams(vueThis) {
     let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
-    axios({
+    await axios({
         method: "put",
         data: vueThis.DCPGS.params,
         url: basePath + "/params/" + vueThis.DCPGS.location
     }).then(response => {
         const status = response.data;
         console.log("update status: " + status);
-        loadDCPGS(vueThis, vueThis.DCPGS.location, vueThis.map.getZoom());
     });
+    await loadDCPGS(vueThis, vueThis.DCPGS.location, vueThis.map.getZoom());
 }
 
 function loadPoints(vueThis, geoJsonPath, zoom) {
@@ -110,7 +110,7 @@ function loadMarkers(vueThis) {
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
         let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
-        marker.setPopup(utils.getPopUp("cluster " + (i+1)));
+        marker.setPopup(utils.getPopUp("cluster " + (i+1), true));
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);

@@ -1,13 +1,12 @@
 package com.edu.szu;
 
 import cn.edu.szu.cs.*;
-
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/kstc")
 @AllArgsConstructor
-@Slf4j
+@Log4j2
 public class KSTCEndpoint {
 
     private KstcService kstcService;

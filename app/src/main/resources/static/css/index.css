@@ -2,6 +2,7 @@ body {
     margin: 0;
     font-family: sans-serif;
     overflow:hidden;
+    -webkit-font-smoothing: antialiased;
     width: 100vw;
     height: 100%;
 }
@@ -24,7 +25,7 @@ body {
     z-index: 1000;
     width: 250px;
     height: 90%;
-    top: 10%;
+    top: 100px;
 }
 
 .sideOut{
@@ -91,7 +92,7 @@ body {
     border-bottom-right-radius: 5px;
 }
 
-#DCPGSParamsCloser, #KSTCParamsCloser{
+#DCPGSParamsCloser, #KSTCParamsCloser,#spatial_skylinesParamsCloser{
     position: absolute;
     top: 3%;
     right: 5%;

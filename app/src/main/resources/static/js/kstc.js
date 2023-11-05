@@ -91,7 +91,6 @@ async function loadMarkers(vueThis){
         +'&maxDist='+vueThis.KSTC.query.maxDist;
 
     let markers = [];
-
     let res = await requestMarkers(url);
 
     for (let i = 0; i < res.data.length; i++) {
@@ -105,9 +104,9 @@ async function loadMarkers(vueThis){
                 "<p>pointNum: "+mrk.pointNum+"</p>" +
                 "<p>description: "+mrk.description+"</p>")
         );
-
         markers.push(marker);
     }
+
     return markers;
 
 }
@@ -133,7 +132,7 @@ async function doLoad(vueThis,lon,lat,zoom){
     });
 
     let marker = utils.getDefaultMark(lon, lat, utils.getColor(0,1));
-    marker.setPopup(utils.getPopUp("当前位置"));
+    marker.setPopup(utils.getPopUp("当前位置",false));
     marker.addTo(vueThis.map);
 
     await paintPoints(vueThis,markers.length);

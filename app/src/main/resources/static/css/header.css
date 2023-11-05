@@ -1,41 +1,44 @@
 #header{
-    position:absolute;
+    position:fixed;
     background-color: rgba(255,255,255,0.6);
     z-index:999;
     width:100%;
-    height: 10%;
-    margin: left 50px;
+    height: 100px;
+    display: flex;
+    flex-direction: row-reverse;
 }
 
-
-#header-img1{
-    position: absolute;
-    aspect-ratio: 2.9; /* 2.9:1 的宽高比例，可以根据需要更改 */
-    height:85%;
-    top: 7.5%;
-    right: 31.5%;
+.subheader{
+    box-sizing: border-box;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
+    margin-left: 20px;
+    margin-top: 17px;
 }
 
-#header-img2{
-    position:absolute;
-    aspect-ratio: 1; /* 1:1 的宽高比例，可以根据需要更改 */
-    height:85%;
-    right:25%;
-    top:5%;
-}
-
-#header-img3{
-    position:absolute;
-    /*width:136px;*/
-    aspect-ratio: 1.875; /* 1.875:1 的宽高比例，可以根据需要更改 */
-    height:85%;
-    right: 15%;
-    top:7.5%;
+.header_image{
+    height: 60px;
+    margin-right: 10px;
 }
 
 #lang{
-    position:absolute;
     font-size:20px;
-    right: 7.5%;
-    top:25%;
+    margin-top: 40px;
+    margin-right: 20px;
+}
+
+.name{
+    font: 400 23px/1.5 "Microsoft YaHei", Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    font-weight: 700;
+    letter-spacing: 3px;
+    word-break: keep-all;
+}
+
+.ename{
+    font: 400 13px/1.5 "Microsoft YaHei",Arial, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    transform-origin: left;
 }

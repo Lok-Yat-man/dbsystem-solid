@@ -3,13 +3,13 @@ package com.edu.szu.util;
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.DCPGSParams;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Slf4j
+@Log4j2
 public class CheckInDistanceCalculator {
     private static final double INF = 1.5;
 

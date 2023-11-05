@@ -15,6 +15,7 @@ new Vue({
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             DCPGS: {
+                loading: false,
                 dataset: "gowalla",//gowalla or brightkite
                 labelPosition: "right",
                 location: "",
@@ -40,7 +41,6 @@ new Vue({
                 clusterNums: 0,
                 layerLoaded: 0,
                 markers: [],
-
                 query:{
                     "keywords": "Water",
                     "location":{
@@ -52,18 +52,34 @@ new Vue({
                     "minPts":10,
                     "maxDist":-1
                 }
+            },
+            spatial_skylines:{
+                labelPosition:"right",
+                location:"",
+                layerLoaded: 0,
+                query:{
+                    params_1:0.5,
+                    params_2:0.5,
+                    params_3:0.5,
+                    params_4:0.5
+                }
             }
         }
     },
     methods: {
-        paramsSwitch(state){
+        async paramsSwitch(state){
             this.$forceUpdate();
             if(state === ''){
                 this.switchStatus = this.currentAlgorithm;
             }
             else if(state === 'DCPGS_UPDATE') {
-                dcpgs.updateParams(this);
-                this.switchStatus = "SWITCH";
+                this.DCPGS.loading = true;
+                await dcpgs.updateParams(this)
+                    .then(()=>{
+                        console.log("DCPGS params running finished")
+                        this.switchStatus = "SWITCH";
+                        this.DCPGS.loading = false;
+                    });
             }else if(state === 'KSTC_UPDATE'){
                 this.switchStatus = "KSTC"
                 kstc.loadKSTC(this);
