@@ -23,8 +23,8 @@ def main(argv):
             tmp = df['index'][i]
 
     index.append(len(df['index'])-1)
-
-    with open('date_range.js', 'w') as f:
+        
+    with open('date_range.js','w') as f:
     #Date index
         f.write('export const date_to_index = %s\n'%str(index))
     #Start Date

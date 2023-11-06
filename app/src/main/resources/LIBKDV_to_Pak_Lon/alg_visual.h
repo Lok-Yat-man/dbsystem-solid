@@ -11,7 +11,6 @@
 class alg_visual
 {
 public:
-    alg_visual();
 	void load_parameters(int argc, char**argv);
 	void filter_datasets();
 	void init_visual();

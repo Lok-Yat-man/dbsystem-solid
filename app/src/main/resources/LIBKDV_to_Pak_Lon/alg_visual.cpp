@@ -3,52 +3,49 @@
 void alg_visual::load_parameters(int argc, char**argv)
 {
 	//Testing Mode (KDV_type = 1)
-//	stat.num_threads = 8;
-//	stat.x_L = 1000;
-//	stat.x_U = 30000;
-//	stat.y_L = 1000;
-//	stat.y_U = 50000;
-//	stat.outputFileName = (char*)"./Results/Atlanta_SLAM_Testing_T8_960_800";
-//	stat.row_pixels = 960;
-//	stat.col_pixels = 800;
-//	stat.kernel_s_type = 1;
-//	stat.bandwidth_s = 1000;
-//
-//	stat.num_threads = 4;
-//	stat.row_pixels = 128;
-//	stat.col_pixels = 128;
-//	stat.kernel_s_type = 1;
-//	stat.outputFileName = (char*)"./Results/Atlanta_SLAM_T4_v2";
-//	stat.bandwidth_s = 1000;
-//	obtain_L_U();
+	/*stat.num_threads = 8;
+	stat.x_L = 1000;
+	stat.x_U = 30000;
+	stat.y_L = 1000;
+	stat.y_U = 50000;
+	stat.outputFileName = (char*)"./Results/Atlanta_SLAM_Testing_T8_960_800";
+	stat.row_pixels = 960;
+	stat.col_pixels = 800;
+	stat.kernel_s_type = 1;
+	stat.bandwidth_s = 1000;*/
+
+	/*stat.num_threads = 4;
+	stat.row_pixels = 128;
+	stat.col_pixels = 128;
+	stat.kernel_s_type = 1;
+	stat.outputFileName = (char*)"./Results/Atlanta_SLAM_T4_v2";
+	stat.bandwidth_s = 1000;
+	obtain_L_U();*/
 
 	//Testing Mode (KDV_type = 2)
-//	stat.KDV_type = 2;
-//	stat.outputFileName = (char*)"./Results/data_ST_SCAN_otf";
-//	stat.num_threads = 1;
-//	stat.x_L = 260000;
-//	stat.x_U = 300000;
-//	stat.y_L = 10000;
-//	stat.y_U = 30000;
-//	stat.row_pixels = 32;
-//	stat.col_pixels = 32;
-//	stat.kernel_s_type = 1;
-//	stat.bandwidth_s = 1000;
-//	obtain_L_U();
+	/*stat.outputFileName = (char*)"./Results/data_ST_SCAN_otf";
+	stat.num_threads = 1;
+	stat.x_L = 260000;
+	stat.x_U = 300000;
+	stat.y_L = 10000;
+	stat.y_U = 30000;
+	stat.row_pixels = 32;
+	stat.col_pixels = 32;
+	stat.kernel_s_type = 1;
+	stat.bandwidth_s = 1000;*/
+	//obtain_L_U();
 
 	//Testing Mode (KDV_type = 3)
-//	stat.KDV_type = 3;
-//	stat.outputFileName = (char*)"./Results/case_ST_EDWIN_kt";
-//	stat.num_threads = 1;
-//	stat.x_L = 113.5222;
-//	stat.x_U = 113.6022;
-//	stat.y_L = 22.1036;
-//	stat.y_U = 22.2195;
-//	stat.row_pixels = 256;
-//	stat.col_pixels = 256;
-//	stat.t_pixels = 256;
-//	stat.kernel_s_type = 1;
-//	stat.bandwidth_s = 0.0001;
+	/*stat.outputFileName = (char*)"./Results/case_ST_EDWIN_kt";
+	stat.num_threads = 1;
+	stat.x_L = 113.5222;
+	stat.x_U = 113.6022;
+	stat.y_L = 22.1036;
+	stat.y_U = 22.2195;
+	stat.row_pixels = 256;
+	stat.col_pixels = 256;
+	stat.kernel_s_type = 1;
+	stat.bandwidth_s = 0.0001;*/
 
 	stat.num_threads = 1;
 	stat.KDV_type = atoi(argv[2]);
@@ -86,6 +83,12 @@ void alg_visual::load_parameters(int argc, char**argv)
 	}
 	if (stat.KDV_type == 3) //batch-based STKDV
 	{
+		//Testing Mode (KDV_type = 3)
+		/*stat.t_L = 1;
+		stat.t_U = 30;
+		stat.t_pixels = 30;
+		stat.kernel_t_type = 1;
+		stat.bandwidth_t = 1;*/
 
 		stat.dim = 3;
 		stat.t_L = atof(argv[12]);
@@ -346,7 +349,7 @@ string alg_visual::compute(int argc, char**argv)
 	visual_Algorithm();
 	//output_File(); //debug mode
 	//exit(0); //debug mode
-
+	
 	if (stat.KDV_type == 1 || stat.KDV_type == 2)
 		return saveMatrix_toString_CSV();
 	if (stat.KDV_type == 3)
@@ -386,7 +389,7 @@ void alg_visual::clear_memory()
 
 			for (int q_id = 0; q_id < stat.dynamic_pixel_size; q_id++)
 				delete[] stat.SLAM_vec[th].query_list[q_id];
-
+			
 			stat.SLAM_vec[th].query_list.clear();
 			stat.SLAM_vec[th].result_list.clear();
 		}
@@ -642,5 +645,3 @@ void alg_visual::load_datasets_CSV(char**argv)
 
 	dataFile_CSV.close();
 }
-
-alg_visual::alg_visual(){}

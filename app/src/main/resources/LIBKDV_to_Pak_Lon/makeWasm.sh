@@ -1,0 +1,1 @@
+emcc alg_visual.cpp init_visual.cpp EDWIN_otf.cpp main.cpp bucket.cpp EDWIN_multiple.cpp SLAM.cpp -o test.wasm
