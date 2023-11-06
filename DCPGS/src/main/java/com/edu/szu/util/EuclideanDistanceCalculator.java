@@ -4,8 +4,8 @@ import java.lang.Math;
 
 public class EuclideanDistanceCalculator {
 
-    // 地球半径（单位：千米）
-    private static final double EARTH_RADIUS = 6371.0;
+    // 地球半径（单位：米）
+    private static final double EARTH_RADIUS = 6371000.0;
 
     // 计算两个经纬度点之间的欧氏距离
     public static double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
@@ -25,7 +25,7 @@ public class EuclideanDistanceCalculator {
                 * Math.sin(lonDiff / 2) * Math.sin(lonDiff / 2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return EARTH_RADIUS * c * 1000;
+        return EARTH_RADIUS * c;
     }
 
     public static void main(String[] args) {
