@@ -11,6 +11,7 @@ import rx.Observable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 public class DCPGS<V extends NamedPoint> {
     /** minimum number of members to consider cluster */
@@ -85,11 +86,13 @@ public class DCPGS<V extends NamedPoint> {
      * @param neighbours2 right collection
      * @return Modified left collection
      */
-    private ArrayList<V> mergeRightToLeftCollection(final ArrayList<V> neighbours1,
+    private ArrayList<V> mergeRightToLeftCollection(final Set<V> cache,
+                                                    final ArrayList<V> neighbours1,
                                                     final ArrayList<V> neighbours2) {
         for (V tempPt : neighbours2) {
-            if (!neighbours1.contains(tempPt)) {
+            if (!cache.contains(tempPt)) {
                 neighbours1.add(tempPt);
+                cache.add(tempPt);
             }
         }
         return neighbours1;
@@ -137,6 +140,7 @@ public class DCPGS<V extends NamedPoint> {
                 neighbours = getNeighbours(p,rTree);
 
                 if (neighbours.size() >= minimumNumberOfClusterMembers) {
+                    Set<V> cache = new HashSet<>(neighbours);
                     int ind = 0;
                     while (neighbours.size() > ind) {
                         V r = neighbours.get(ind);
@@ -145,6 +149,7 @@ public class DCPGS<V extends NamedPoint> {
                             ArrayList<V> individualNeighbours = getNeighbours(r,rTree);
                             if (individualNeighbours.size() >= minimumNumberOfClusterMembers) {
                                 mergeRightToLeftCollection(
+                                        cache,
                                         neighbours,
                                         individualNeighbours);
                             }
