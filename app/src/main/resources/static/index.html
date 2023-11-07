@@ -212,4 +212,12 @@
 <script src="js/environment/mapboxgl.js"></script>
 <script src="js/environment/axios.js"></script>
 <script type="module" src="js/app.js"></script>
+<script src="js/kdv/kdv.js"></script>
+<script>
+    console.log("load kdv.js");
+    Module.onRuntimeInitialized = function() {
+        const result = Module.load_data(); // 调用导出的 add 函数
+        console.log(result); // 输出 7
+    };
+</script>
 </html>
