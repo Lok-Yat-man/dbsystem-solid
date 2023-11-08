@@ -34,7 +34,8 @@ function layerPopup(i, vueThis){
     vueThis.map.on('click', 'layer' + i, function (e) {
         let coordinates = e.features[0].geometry.coordinates.slice();
         let clusterId = e.features[0].properties.clusterId;
-        utils.getPopUp("cluster " + clusterId, false).
+        let index = Number(clusterId) + 1;
+        utils.getPopUp("cluster " + index, false).
         setLngLat(coordinates).addTo(vueThis.map);
     });
     vueThis.map.on('mouseenter', 'layer' + i, () => {
