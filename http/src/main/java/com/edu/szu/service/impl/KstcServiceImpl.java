@@ -22,8 +22,8 @@ public class KstcServiceImpl implements KstcService {
         this.kstc = kstc;
     }
 
-    @Override
-    public GeoJson loadGeoJson(Query query) {
+
+    private GeoJson doLoadGeoJson(Query query){
         List<Set<RelatedObject>> list = kstc.kstcSearch(query);
         GeoJson geoJson = new GeoJson();
         for (int i = 0; i < list.size(); i++) {
@@ -39,15 +39,17 @@ public class KstcServiceImpl implements KstcService {
                         return new GeoJson.Feature(geometry, properties);
                     }).collect(Collectors.toList());
             geoJson.getFeatures().addAll(features);
-
         }
         return geoJson;
+
     }
 
-
     @Override
-    public List<Marker> loadMarkers(Query query) {
+    public GeoJson loadGeoJson(Query query) {
+        return doLoadGeoJson(query);
+    }
 
+    private List<Marker> doLoadMarkers(Query query){
         List<Set<RelatedObject>> list = kstc.kstcSearch(query);
         List<Marker> res = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -70,7 +72,11 @@ public class KstcServiceImpl implements KstcService {
             ));
             res.add(marker);
         }
-
         return res;
+    }
+
+    @Override
+    public List<Marker> loadMarkers(Query query) {
+        return doLoadMarkers(query);
     }
 }

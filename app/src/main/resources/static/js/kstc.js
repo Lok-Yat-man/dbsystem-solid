@@ -1,13 +1,23 @@
 import utils from "./utils.js";
 
 async function loadKSTC(vueThis){
-
+    vueThis.KSTC.loading=true;
+    vueThis.KSTC.timeout=false;
     doLoad(
         vueThis,
         vueThis.KSTC.query.location.longitude,
         vueThis.KSTC.query.location.latitude,
         10
     );
+    setTimeout(()=>{
+
+        if(vueThis.KSTC.loading){
+            vueThis.KSTC.loading=false;
+            vueThis.KSTC.timeout=true;
+            alert("30 second Time Out! Please try again later or modify parameters!")
+        }
+
+    },30000)
 
 }
 
@@ -37,37 +47,47 @@ async function paintPoints(vueThis,size){
                 source: 'points-source',
                 filter: ['==', 'clusterId', "" + i],
                 paint: {
-                    'circle-radius': 3.5,
+                    'circle-radius': 5,
                     'circle-color': utils.getColor(i, size),
                     'circle-opacity': 0.7,
                 },
             });
+            layerPopup(i,vueThis);
         }
-
-        vueThis.map.on('click','points-source',(geoJson)=>{
-
-            const coordinates = geoJson.features[0].geometry.coordinates.slice();
-
-            let labels = geoJson.features[0].properties.labels;
-
-            let str = "";
-            for (let j = 0; j < labels.length; j++) {
-                str+="<p>"+labels[j]+"</p>"
-            }
-
-            new mapboxgl.Popup()
-                .setLngLat(coordinates)
-                .setHTML(
-                    "<strong>Labels</strong>"
-                    +str
-                )
-                .addTo(vueThis.map);
-
-        })
-
-
     });
 
+}
+
+function layerPopup(i, vueThis){
+    vueThis.map.on('click', 'layer' + i, function (e) {
+        let coordinates = e.features[0].geometry.coordinates.slice();
+        let labels = JSON.parse(e.features[0].properties.labels);
+        var strings = vueThis.KSTC.query.keywords.split(",").map(str=>str.toLowerCase());
+
+        let str = "<ul>";
+        for (let j = 0; j < labels.length; j++) {
+            if(strings.includes(labels[j].toLowerCase())){
+                str+="<li><font size='2' color='red'>"+labels[j]+"</font></li>";
+            }else{
+                str+="<li><font size='2' color='black'>"+labels[j]+"</font></li>";
+            }
+        }
+        str+="</ul>"
+        utils.getPopUp(
+            "<strong><font size='4' color='black'>Labels: </font></strong>"
+            +str,
+            false
+        ).
+        setLngLat(coordinates)
+            .addTo(vueThis.map);
+
+    });
+    vueThis.map.on('mouseenter', 'layer' + i, () => {
+        vueThis.map.getCanvas().style.cursor = 'pointer';
+    });
+    vueThis.map.on('mouseleave', 'layer' + i, () => {
+        vueThis.map.getCanvas().style.cursor = '';
+    });
 }
 
 async function paintMarker(vueThis,markers){
@@ -122,6 +142,10 @@ async function doLoad(vueThis,lon,lat,zoom){
 
     let markers = await loadMarkers(vueThis);
 
+    if(vueThis.KSTC.timeout){
+        return;
+    }
+
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         //style: 'mapbox://styles/mapbox/light-v11',
@@ -139,93 +163,9 @@ async function doLoad(vueThis,lon,lat,zoom){
 
     await paintMarker(vueThis,markers);
 
-}
-
-
-async function loadExample01(vueThis){
-    vueThis.KSTC.query.keywords='Water';
-    vueThis.KSTC.query.location.longitude=-75.1;
-    vueThis.KSTC.query.location.latitude=39.9;
-    vueThis.KSTC.query.k=20;
-    vueThis.KSTC.query.epsilon=10000;
-    vueThis.KSTC.query.minPts=3;
-
-    await doLoad(
-        vueThis,
-        -75.1,
-        39.9,
-        10
-    );
-
-
-}
-async function loadExample02(vueThis){
-
-    vueThis.KSTC.query.keywords='Restaurants';
-    vueThis.KSTC.query.location.longitude=-75.1;
-    vueThis.KSTC.query.location.latitude=39.9;
-    vueThis.KSTC.query.k=20;
-    vueThis.KSTC.query.epsilon=100;
-    vueThis.KSTC.query.minPts=10;
-
-    await doLoad(
-        vueThis,
-        -75.1,
-        39.9,
-        10
-    );
-
-}
-async function loadExample03(vueThis){
-    vueThis.KSTC.query.keywords='Drugstores';
-    vueThis.KSTC.query.location.longitude=-75.1;
-    vueThis.KSTC.query.location.latitude=39.9;
-    vueThis.KSTC.query.k=60;
-    vueThis.KSTC.query.epsilon=1000;
-    vueThis.KSTC.query.minPts=4;
-    await doLoad(
-        vueThis,
-        -75.1,
-        39.9,
-        10
-    );
-}
-async function loadExample04(vueThis){
-    vueThis.KSTC.query.keywords='Food';
-    vueThis.KSTC.query.location.longitude=-75.1;
-    vueThis.KSTC.query.location.latitude=39.9;
-    vueThis.KSTC.query.k=20;
-    vueThis.KSTC.query.epsilon=100;
-    vueThis.KSTC.query.minPts=5;
-    await doLoad(
-        vueThis,
-        -75.1,
-        39.9,
-        10
-    );
-}
-
-async function popupTest(vueThis){
-
-    vueThis.map = new mapboxgl.Map({
-        container: 'map', // container id
-        //style: 'mapbox://styles/mapbox/light-v11',
-        // style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
-        center: [-77.04, 38.907],
-        zoom: 11.15
-    });
-
-
-
-
+    vueThis.KSTC.loading=false;
 }
 
 export default {
-    loadKSTC,
-    loadExample01,
-    loadExample02,
-    loadExample03,
-    loadExample04,
-    popupTest
+    loadKSTC
 }

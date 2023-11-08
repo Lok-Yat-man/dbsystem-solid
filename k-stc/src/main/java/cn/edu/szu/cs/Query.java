@@ -82,7 +82,7 @@ public class Query implements Serializable {
         }
 
         public QueryBuilder maxDistance(double maxDistance){
-            query.setMaxDistance(maxDistance);
+            query.setMaxDistance(maxDistance<0?Double.MAX_VALUE:maxDistance);
             return this;
         }
 

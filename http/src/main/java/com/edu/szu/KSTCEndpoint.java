@@ -33,9 +33,6 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
             ){
-        if(maxDist<0){
-            maxDist=Double.MAX_VALUE;
-        }
         Query query = Query.builder()
                 .keyword(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
@@ -68,9 +65,6 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
     ){
-        if(maxDist<0){
-            maxDist=Double.MAX_VALUE;
-        }
         Query query = Query.builder()
                 .keyword(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
@@ -90,43 +84,5 @@ public class KSTCEndpoint {
         return kstcService.loadGeoJson(
                 query
         );
-    }
-
-    @GetMapping("/example01")
-    public GeoJson example01()throws Exception{
-        String json = IOUtils.resourceToString("Water_-75_39_20_10000_3.json", StandardCharsets.UTF_8, KSTCEndpoint.class.getClassLoader());
-        return new Gson().fromJson(json,GeoJson.class);
-    }
-
-    @GetMapping("/example02")
-    public GeoJson example02()throws Exception{
-        String json = IOUtils.resourceToString("Restaurants_-75.1_39.9_20_100.0_10.json", StandardCharsets.UTF_8, KSTCEndpoint.class.getClassLoader());
-        return new Gson().fromJson(json,GeoJson.class);
-    }
-
-    @GetMapping("/example03")
-    public GeoJson example03()throws Exception{
-        String json = IOUtils.resourceToString("Drugstores_-75.1_39.9_60_1000.0_4.json", StandardCharsets.UTF_8, KSTCEndpoint.class.getClassLoader());
-        return new Gson().fromJson(json,GeoJson.class);
-    }
-
-    @GetMapping("/example04")
-    public GeoJson example04()throws Exception{
-        String json = IOUtils.resourceToString("Food_-75.1_39.9_20_100.0_5.json", StandardCharsets.UTF_8, KSTCEndpoint.class.getClassLoader());
-        return new Gson().fromJson(json,GeoJson.class);
-    }
-
-
-    public static void main(String[] args) {
-
-        System.out.println(
-                CommonAlgorithm.getDistance(
-                        112.112,
-                        23.111,
-                        112.111,
-                        23.112
-                )
-        );
-
     }
 }

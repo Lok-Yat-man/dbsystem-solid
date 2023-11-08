@@ -50,13 +50,12 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject>{
     }
 
     @Override
-    public PriorityQueue<RelatedObject> getSList(List<String> keywords,Coordinate coordinate,double maxDistance, Comparator<RelatedObject> comparator) {
+    public synchronized PriorityQueue<RelatedObject> getSList(List<String> keywords,Coordinate coordinate,double maxDistance, Comparator<RelatedObject> comparator) {
 
         PriorityQueue<RelatedObject> relatedObjects = new PriorityQueue<>(comparator);
         if(CollUtil.isEmpty(keywords)){
             return relatedObjects;
         }
-
         String first = keywords.get(0);
         Set<String> objIds = new HashSet<>(map.getOrDefault(first,new ArrayList<>()));
         for(int i=1;i<keywords.size();i++){
@@ -64,7 +63,6 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject>{
                     map.getOrDefault(keywords.get(i),new ArrayList<>())
             );
         }
-
         relatedObjects.addAll(
                 objIds.stream()
                         .map(relatedObjectService::getById)
@@ -74,6 +72,7 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject>{
         );
         return relatedObjects;
     }
+
 
     @Override
     public List<String> keys() {

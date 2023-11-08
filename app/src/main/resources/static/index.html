@@ -52,7 +52,8 @@
             </el-form>
         </div>
 
-        <div class="params" v-if="switchStatus === 'KSTC'">
+        <div v-loading.lock="KSTC.loading"
+                class="params" v-if="switchStatus === 'KSTC'">
             <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
             <template><el-button id ="KSTCParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
@@ -142,10 +143,6 @@
                     </el-submenu>
                     <el-submenu index="1-2">
                        <template slot="title">Spatial textual clustering</template>
-                        <el-menu-item index="1-2-1" @click="popupTest">popupTest</el-menu-item>
-                        <el-menu-item index="1-2-2" @click="loadKStc('eg.2')">Example 2</el-menu-item>
-                        <el-menu-item index="1-2-3" @click="loadKStc('eg.3')">Example 3</el-menu-item>
-                        <el-menu-item index="1-2-3" @click="loadKStc('eg.4')">Example 4</el-menu-item>
                         <el-menu-item index="1-2-3" @click="loadKStc('')">Simple KSTC</el-menu-item>
 
                     </el-submenu>

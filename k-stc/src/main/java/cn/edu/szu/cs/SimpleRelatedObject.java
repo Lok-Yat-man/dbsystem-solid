@@ -54,4 +54,17 @@ public class SimpleRelatedObject implements Serializable,RelatedObject {
     public List<String> getLabels() {
         return labels;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleRelatedObject that = (SimpleRelatedObject) o;
+        return objectId.equals(that.objectId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId);
+    }
 }

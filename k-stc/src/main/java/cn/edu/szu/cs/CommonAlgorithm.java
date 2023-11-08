@@ -1,5 +1,9 @@
 package cn.edu.szu.cs;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.LFUCache;
+import cn.hutool.cache.impl.LRUCache;
+
 /**
  *  CommonAlgorithm
  * @author Whitence
@@ -13,7 +17,7 @@ public class CommonAlgorithm {
         return getDistance(a.getLongitude(),a.getLatitude(),b.getLongitude(),b.getLatitude());
     }
 
-
+    private static LFUCache<String,Double> CACHE = CacheUtil.newLFUCache(100);
     /**
      * 地球半径,单位 km
      */
@@ -50,8 +54,4 @@ public class CommonAlgorithm {
 //        return Math.round(s * 10000) / 10000;
         return Math.round(s * 1e4) / 1e4;
     }
-
-
-
-
 }

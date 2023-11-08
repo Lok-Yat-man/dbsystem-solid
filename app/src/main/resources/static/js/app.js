@@ -1,6 +1,8 @@
 import dcpgs from "./DCPGS.js";
 import kdv from "./kdv.js";
 import kstc from "./kstc.js"
+// import { Loading } from './environment/elementUI'
+
 mapboxgl.accessToken = 'pk.eyJ1IjoiY29uZ3dhbmciLCJhIjoiY2tjZWwxNW5uMDdoMjJ3cDZnaGF2bmJlYiJ9.NOKscgbt1C-DCo38sxtUFw';
 
 
@@ -47,11 +49,13 @@ new Vue({
                         "longitude":-75.1,
                         "latitude":39.9
                     },
-                    "k":5,
+                    "k":20,
                     "epsilon": 1000,
                     "minPts":10,
                     "maxDist":-1
-                }
+                },
+                loading: false,
+                timeout: false,
             },
             spatial_skylines:{
                 labelPosition:"right",
@@ -82,7 +86,7 @@ new Vue({
                     });
             }else if(state === 'KSTC_UPDATE'){
                 this.switchStatus = "KSTC"
-                kstc.loadKSTC(this);
+                await kstc.loadKSTC(this);
             }
             else{
                 this.switchStatus = state;
@@ -141,20 +145,9 @@ new Vue({
         loadKStc(str){
             this.currentAlgorithm = "KSTC";
             this.switchStatus = "KSTC"
-            if(str === 'eg.1'){
-                kstc.loadExample01(this);
-            }else if(str === 'eg.2'){
-                kstc.loadExample02(this);
-            }else if(str === 'eg.3'){
-                kstc.loadExample03(this);
-            }else if(str === 'eg.4'){
-                kstc.loadExample04(this);
-            }
-            else{
-                kstc.loadKSTC(
-                    this
-                )
-            }
+            kstc.loadKSTC(
+                this
+            )
         },
 
         popupTest(){
