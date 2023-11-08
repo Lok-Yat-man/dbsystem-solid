@@ -35,7 +35,7 @@ public class KstcServiceImpl implements KstcService {
                                 relatedObject.getCoordinate().getLongitude(),
                                 relatedObject.getCoordinate().getLatitude()
                         );
-                        GeoJson.Properties properties = new GeoJson.Properties(clusterId, relatedObject.getLabels());
+                        GeoJson.Properties properties = new GeoJson.Properties(clusterId, relatedObject.getName(), relatedObject.getLabels());
                         return new GeoJson.Feature(geometry, properties);
                     }).collect(Collectors.toList());
             geoJson.getFeatures().addAll(features);

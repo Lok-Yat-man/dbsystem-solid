@@ -75,9 +75,11 @@ public class GeoJson {
 
     public static class Properties{
         private String clusterId;
+        private String name;
         private List<String> labels;
-        public Properties(String clusterId, List<String> labels) {
+        public Properties(String clusterId,String name, List<String> labels) {
             this.clusterId = clusterId;
+            this.name=name;
             this.labels = labels;
         }
         public String getClusterId() {
@@ -91,6 +93,12 @@ public class GeoJson {
         }
         public void setLabels(List<String> labels) {
             this.labels = labels;
+        }
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
         }
     }
 }

@@ -11,7 +11,7 @@ async function loadKSTC(vueThis){
     );
     setTimeout(()=>{
 
-        if(vueThis.KSTC.loading){
+        if(vueThis.KSTC.running){
             vueThis.KSTC.loading=false;
             vueThis.KSTC.timeout=true;
             alert("30 second Time Out! Please try again later or modify parameters!")
@@ -62,25 +62,34 @@ function layerPopup(i, vueThis){
     vueThis.map.on('click', 'layer' + i, function (e) {
         let coordinates = e.features[0].geometry.coordinates.slice();
         let labels = JSON.parse(e.features[0].properties.labels);
-        var strings = vueThis.KSTC.query.keywords.split(",").map(str=>str.toLowerCase());
+        var strings = vueThis.KSTC.lastKeywords;
 
-        let str = "<ul>";
+        let str = "";
         for (let j = 0; j < labels.length; j++) {
-            if(strings.includes(labels[j].toLowerCase())){
-                str+="<li><font size='2' color='red'>"+labels[j]+"</font></li>";
+            var flag=false;
+            var label = labels[j].toLowerCase();
+            for (let k = 0; k < strings.length; k++) {
+                var string = strings[k].toLowerCase();
+                if(label===string || label.indexOf(string)>=0){
+                    flag=true;
+                    break;
+                }
+            }
+            if(flag){
+                str+="<div><strong><font size='2' color='red'>"+labels[j]+"</font></strong></div>";
             }else{
-                str+="<li><font size='2' color='black'>"+labels[j]+"</font></li>";
+                str+="<div><font size='2' color='black'>"+labels[j]+"</font></div>";
             }
         }
-        str+="</ul>"
+
         utils.getPopUp(
-            "<strong><font size='4' color='black'>Labels: </font></strong>"
+            "<div><font size='2' color='black'>"+e.features[0].properties.name+"</font></div>"
+            +"<hr/>"
             +str,
             false
         ).
         setLngLat(coordinates)
             .addTo(vueThis.map);
-
     });
     vueThis.map.on('mouseenter', 'layer' + i, () => {
         vueThis.map.getCanvas().style.cursor = 'pointer';
@@ -115,7 +124,7 @@ async function loadMarkers(vueThis){
 
     for (let i = 0; i < res.data.length; i++) {
         let mrk = res.data[i];
-        let color = utils.getColor(i);
+        let color = utils.getColor(i,res.data.length);
         let marker = utils.getDefaultMark(mrk.coordinate.longitude, mrk.coordinate.latitude, color);
 
         marker.setPopup(
@@ -139,13 +148,13 @@ async function requestMarkers(url){
 }
 
 async function doLoad(vueThis,lon,lat,zoom){
-
+    vueThis.KSTC.running=true;
     let markers = await loadMarkers(vueThis);
-
+    vueThis.KSTC.running=false;
     if(vueThis.KSTC.timeout){
         return;
     }
-
+    vueThis.KSTC.lastKeywords=vueThis.KSTC.query.keywords.split(",");
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         //style: 'mapbox://styles/mapbox/light-v11',
@@ -154,10 +163,28 @@ async function doLoad(vueThis,lon,lat,zoom){
         center: [lon, lat],
         zoom: zoom
     });
+    vueThis.map.doubleClickZoom.disable();
 
-    let marker = utils.getDefaultMark(lon, lat, utils.getColor(0,1));
+    let marker = utils.currentPosition(lon, lat);
     marker.setPopup(utils.getPopUp("当前位置",false));
     marker.addTo(vueThis.map);
+    vueThis.KSTC.curMarker=marker;
+
+    vueThis.map.on('dblclick',(e) => {
+        console.log(`A click event has occurred at ${e.lngLat}`);
+        if(vueThis.KSTC.curMarker != null){
+            vueThis.KSTC.curMarker.remove();
+        }
+        vueThis.KSTC.query.location.longitude=e.lngLat.lng;
+        vueThis.KSTC.query.location.latitude=e.lngLat.lat;
+
+        let marker = utils.currentPosition(e.lngLat.lng, e.lngLat.lat);
+        marker.setPopup(utils.getPopUp("当前位置",false));
+        vueThis.KSTC.curMarker=marker;
+        marker.addTo(vueThis.map);
+
+    });
+
 
     await paintPoints(vueThis,markers.length);
 

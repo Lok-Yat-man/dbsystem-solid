@@ -17,14 +17,17 @@ public class SimpleRelatedObject implements Serializable,RelatedObject {
 
     private  Coordinate coordinate;
 
+    private String name;
+
     private  List<String> labels;
 
     public SimpleRelatedObject() {
     }
 
-    public SimpleRelatedObject(String objectId, Coordinate coordinate, List<String> labels) {
+    public SimpleRelatedObject(String objectId, Coordinate coordinate,String name, List<String> labels) {
         this.objectId = objectId;
         this.coordinate = coordinate;
+        this.name=name;
         this.labels = labels;
     }
 
@@ -40,6 +43,11 @@ public class SimpleRelatedObject implements Serializable,RelatedObject {
         this.labels = labels;
     }
 
+    public void setName(String name){
+        this.name=name;
+    }
+
+
     @Override
     public String getObjectId() {
         return objectId;
@@ -48,6 +56,11 @@ public class SimpleRelatedObject implements Serializable,RelatedObject {
     @Override
     public Coordinate getCoordinate() {
         return coordinate;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override

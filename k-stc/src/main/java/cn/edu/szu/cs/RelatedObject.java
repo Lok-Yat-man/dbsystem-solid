@@ -14,6 +14,8 @@ public interface RelatedObject {
 
    Coordinate getCoordinate();
 
+   String getName();
+
    List<String> getLabels();
 
 }

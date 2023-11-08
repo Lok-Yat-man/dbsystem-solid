@@ -44,18 +44,20 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    "keywords": "Water",
+                    "keywords": "Food",
                     "location":{
                         "longitude":-75.1,
                         "latitude":39.9
                     },
-                    "k":20,
+                    "k":1,
                     "epsilon": 1000,
                     "minPts":10,
                     "maxDist":-1
                 },
                 loading: false,
                 timeout: false,
+                running: false,
+                lastKeywords:[]
             },
             spatial_skylines:{
                 labelPosition:"right",
@@ -148,10 +150,6 @@ new Vue({
             kstc.loadKSTC(
                 this
             )
-        },
-
-        popupTest(){
-            kstc.popupTest(this);
         }
 
     },
