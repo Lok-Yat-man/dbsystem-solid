@@ -193,15 +193,14 @@ void SLAM_visual(statistics& stat)
 	stat.static_pixel_size = stat.col_pixels;
 	stat.static_coord = 1;
 	stat.dynamic_coord = 0;
-	//thread*th_vec = new thread[stat.num_threads];
+	thread*th_vec = new thread[stat.num_threads];
 
 	init_SLAM(stat);
 	//SLAM_scan_x(stat);
-	SLAM_scan_x(stat,0);
 
-	// for (int tid = 0; tid < stat.num_threads; tid++)
-	// 	th_vec[tid] = thread(SLAM_scan_x, ref(stat), tid);
+	for (int tid = 0; tid < stat.num_threads; tid++)
+		th_vec[tid] = thread(SLAM_scan_x, ref(stat), tid);
 
-	// for (int tid = 0; tid < stat.num_threads; tid++)
-	// 	th_vec[tid].join();
+	for (int tid = 0; tid < stat.num_threads; tid++)
+		th_vec[tid].join();
 }
