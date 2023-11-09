@@ -341,18 +341,26 @@ string alg_visual::saveCube_toString()
 string alg_visual::compute(int argc, char**argv)
 {
 	string outString;
+	cout << "load_parameters" << endl;
 	load_parameters(argc, argv);
+	cout << "filter_datasets" << endl;
 	filter_datasets();
+	cout << "init_visual" << endl;
 	init_visual();
+	cout << "visual_Algorithm" << endl;
 	visual_Algorithm();
 	//output_File(); //debug mode
 	//exit(0); //debug mode
-	
-	if (stat.KDV_type == 1 || stat.KDV_type == 2)
-		return saveMatrix_toString_CSV();
-	if (stat.KDV_type == 3)
-		return saveCube_toString_CSV();
 
+	if (stat.KDV_type == 1 || stat.KDV_type == 2){
+        cout << "saveMatrix_toString" << endl;
+		return saveMatrix_toString_CSV();
+	}
+	if (stat.KDV_type == 3){
+        cout << "saveCube_toString" << endl;
+		return saveCube_toString_CSV();
+	}
+    cout << "return empty string" << endl;
 	return "";
 }
 
@@ -387,7 +395,7 @@ void alg_visual::clear_memory()
 
 			for (int q_id = 0; q_id < stat.dynamic_pixel_size; q_id++)
 				delete[] stat.SLAM_vec[th].query_list[q_id];
-			
+
 			stat.SLAM_vec[th].query_list.clear();
 			stat.SLAM_vec[th].result_list.clear();
 		}
@@ -610,19 +618,20 @@ void alg_visual::load_datasets_CSV(char**argv)
 	stat.dataFileName_CSV = argv[1];
 	stat.KDV_type = atoi(argv[2]);
 
+    cout<< "loading data, file name: " << stat.dataFileName_CSV << endl;
 	dataFile_CSV.open(stat.dataFileName_CSV, ios::in | ios::out);
 	if (dataFile_CSV.is_open() == false)
 	{
 		cout << "Cannot Open File!" << endl;
 		exit(1);
 	}
-
+    int lineCount = 0;
 	getline(dataFile_CSV, lineString);
 	while (getline(dataFile_CSV, lineString))
 	{
 		if (lineString == "")
 			break;
-
+        lineCount++;
 		token = strtok((char*)lineString.c_str(), " ,");
 		x = atof(token);
 		token = strtok(NULL, " ,");
@@ -645,6 +654,6 @@ void alg_visual::load_datasets_CSV(char**argv)
 
 		ori_n++;
 	}
-
+    cout << "line count: " << lineCount << endl;
 	dataFile_CSV.close();
 }

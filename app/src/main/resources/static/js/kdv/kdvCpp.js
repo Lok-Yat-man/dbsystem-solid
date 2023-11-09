@@ -34,7 +34,7 @@ var Module = typeof Module != 'undefined' ? Module : {};
         // web worker
         PACKAGE_PATH = encodeURIComponent(location.pathname.toString().substring(0, location.pathname.toString().lastIndexOf('/')) + '/');
       }
-      var PACKAGE_NAME = 'kdvCpp.data';
+      var PACKAGE_NAME = 'target/kdvCpp.data';
       var REMOTE_PACKAGE_BASE = 'kdvCpp.data';
       if (typeof Module['locateFilePackage'] === 'function' && !Module['locateFile']) {
         Module['locateFile'] = Module['locateFilePackage'];
@@ -122,6 +122,7 @@ var REMOTE_PACKAGE_SIZE = metadata['remote_package_size'];
       function assert(check, msg) {
         if (!check) throw msg + new Error().stack;
       }
+Module['FS_createPath']("/", "data", true, true);
 
       /** @constructor */
       function DataRequest(start, end, audio) {
@@ -165,10 +166,10 @@ var REMOTE_PACKAGE_SIZE = metadata['remote_package_size'];
           var files = metadata['files'];
           for (var i = 0; i < files.length; ++i) {
             DataRequest.prototype.requests[files[i].filename].onload();
-          }          Module['removeRunDependency']('datafile_kdvCpp.data');
+          }          Module['removeRunDependency']('datafile_target/kdvCpp.data');
 
       };
-      Module['addRunDependency']('datafile_kdvCpp.data');
+      Module['addRunDependency']('datafile_target/kdvCpp.data');
 
       if (!Module.preloadResults) Module.preloadResults = {};
 
@@ -189,7 +190,7 @@ var REMOTE_PACKAGE_SIZE = metadata['remote_package_size'];
     }
 
     }
-    loadPackage({"files": [{"filename": "/cases.csv", "start": 0, "end": 2040976}], "remote_package_size": 2040976});
+    loadPackage({"files": [{"filename": "/data/cases.csv", "start": 0, "end": 2040976}], "remote_package_size": 2040976});
 
   })();
 

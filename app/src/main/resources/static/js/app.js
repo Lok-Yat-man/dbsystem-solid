@@ -69,6 +69,24 @@ new Vue({
                     params_3:0.5,
                     params_4:0.5
                 }
+            },
+            kdv: {
+                dataFileName: "./cases.csv",
+                kdv_type: 1,
+                num_threads: 1,
+                x_L: 1,
+                x_U: 50,
+                y_L: 1,
+                y_U: 50,
+                row_pixels: 50,
+                col_pixels: 50,
+                kernel_s_type: 1,
+                bandwidth_s: 1000,
+                t_L: 1,
+                t_U: 1,
+                kernel_t_type: 1,
+                bandwidth_t: 1,
+                cur_time: 1
             }
         }
     },

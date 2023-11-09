@@ -211,12 +211,13 @@
 <script type="module" src="js/app.js"></script>
 <script src="js/kdv/kdvCpp.js"></script>
 <script>
-    console.log("load kdv.js");
     Module.onRuntimeInitialized = function() {
-        let result = Module.load_data();
-        console.log("load_data result: ", result);
-        let result2 = Module.compute(1,2,1,256,256,1,1,1,1,1,1,1,1,1,1);
-        console.log("compute result: ", result2);
+        console.log("load kdv.js");
+        // int kdv_type, int num_threads, double x_L, double x_U, double y_L, double y_U,
+        //     int row_pixels, int col_pixels, int kernel_s_type, double bandwidth_s, double t_L, double t_U,
+        //     int kernel_t_type, double bandwidth_t, double cur_time
+        let result2 = Module.compute(1, 1, 113, 115, 22, 23, 256, 256, 1, 1000, 1, 1, 1, 1000, 1);
+        // console.log("compute result: ", result2);
     };
 </script>
 </html>
