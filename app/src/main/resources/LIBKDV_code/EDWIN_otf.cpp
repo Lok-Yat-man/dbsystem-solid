@@ -94,7 +94,7 @@ void EDWIN_otf_visual(statistics& stat)
 			stat.max_EDWIN_KDE = max(stat.max_EDWIN_KDE, stat.outMatrix[x_index][y_index]);
 		}
 	}
-		
+
 
 	//clear_EDWIN_otf(stat);
 }

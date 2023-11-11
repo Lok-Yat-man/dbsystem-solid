@@ -203,20 +203,11 @@
 
     </div>
 </body>
+<script src="js/kdv/kdvCpp.js"></script>
 <script src="js/environment/d3.js"></script>
 <script src="js/environment/vue.js"></script>
 <script src="js/environment/elementUI.js"></script>
 <script src="js/environment/mapboxgl.js"></script>
 <script src="js/environment/axios.js"></script>
 <script type="module" src="js/app.js"></script>
-<script src="js/kdv/kdvCpp.js"></script>
-<script>
-    console.log("load kdv.js");
-    Module.onRuntimeInitialized = function() {
-        let result = Module.load_data();
-        console.log("load_data result: ", result);
-        let result2 = Module.compute(1,2,1,256,256,1,1,1,1,1,1,1,1,1,1);
-        console.log("compute result: ", result2);
-    };
-</script>
 </html>

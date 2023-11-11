@@ -47,8 +47,7 @@ void alg_visual::load_parameters(int argc, char**argv)
 	stat.kernel_s_type = 1;
 	stat.bandwidth_s = 0.0001;*/
 
-	stat.num_threads = 1;
-	stat.KDV_type = atoi(argv[2]);
+	stat.num_threads = atoi(argv[3]);
 	stat.x_L = atof(argv[4]);
 	stat.x_U = atof(argv[5]);
 	stat.y_L = atof(argv[6]);
@@ -57,10 +56,6 @@ void alg_visual::load_parameters(int argc, char**argv)
 	stat.col_pixels = atoi(argv[9]);
 	stat.kernel_s_type = atoi(argv[10]);
 	stat.bandwidth_s = atof(argv[11]);
-
-	stat.st = atof(argv[17]);
-	stat.ed = atof(argv[18]);
-
 
 	if (stat.KDV_type == 1) //KDV
 		stat.dim = 2;
@@ -101,11 +96,11 @@ void alg_visual::load_parameters(int argc, char**argv)
 
 void alg_visual::filter_datasets()
 {
-	//int ori_n = stat.base_dataMatrix.size();
+	int ori_n = stat.base_dataMatrix.size();
 	int n = 0;
 	double x_value, y_value, weight;
 
-	for (int i = stat.st; i < stat.ed; i++)
+	for (int i = 0; i < ori_n; i++)
 	{
 		x_value = stat.base_dataMatrix[i][0];
 		y_value = stat.base_dataMatrix[i][1];
@@ -177,7 +172,7 @@ void alg_visual::matrix_normalization(double max_KDE)
 {
 	for (int r = 0; r < stat.row_pixels; r++)
 		for (int c = 0; c < stat.col_pixels; c++)
-			stat.outMatrix[r][c] *= 100.0 / max_KDE;
+			stat.outMatrix[r][c] *= 255.0 / max_KDE;
 }
 
 void alg_visual::cube_normalization(double max_KDE)
@@ -185,7 +180,7 @@ void alg_visual::cube_normalization(double max_KDE)
 	for (int r = 0; r < stat.row_pixels; r++)
 		for (int c = 0; c < stat.col_pixels; c++)
 			for (int t = 0; t < stat.t_pixels; t++)
-				stat.outCube[r][c][t] *= 100.0 / max_KDE;
+				stat.outCube[r][c][t] *= 255.0 / max_KDE;
 }
 
 string alg_visual::saveMatrix_toString_CSV()
@@ -201,22 +196,24 @@ string alg_visual::saveMatrix_toString_CSV()
 	}
 	else //KDV_type = 2
 		max_KDE = stat.max_EDWIN_KDE;
-	outString_ss << "lon,lat,v\n";
 
 	matrix_normalization(max_KDE);
+
 	for (int r = 0; r < stat.row_pixels; r++)
 	{
 		for (int c = 0; c < stat.col_pixels; c++)
 		{
-			if (stat.outMatrix[r][c] < 1 || isnan(stat.outMatrix[r][c]))
+			if (stat.outMatrix[r][c] < small_epsilon)
 				continue;
+
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
 
 			outString_ss << setprecision(10) << x << "," << y << "," << stat.outMatrix[r][c] << endl;
 		}
 	}
-	//clear_memory();
+
+	clear_memory();
 	return outString_ss.str();
 }
 
@@ -231,7 +228,6 @@ string alg_visual::saveCube_toString_CSV()
 	max_KDE = stat.max_EDWIN_KDE;
 
 	cube_normalization(max_KDE);
-	outString_ss << "lon,lat,t,v\n";
 
 	for (int r = 0; r < stat.row_pixels; r++)
 	{
@@ -242,7 +238,7 @@ string alg_visual::saveCube_toString_CSV()
 			for (int t = 0; t < stat.t_pixels; t++)
 			{
 				time = stat.t_L + t * stat.incr_t;
-				if (stat.outCube[r][c][t] < 1 || isnan(stat.outCube[r][c][t]))
+				if (stat.outCube[r][c][t] < small_epsilon)
 					continue;
 
 				outString_ss << setprecision(10) << x << "," << y << "," << time << "," << stat.outCube[r][c][t] << endl;
@@ -250,7 +246,9 @@ string alg_visual::saveCube_toString_CSV()
 		}
 	}
 
-	//clear_memory();
+	cout << outString_ss.str() << endl;
+
+	clear_memory();
 	return outString_ss.str();
 }
 
@@ -277,7 +275,7 @@ string alg_visual::saveMatrix_toString()
 	{
 		for (int c = 0; c < stat.col_pixels; c++)
 		{
-			if (stat.outMatrix[r][c] < 1 || isnan(stat.outMatrix[r][c]))
+			if (stat.outMatrix[r][c] < small_epsilon)
 				continue;
 			else
 			{
@@ -294,7 +292,7 @@ string alg_visual::saveMatrix_toString()
 	}
 	outString_ss << "]";
 
-	//clear_memory();
+	clear_memory();
 	return outString_ss.str();
 }
 
@@ -336,25 +334,33 @@ string alg_visual::saveCube_toString()
 	}
 	outString_ss << "]";
 
-	//clear_memory();
+	clear_memory();
 	return outString_ss.str();
 }
 
 string alg_visual::compute(int argc, char**argv)
 {
 	string outString;
+	cout << "load_parameters" << endl;
 	load_parameters(argc, argv);
+	cout << "filter_datasets" << endl;
 	filter_datasets();
+	cout << "init_visual" << endl;
 	init_visual();
+	cout << "visual_Algorithm" << endl;
 	visual_Algorithm();
 	//output_File(); //debug mode
 	//exit(0); //debug mode
-	
-	if (stat.KDV_type == 1 || stat.KDV_type == 2)
-		return saveMatrix_toString_CSV();
-	if (stat.KDV_type == 3)
-		return saveCube_toString_CSV();
 
+	if (stat.KDV_type == 1 || stat.KDV_type == 2){
+        cout << "saveMatrix_toString" << endl;
+		return saveMatrix_toString_CSV();
+	}
+	if (stat.KDV_type == 3){
+        cout << "saveCube_toString" << endl;
+		return saveCube_toString_CSV();
+	}
+    cout << "return empty string" << endl;
 	return "";
 }
 
@@ -389,7 +395,7 @@ void alg_visual::clear_memory()
 
 			for (int q_id = 0; q_id < stat.dynamic_pixel_size; q_id++)
 				delete[] stat.SLAM_vec[th].query_list[q_id];
-			
+
 			stat.SLAM_vec[th].query_list.clear();
 			stat.SLAM_vec[th].result_list.clear();
 		}
@@ -558,6 +564,7 @@ void alg_visual::load_datasets(char**argv)
 	//stat.KDV_type = 1;
 
 	stat.dataFileName_JSON = argv[1];
+	stat.KDV_type = atoi(argv[2]);
 
 	dataFile_json.open(stat.dataFileName_JSON);
 	if (dataFile_json.is_open() == false)
@@ -579,7 +586,7 @@ void alg_visual::load_datasets(char**argv)
 		stat.base_dataMatrix[ori_n][0] = x;
 		stat.base_dataMatrix[ori_n][1] = y;
 
-		//if (stat.KDV_type == 2 || stat.KDV_type == 3) //Online STKDV or batch-based STKDV
+		if (stat.KDV_type == 2 || stat.KDV_type == 3) //Online STKDV or batch-based STKDV
 		{
 			token = strtok(NULL, " :,}"); token = strtok(NULL, " :,}");
 			t = atof(token);
@@ -609,21 +616,22 @@ void alg_visual::load_datasets_CSV(char**argv)
 	//stat.KDV_type = 3;
 
 	stat.dataFileName_CSV = argv[1];
-	//stat.KDV_type = atoi(argv[2]);
+	stat.KDV_type = atoi(argv[2]);
 
+    cout<< "loading data, file name: " << stat.dataFileName_CSV << endl;
 	dataFile_CSV.open(stat.dataFileName_CSV, ios::in | ios::out);
 	if (dataFile_CSV.is_open() == false)
 	{
 		cout << "Cannot Open File!" << endl;
 		exit(1);
 	}
-
-
+    int lineCount = 0;
+	getline(dataFile_CSV, lineString);
 	while (getline(dataFile_CSV, lineString))
 	{
 		if (lineString == "")
 			break;
-
+        lineCount++;
 		token = strtok((char*)lineString.c_str(), " ,");
 		x = atof(token);
 		token = strtok(NULL, " ,");
@@ -632,16 +640,20 @@ void alg_visual::load_datasets_CSV(char**argv)
 		stat.base_dataMatrix[ori_n][0] = x;
 		stat.base_dataMatrix[ori_n][1] = y;
 
-		token = strtok(NULL, " ,");
-		t = atof(token);
-		stat.base_dataMatrix[ori_n][2] = t;
+		if (stat.KDV_type == 2 || stat.KDV_type == 3) //Online STKDV or batch-based STKDV
+		{
+			token = strtok(NULL, " ,");
+			t = atof(token);
+			stat.base_dataMatrix[ori_n][2] = t;
+		}
+
 		//token = strtok(NULL, " ,");
 		//weight = atof(token);
-		stat.base_weightVector.push_back(1);
+		weight = 1;
+		stat.base_weightVector.push_back(weight);
 
 		ori_n++;
 	}
-
-
+    cout << "line count: " << lineCount << endl;
 	dataFile_CSV.close();
 }

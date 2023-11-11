@@ -85,4 +85,20 @@ function loadHeatMap(vueThis, path, center, zoom){
     });
 }
 
-export default {loadHeatMap}
+function compute(kdv){
+    // Module.onRuntimeInitialized = function() {
+    // };
+    return Module.compute(kdv.kdv_type, kdv.num_threads, kdv.x_L, kdv.x_U,
+        kdv.y_L,kdv.y_U,kdv.row_pixels,kdv.col_pixels,kdv.kernel_s_type, kdv.bandwidth_s,
+        kdv.t_L,kdv.t_U,kdv.kernel_s_type,kdv.bandwidth_t,kdv.cur_time);
+}
+
+function callKdvCpp(vueThis){
+    // 2, 1, 113.5, 114.5, 22, 22.6, 10, 10, 1, 1000, 1, 1, 1, 1000, 1
+    return compute(vueThis.kdv);
+}
+
+export default {
+    loadHeatMap,
+    callKdvCpp,
+}

@@ -69,6 +69,24 @@ new Vue({
                     params_3:0.5,
                     params_4:0.5
                 }
+            },
+            kdv: {
+                dataFileName: "./cases.csv",
+                kdv_type: 1,
+                num_threads: 1,
+                x_L: 113.5,
+                x_U: 114.5,
+                y_L: 22,
+                y_U: 22.6,
+                row_pixels: 10,
+                col_pixels: 10,
+                kernel_s_type: 1,
+                bandwidth_s: 1000,
+                t_L: 1,
+                t_U: 1,
+                kernel_t_type: 1,
+                bandwidth_t: 1000,
+                cur_time: 1
             }
         }
     },
@@ -142,6 +160,7 @@ new Vue({
                 kdvDataPath = "http://localhost:8080/kdv/geojson"
             }
             kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
+            console.log(kdv.callKdvCpp(this));
         },
 
         loadKStc(str){
