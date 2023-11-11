@@ -1,15 +1,14 @@
 package com.edu.szu;
 
-import cn.edu.szu.cs.*;
+import cn.edu.szu.cs.entity.Coordinate;
+import cn.edu.szu.cs.entity.Query;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
-import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
-import java.nio.charset.StandardCharsets;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

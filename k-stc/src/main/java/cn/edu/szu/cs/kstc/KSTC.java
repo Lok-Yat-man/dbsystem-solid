@@ -1,8 +1,9 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.kstc;
+
+import cn.edu.szu.cs.entity.Query;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public interface KSTC<T> {
 

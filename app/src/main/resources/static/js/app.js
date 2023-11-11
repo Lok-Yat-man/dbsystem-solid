@@ -46,8 +46,8 @@ new Vue({
                 query:{
                     "keywords": "Food",
                     "location":{
-                        "longitude":-75.1,
-                        "latitude":39.9
+                        "longitude":-75.16,
+                        "latitude":39.95
                     },
                     "k":1,
                     "epsilon": 1000,

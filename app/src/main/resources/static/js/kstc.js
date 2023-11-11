@@ -9,15 +9,15 @@ async function loadKSTC(vueThis){
         vueThis.KSTC.query.location.latitude,
         10
     );
-    setTimeout(()=>{
-
-        if(vueThis.KSTC.running){
-            vueThis.KSTC.loading=false;
-            vueThis.KSTC.timeout=true;
-            alert("30 second Time Out! Please try again later or modify parameters!")
-        }
-
-    },30000)
+    // setTimeout(()=>{
+    //
+    //     if(vueThis.KSTC.running){
+    //         vueThis.KSTC.loading=false;
+    //         vueThis.KSTC.timeout=true;
+    //         alert("30 second Time Out! Please try again later or improve the limitation of parameters!")
+    //     }
+    //
+    // },30000)
 
 }
 
@@ -148,12 +148,9 @@ async function requestMarkers(url){
 }
 
 async function doLoad(vueThis,lon,lat,zoom){
-    vueThis.KSTC.running=true;
+
     let markers = await loadMarkers(vueThis);
-    vueThis.KSTC.running=false;
-    if(vueThis.KSTC.timeout){
-        return;
-    }
+
     vueThis.KSTC.lastKeywords=vueThis.KSTC.query.keywords.split(",");
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
@@ -182,9 +179,7 @@ async function doLoad(vueThis,lon,lat,zoom){
         marker.setPopup(utils.getPopUp("当前位置",false));
         vueThis.KSTC.curMarker=marker;
         marker.addTo(vueThis.map);
-
     });
-
 
     await paintPoints(vueThis,markers.length);
 

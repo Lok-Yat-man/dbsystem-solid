@@ -1,4 +1,4 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.entity;
 
 import java.io.Serializable;
 import java.util.List;

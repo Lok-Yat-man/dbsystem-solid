@@ -1,8 +1,7 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.entity;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -11,11 +10,11 @@ import java.util.Objects;
  * @date 2023/10/1 10:31
  * @version 1.0
  */
-public class SimpleRelatedObject implements Serializable,RelatedObject {
+public class SimpleRelatedObject implements Serializable, RelatedObject {
 
     private  String objectId;
 
-    private  Coordinate coordinate;
+    private Coordinate coordinate;
 
     private String name;
 

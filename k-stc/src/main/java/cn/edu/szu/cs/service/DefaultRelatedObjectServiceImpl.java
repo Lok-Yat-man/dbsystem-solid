@@ -1,5 +1,7 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.service;
 
+import cn.edu.szu.cs.entity.RelatedObject;
+import cn.edu.szu.cs.entity.SimpleRelatedObject;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.LineHandler;
 import cn.hutool.core.io.resource.ClassPathResource;
@@ -7,10 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultRelatedObjectServiceImpl implements IRelatedObjectService{
 
-    private Map<String,RelatedObject> map = new HashMap<>();
+    private Map<String, RelatedObject> map = new HashMap<>();
 
     public DefaultRelatedObjectServiceImpl(){
 
@@ -52,5 +51,10 @@ public class DefaultRelatedObjectServiceImpl implements IRelatedObjectService{
     @Override
     public List<String> getLabelsById(String id) {
         return map.get(id).getLabels();
+    }
+
+    @Override
+    public List<RelatedObject> getAll() {
+        return new ArrayList<>(map.values());
     }
 }

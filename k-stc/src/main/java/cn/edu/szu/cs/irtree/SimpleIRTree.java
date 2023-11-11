@@ -1,5 +1,10 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.irtree;
 
+import cn.edu.szu.cs.entity.Coordinate;
+import cn.edu.szu.cs.entity.RelatedObject;
+import cn.edu.szu.cs.irtree.IRTree;
+import cn.edu.szu.cs.service.IRelatedObjectService;
+import cn.edu.szu.cs.util.CommonAlgorithm;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.core.collection.CollUtil;
@@ -9,11 +14,8 @@ import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Point;
 import com.github.davidmoten.rtree.internal.LeafDefault;
 import com.github.davidmoten.rtree.internal.NonLeafDefault;
-import rx.Observable;
-import rx.functions.Func2;
 
 
-import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,7 +62,7 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
                 List<String> labels = relatedObjectService.getLabelsById(entry.value()).stream().map(String::toLowerCase).collect(Collectors.toList());
                 set.addAll(labels);
             }
-            // Returns each string and the maximum weight of the current node.
+
             return set;
 
         }
@@ -135,7 +137,7 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
     }
 
     @Override
-    public synchronized List<RelatedObject> rangeQuery(List<String> keywords,Coordinate coordinate,double epsilon) {
+    public synchronized List<RelatedObject> rangeQuery(List<String> keywords, Coordinate coordinate, double epsilon) {
         Assert.isTrue(rTree.root().isPresent(),"rtree not exist.");
         Assert.isTrue(epsilon>0.0,"rtree not exist.");
         Assert.checkBetween(coordinate.getLongitude(),-180.0,180.0,"wrong lon.");

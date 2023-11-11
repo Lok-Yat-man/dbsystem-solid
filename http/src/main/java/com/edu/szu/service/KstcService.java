@@ -1,6 +1,6 @@
 package com.edu.szu.service;
 
-import cn.edu.szu.cs.Query;
+import cn.edu.szu.cs.entity.Query;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 

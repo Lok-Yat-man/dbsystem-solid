@@ -1,13 +1,15 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.ivtidx;
 
 
+import cn.edu.szu.cs.entity.Coordinate;
+import cn.edu.szu.cs.service.IRelatedObjectService;
+import cn.edu.szu.cs.entity.RelatedObject;
+import cn.edu.szu.cs.util.CommonAlgorithm;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import com.alibaba.fastjson.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,7 +21,7 @@ import java.util.stream.Collectors;
  * @date 2023/10/17 21:26
  * @version 1.0
  */
-public class DefaultInvertedIndex implements InvertedIndex<RelatedObject>{
+public class DefaultInvertedIndex implements InvertedIndex<RelatedObject> {
 
     private Map<String,List<String>> map;
     private IRelatedObjectService relatedObjectService;
@@ -50,7 +52,7 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject>{
     }
 
     @Override
-    public synchronized PriorityQueue<RelatedObject> getSList(List<String> keywords,Coordinate coordinate,double maxDistance, Comparator<RelatedObject> comparator) {
+    public synchronized PriorityQueue<RelatedObject> getSList(List<String> keywords, Coordinate coordinate, double maxDistance, Comparator<RelatedObject> comparator) {
 
         PriorityQueue<RelatedObject> relatedObjects = new PriorityQueue<>(comparator);
         if(CollUtil.isEmpty(keywords)){
@@ -73,11 +75,9 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject>{
         return relatedObjects;
     }
 
-
     @Override
-    public List<String> keys() {
-        return new ArrayList<>(map.keySet());
+    public Map<String, List<String>> getAll() {
+        return map;
     }
-
 
 }

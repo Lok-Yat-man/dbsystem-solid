@@ -1,4 +1,6 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.entity;
+
+import cn.edu.szu.cs.entity.Coordinate;
 
 import java.util.List;
 

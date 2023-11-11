@@ -1,4 +1,6 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.service;
+
+import cn.edu.szu.cs.entity.RelatedObject;
 
 import java.util.List;
 
@@ -16,6 +18,8 @@ public interface IRelatedObjectService {
     List<RelatedObject> getByIds(List<String> ids);
 
     List<String> getLabelsById(String id);
+
+    List<RelatedObject> getAll();
 
 
 }

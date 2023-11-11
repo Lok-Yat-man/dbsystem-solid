@@ -1,4 +1,4 @@
-package cn.edu.szu.cs;
+package cn.edu.szu.cs.util;
 
 import java.util.HashMap;
 import java.util.List;

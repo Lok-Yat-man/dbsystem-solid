@@ -1,16 +1,15 @@
 package com.edu.szu.service.impl;
 
-import cn.edu.szu.cs.Coordinate;
-import cn.edu.szu.cs.KSTC;
-import cn.edu.szu.cs.Query;
-import cn.edu.szu.cs.RelatedObject;
+import cn.edu.szu.cs.entity.Coordinate;
+import cn.edu.szu.cs.kstc.KSTC;
+import cn.edu.szu.cs.entity.Query;
+import cn.edu.szu.cs.entity.RelatedObject;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
