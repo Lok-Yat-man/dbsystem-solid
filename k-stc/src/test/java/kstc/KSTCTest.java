@@ -11,6 +11,8 @@ import cn.edu.szu.cs.kstc.SimpleKSTC2;
 import cn.edu.szu.cs.service.DefaultRelatedObjectServiceImpl;
 import cn.edu.szu.cs.service.IRelatedObjectService;
 import cn.edu.szu.cs.util.CommonAlgorithm;
+import cn.hutool.core.thread.ConcurrencyTester;
+import cn.hutool.core.thread.ThreadUtil;
 import com.github.davidmoten.rtree.Entries;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
@@ -30,7 +32,7 @@ public class KSTCTest {
         IRelatedObjectService relatedObjectService = new DefaultRelatedObjectServiceImpl();
 
         List<RelatedObject> objects = relatedObjectService.getAll();
-
+        System.out.println("objects.size() = " + objects.size());
         List<Entry<String, GeoPointDouble>> entryList = objects.stream()
                 .map(
                         object -> Entries.entry(
@@ -43,7 +45,11 @@ public class KSTCTest {
                 )
                 .collect(Collectors.toList());
 
-        RTree<String, GeoPointDouble> rTree = RTree.create(entryList);
+        RTree<String, GeoPointDouble> rTree = RTree
+                .star()
+                .maxChildren(1500)
+                .minChildren(1000)
+                .create(entryList);
 
         GeoPointDouble geoPointDouble = GeoPointDouble.create(
                 -75.08,
@@ -54,27 +60,6 @@ public class KSTCTest {
                 39.91
         );
 
-        long s = System.currentTimeMillis();
-
-        Iterable<String> strings = rTree.search(geoPointDouble, 10000)
-                .map(Entry::value)
-                .toBlocking()
-                .toIterable();
-        Set<String> hashSet = new HashSet<>();
-        strings.forEach(hashSet::add);
-
-        long e = System.currentTimeMillis();
-
-        System.out.println("1: "+(e-s));
-
-        s = System.currentTimeMillis();
-        Set<String> stringSet = objects.stream()
-                .filter(object -> CommonAlgorithm.calculateDistance(object.getCoordinate(), coordinate) <= 10000)
-                .map(RelatedObject::getObjectId)
-                .collect(Collectors.toSet());
-        e = System.currentTimeMillis();
-
-        System.out.println("2: "+(e-s));
 
 
     }
