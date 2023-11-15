@@ -1,18 +1,24 @@
 package com.edu.szu;
 
 import com.edu.szu.api.Pair;
+import com.edu.szu.entity.CheckIn;
+import com.edu.szu.entity.DCPGSParams;
 import com.edu.szu.util.CheckInDistanceCalculator;
 import com.edu.szu.util.CheckInReader;
 import com.edu.szu.util.EdgeReader;
+import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.RTree;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+import rx.Observable;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -66,6 +72,26 @@ public class DCPGSManagerTest {
                 }
             }
             log.info("DCPGS distance pre run end with file:{}",file);
+        }
+    }
+
+    @Test
+    public void testRTree() throws IOException {
+        String checkInFilePath = "gowalla/splittedCheckIn/NewcastleUponTyneUk.txt";
+        RTree<String, CheckIn> rTree = RTree.star().maxChildren(30).create();
+        var checkIns = CheckInReader.getCheckInFromFile(checkInFilePath);
+        for (CheckIn checkIn : checkIns) {
+            rTree = rTree.add(checkIn.getName(),checkIn);
+        }
+        CheckInDistanceCalculator.setParams(new DCPGSParams());
+        CheckInDistanceCalculator.setEdgeMap(EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt"));
+        CheckInDistanceCalculator.setLocationMap(CheckInReader.getLocationMap());
+        for(int i=0;i<10;++i){
+            Observable<Entry<String, CheckIn>> search = rTree.search(checkIns.get(2), 120);
+            ArrayList<CheckIn> neighbours = new ArrayList<>();
+            ArrayList<CheckIn> finalNeighbours = neighbours;
+            search.forEach(n -> finalNeighbours.add(n.geometry()));
+            System.out.println(neighbours.size());
         }
     }
 }

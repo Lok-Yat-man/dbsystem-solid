@@ -1,8 +1,10 @@
 package com.edu.szu;
 
 import com.edu.szu.api.NamedPoint;
+import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.DCPGSParams;
 import com.edu.szu.exception.DBSCANClusteringException;
+import com.edu.szu.util.CheckInDistanceCalculator;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import lombok.Setter;
@@ -26,8 +28,8 @@ public class DCPGS<V extends NamedPoint> {
 
     private final Map<V, List<V>> neighbourMap = new HashMap<>();
 
-    ExecutorService pool = new ThreadPoolExecutor(3, 5, 8, TimeUnit.SECONDS,
-            new ArrayBlockingQueue<>(6), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+    @Setter
+    private ExecutorService pool;
 
     /**
      * Creates a DBSCAN clusterer instance.
@@ -126,9 +128,6 @@ public class DCPGS<V extends NamedPoint> {
             if (!visitedPoints.contains(p)) {
                 visitedPoints.add(p);
                 neighbours = getNeighbours(p);
-//                int size1 = neighbours.size();
-//                neighbours = getNeighbours(p);
-//                System.out.println(size1 == neighbours.size());
 
                 if (neighbours.size() >= minimumNumberOfClusterMembers) {
                     Set<V> cache = new HashSet<>(neighbours);
@@ -196,8 +195,14 @@ public class DCPGS<V extends NamedPoint> {
      */
     private ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
         ArrayList<V> neighbours = new ArrayList<V>();
-        Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getEpsilon());
-        neighbour.forEach(n -> neighbours.add(n.geometry()));
+        Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getMaxD());
+        neighbour.forEach(n -> {
+            V checkIn = (V) n.geometry();
+            if(CheckInDistanceCalculator.calculateDistance((CheckIn) inputValue,
+                    (CheckIn) checkIn) <= params.getEpsilon()){
+                neighbours.add(checkIn);
+            }
+        });
         return neighbours;
     }
 

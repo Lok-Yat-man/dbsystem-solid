@@ -2,6 +2,7 @@ package com.edu.szu.entity;
 
 import com.edu.szu.api.NamedPoint;
 import com.edu.szu.util.CheckInDistanceCalculator;
+import com.edu.szu.util.EuclideanDistanceCalculator;
 import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Rectangle;
 import com.google.gson.annotations.Expose;
@@ -60,7 +61,8 @@ public class CheckIn implements NamedPoint {
     @SneakyThrows
     @Override
     public double distance(Rectangle rectangle) {
-        return CheckInDistanceCalculator.calculateDistance(this, (CheckIn) rectangle);
+        return EuclideanDistanceCalculator.calculateDistance(this.latitude,this.longitude
+        ,((CheckIn) rectangle).latitude,((CheckIn) rectangle).longitude);
     }
 
     @Override

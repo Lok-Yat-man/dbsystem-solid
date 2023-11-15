@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.*;
 
 @Log4j2
 public class DCPGSManager {
@@ -27,6 +28,9 @@ public class DCPGSManager {
     private final Map<String, Boolean> cacheMap;
 
     @Setter Map<String, Map<Long, Set<Long>>> edgeMapSet;
+
+    ExecutorService pool = new ThreadPoolExecutor(4, 5, 8,TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(6), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
     public void dcpgsRun(String checkInFilePath, String key, String dataSet) throws Exception {
         //获取参数
@@ -57,6 +61,7 @@ public class DCPGSManager {
             rTree = rTree.add(checkIn.getName(),checkIn);
         }
         DCPGS<CheckIn> dbscan = new DCPGS<>(checkIns,5);
+        dbscan.setPool(pool);
         dbscan.setParams(params);
         var clusters = dbscan.performClustering(rTree);
         //排序
