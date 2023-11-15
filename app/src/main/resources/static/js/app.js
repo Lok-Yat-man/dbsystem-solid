@@ -166,9 +166,20 @@ new Vue({
         loadKStc(str){
             this.currentAlgorithm = "KSTC";
             this.switchStatus = "KSTC"
+
             kstc.loadKSTC(
                 this
             )
+
+            this.$alert(
+                '1. 双击左键可以修改当前位置。              '
+                +'2. 多个关键词以","分割。                 '
+                +'注意：程序会尽量在可接受时间内返回已计算出的结果，后续结果转为后台计算，稍后重试可查看全部结果。',
+                '提示', {
+                confirmButtonText: '明白',
+                callback: action => {
+                }
+            });
         }
 
     },
