@@ -54,7 +54,7 @@ public class CheckIn implements NamedPoint {
 
     @Override
     public String getName() {
-        return getUserId() + getCheckInTime();
+        return getUserId() + getLocationId();
     }
 
     @SneakyThrows
@@ -75,22 +75,22 @@ public class CheckIn implements NamedPoint {
 
     @Override
     public double x1() {
-        return getLatitude();
+        return getLongitude();
     }
 
     @Override
     public double y1() {
-        return getLongitude();
-    }
-
-    @Override
-    public double x2() {
         return getLatitude();
     }
 
     @Override
-    public double y2() {
+    public double x2() {
         return getLongitude();
+    }
+
+    @Override
+    public double y2() {
+        return getLatitude();
     }
 
     @Override
@@ -125,12 +125,12 @@ public class CheckIn implements NamedPoint {
 
     @Override
     public double x() {
-        return latitude;
+        return longitude;
     }
 
     @Override
     public double y() {
-        return longitude;
+        return latitude;
     }
 
     @Override
