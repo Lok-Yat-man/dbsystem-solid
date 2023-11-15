@@ -56,6 +56,15 @@ public class CheckInDistanceCalculator {
         return params.getOmega() * dp + (1-params.getOmega()) * ds;
     }
 
+    public static double calculateDistance(double e,double ds){
+        double dp = getDp(e);
+        if(dp >= 1)
+            return INF;
+        if(ds >= params.getTau())
+            return INF;
+        return params.getOmega() * dp + (1-params.getOmega()) * ds;
+    }
+
     /**
      * 计算欧氏距离 E(p_i,p_j)
      */
@@ -73,6 +82,10 @@ public class CheckInDistanceCalculator {
      */
     public static double getDp(CheckIn val1, CheckIn val2){
         return getE(val1,val2) / params.getMaxD();
+    }
+
+    public static double getDp(double e){
+        return e / params.getMaxD();
     }
 
     /**
