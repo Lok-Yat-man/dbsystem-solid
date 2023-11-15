@@ -2,6 +2,7 @@ package com.edu.szu;
 
 import com.edu.szu.DCPGS;
 import com.edu.szu.entity.CheckIn;
+import com.edu.szu.entity.DCPGSParams;
 import com.edu.szu.util.CheckInDistanceCalculator;
 import com.edu.szu.util.CheckInReader;
 import com.edu.szu.util.EdgeReader;
@@ -71,5 +72,19 @@ public class DCPGSTest {
         var checkIns = CheckInReader.getCheckInFromFile("gowalla/checkIn1.txt");
         checkIns = checkIns.subList(0,10);
         checkIns.forEach(checkIn -> System.out.println(gson.toJson(checkIn)));
+    }
+
+    @Test
+    public void testDCPGSGetNeighbour() throws Exception{
+        var edges = EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt");
+        CheckInDistanceCalculator.setEdgeMap(edges);
+        String file = "AustinUS";
+        RTree<String, CheckIn> rTree = RTree.star().maxChildren(4).create();
+        var checkIns = CheckInReader.getCheckInFromFile(
+                "gowalla/splittedCheckIn/" + file + ".txt");
+        CheckInDistanceCalculator.setLocationMap(CheckInReader.getLocationMap());
+        DCPGS<CheckIn> dbscan = new DCPGS<>(checkIns,5);
+        dbscan.setParams(new DCPGSParams());
+        dbscan.getAllNeighbours(rTree);
     }
 }

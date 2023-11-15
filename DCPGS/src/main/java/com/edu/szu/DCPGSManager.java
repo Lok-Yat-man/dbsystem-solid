@@ -2,14 +2,13 @@ package com.edu.szu;
 
 import com.edu.szu.util.CheckInDistanceCalculator;
 import com.edu.szu.util.CheckInReader;
-import com.edu.szu.util.EdgeReader;
 import com.github.davidmoten.rtree.RTree;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.CheckInJson;
 import com.edu.szu.entity.DCPGSParams;
-import com.edu.szu.entity.GeoJson;
+import com.edu.szu.entity.DCPGSGeoJson;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +20,7 @@ import java.util.Set;
 public class DCPGSManager {
     private final Map<String, CheckInJson> jsonMap;
 
-    private final Map<String, GeoJson> geoJsonMap;
+    private final Map<String, DCPGSGeoJson> geoJsonMap;
 
     private final Map<String, DCPGSParams> paramsMap;
 
@@ -118,7 +117,7 @@ public class DCPGSManager {
         return CheckInReader.parseJson(filePath);
     }
 
-    public GeoJson getGeoJson(String key, String dataSet) throws IOException {
+    public DCPGSGeoJson getGeoJson(String key, String dataSet) throws IOException {
         paramsMap.computeIfAbsent(key,k -> new DCPGSParams());
         var params = getParams(key,dataSet);
         String filePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",

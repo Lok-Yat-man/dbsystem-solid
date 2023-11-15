@@ -2,7 +2,7 @@ package com.edu.szu;
 
 import com.edu.szu.entity.CheckInJson;
 import com.edu.szu.entity.DCPGSParams;
-import com.edu.szu.entity.GeoJson;
+import com.edu.szu.entity.DCPGSGeoJson;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class DCPGSEndpoint {
     }
 
     @GetMapping("/geoJson/{location}")
-    public GeoJson dcpgsGeoJson(@PathVariable String dataSet, @PathVariable String location) throws IOException {
+    public DCPGSGeoJson dcpgsGeoJson(@PathVariable String dataSet, @PathVariable String location) throws IOException {
         return manager.getGeoJson(location, dataSet);
     }
 }

@@ -4,7 +4,7 @@ import com.edu.szu.entity.AreaJson;
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.CheckInClustering;
 import com.edu.szu.entity.CheckInJson;
-import com.edu.szu.entity.GeoJson;
+import com.edu.szu.entity.DCPGSGeoJson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
@@ -138,20 +138,20 @@ public class CheckInReader {
         return checkInJson;
     }
 
-    public static GeoJson readGeoJsonFromFile(String path) throws IOException {
+    public static DCPGSGeoJson readGeoJsonFromFile(String path) throws IOException {
         String json = IOUtils.resourceToString(path, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
-        return new Gson().fromJson(json,GeoJson.class);
+        return new Gson().fromJson(json, DCPGSGeoJson.class);
     }
 
-    public static GeoJson parseGeoJson(CheckInJson checkInJson){
+    public static DCPGSGeoJson parseGeoJson(CheckInJson checkInJson){
         var clusters = checkInJson.getData();
-        var geoJson = new GeoJson();
-        var feature = new ArrayList<GeoJson.Feature>();
+        var geoJson = new DCPGSGeoJson();
+        var feature = new ArrayList<DCPGSGeoJson.Feature>();
         for (CheckInJson.Cluster cluster : clusters) {
             List<CheckInJson.GeoPair> checkIns = cluster.getCheckIns();
             for (CheckInJson.GeoPair checkIn : checkIns) {
-                feature.add(new GeoJson.Feature(new GeoJson.Geometry(checkIn.getLongitude()
-                , checkIn.getLatitude()),new GeoJson.Properties(String.valueOf(cluster.getClusterId()))));
+                feature.add(new DCPGSGeoJson.Feature(new DCPGSGeoJson.Geometry(checkIn.getLongitude()
+                , checkIn.getLatitude()),new DCPGSGeoJson.Properties(String.valueOf(cluster.getClusterId()))));
             }
         }
         geoJson.setFeatures(feature);
@@ -161,21 +161,21 @@ public class CheckInReader {
     public static void parseGeoJsonTo(String origin, String target) throws IOException {
         String json = IOUtils.resourceToString(origin, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
         CheckInJson checkInJson = new Gson().fromJson(json,CheckInJson.class);
-        GeoJson geoJson = parseGeoJson(checkInJson);
+        DCPGSGeoJson DCPGSGeoJson = parseGeoJson(checkInJson);
         try(var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)))){
-            bw.write(new Gson().toJson(geoJson));
+            bw.write(new Gson().toJson(DCPGSGeoJson));
             bw.flush();
         }
     }
 
     public static void parseGeoJsonTo(CheckInJson checkInJson, String target) throws Exception {
-        GeoJson geoJson = parseGeoJson(checkInJson);
-        parseGeoJsonTo(geoJson,target);
+        DCPGSGeoJson DCPGSGeoJson = parseGeoJson(checkInJson);
+        parseGeoJsonTo(DCPGSGeoJson,target);
     }
 
-    public static void parseGeoJsonTo(GeoJson geoJson, String target) throws Exception {
+    public static void parseGeoJsonTo(DCPGSGeoJson DCPGSGeoJson, String target) throws Exception {
         try(var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(target)))){
-            bw.write(new Gson().toJson(geoJson));
+            bw.write(new Gson().toJson(DCPGSGeoJson));
             bw.flush();
         }
     }

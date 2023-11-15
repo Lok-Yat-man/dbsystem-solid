@@ -8,10 +8,8 @@ import com.github.davidmoten.rtree.RTree;
 import lombok.Setter;
 import rx.Observable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class DCPGS<V extends NamedPoint> {
     /** minimum number of members to consider cluster */
@@ -25,6 +23,11 @@ public class DCPGS<V extends NamedPoint> {
 
     @Setter
     private DCPGSParams params;
+
+    private final Map<V, List<V>> neighbourMap = new HashMap<>();
+
+    ExecutorService pool = new ThreadPoolExecutor(3, 5, 8, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<>(6), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
     /**
      * Creates a DBSCAN clusterer instance.
@@ -65,20 +68,6 @@ public class DCPGS<V extends NamedPoint> {
     }
 
     /**
-     * Determines the neighbours of a given input value.
-     *
-     * @param inputValue Input value for which neighbours are to be determined
-     * @return list of neighbours
-     * @throws DBSCANClusteringException
-     */
-    private ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
-        ArrayList<V> neighbours = new ArrayList<V>();
-        Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getEpsilon());
-        neighbour.forEach(n -> neighbours.add(n.geometry()));
-        return neighbours;
-    }
-
-    /**
      * Merges the elements of the right collection to the left one and returns
      * the combination.
      *
@@ -105,7 +94,7 @@ public class DCPGS<V extends NamedPoint> {
      * @return
      * @throws DBSCANClusteringException
      */
-    public ArrayList<ArrayList<V>> performClustering(RTree<String, V> rTree) throws DBSCANClusteringException {
+    public ArrayList<ArrayList<V>> performClustering(RTree<String, V> rTree) throws Exception {
 
         if (inputValues == null) {
             throw new DBSCANClusteringException("DBSCAN: List of input values is null.");
@@ -127,17 +116,19 @@ public class DCPGS<V extends NamedPoint> {
             throw new DBSCANClusteringException("DBSCAN: Clusters with less than 2 members don't make sense. Current value: " + minimumNumberOfClusterMembers);
         }
 
-        ArrayList<ArrayList<V>> resultList = new ArrayList<ArrayList<V>>();
         visitedPoints.clear();
-
+        ArrayList<ArrayList<V>> resultList = new ArrayList<>();
         ArrayList<V> neighbours;
         int index = 0;
-
-        while (inputValues.size() > index) {
+        getAllNeighbours(rTree);
+        while (index < inputValues.size()) {
             V p = inputValues.get(index);
             if (!visitedPoints.contains(p)) {
                 visitedPoints.add(p);
-                neighbours = getNeighbours(p,rTree);
+                neighbours = getNeighbours(p);
+//                int size1 = neighbours.size();
+//                neighbours = getNeighbours(p);
+//                System.out.println(size1 == neighbours.size());
 
                 if (neighbours.size() >= minimumNumberOfClusterMembers) {
                     Set<V> cache = new HashSet<>(neighbours);
@@ -146,7 +137,7 @@ public class DCPGS<V extends NamedPoint> {
                         V r = neighbours.get(ind);
                         if (!visitedPoints.contains(r)) {
                             visitedPoints.add(r);
-                            ArrayList<V> individualNeighbours = getNeighbours(r,rTree);
+                            ArrayList<V> individualNeighbours = getNeighbours(r);
                             if (individualNeighbours.size() >= minimumNumberOfClusterMembers) {
                                 mergeRightToLeftCollection(
                                         cache,
@@ -163,4 +154,55 @@ public class DCPGS<V extends NamedPoint> {
         }
         return resultList;
     }
+
+    public void getAllNeighbours(RTree<String, V> rTree) throws Exception {
+        int numThread = 4;
+        int gap = inputValues.size()/numThread;
+        List<Future<Map<V, List<V>>>> futures = new ArrayList<>();
+        for (int i = 0; i < numThread; i++) {
+            int startIndex = i * gap;
+            int endIndex;
+            if(i == numThread - 1){
+                endIndex = inputValues.size() - 1;
+            } else {
+                endIndex = (i + 1) * gap - 1;
+            }
+            futures.add(pool.submit(()-> getAllNeighbours(rTree,startIndex,endIndex)));
+        }
+        for (Future<Map<V, List<V>>> future : futures) {
+            Map<V, List<V>> vListMap = future.get();
+            this.neighbourMap.putAll(vListMap);
+        }
+    }
+
+    private Map<V, List<V>> getAllNeighbours(RTree<String, V> rTree, int startIndex, int endIndex){
+        Map<V, List<V>> neighboursMap = new HashMap<>();
+        int index = startIndex;
+        while (index <= endIndex) {
+            V p = inputValues.get(index);
+            ArrayList<V> neighbours = getNeighbours(p,rTree);
+            neighboursMap.put(p,neighbours);
+            index++;
+        }
+        return neighboursMap;
+    }
+
+    /**
+     * Determines the neighbours of a given input value.
+     *
+     * @param inputValue Input value for which neighbours are to be determined
+     * @return list of neighbours
+     * @throws DBSCANClusteringException
+     */
+    private ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
+        ArrayList<V> neighbours = new ArrayList<V>();
+        Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getEpsilon());
+        neighbour.forEach(n -> neighbours.add(n.geometry()));
+        return neighbours;
+    }
+
+    private ArrayList<V> getNeighbours(V inputValue){
+        return (ArrayList<V>) neighbourMap.get(inputValue);
+    }
+
 }
