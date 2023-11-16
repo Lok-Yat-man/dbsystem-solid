@@ -68,18 +68,15 @@ public class ReaderTest {
     @Test
     public void testSplit() throws IOException {
         var checkIns = CheckInReader.getCheckInFromFile(
-                "brightkite/checkIn1.txt",
-                "brightkite/checkIn2.txt",
-                "brightkite/checkIn3.txt",
-                "brightkite/checkIn4.txt"
+                "gowalla/splittedCheckIn/ZurichSwitzerland1.txt"
                 );
-        CheckInReader.splitAreaTo("AustinUS.json",checkIns, "brightkite/splittedCheckIn/AustinUS.txt");
-        CheckInReader.splitAreaTo("GothenburgSweden.json",checkIns, "brightkite/splittedCheckIn/GothenburgSweden.txt");
-        CheckInReader.splitAreaTo("LondonUK.json",checkIns, "brightkite/splittedCheckIn/LondonUK.txt");
-        CheckInReader.splitAreaTo("MalmoSweden.json",checkIns, "brightkite/splittedCheckIn/MalmoSweden.txt");
-        CheckInReader.splitAreaTo("NewcastleUponTyneUk.json",checkIns, "brightkite/splittedCheckIn/NewcastleUponTyneUk.txt");
-        CheckInReader.splitAreaTo("OsloNorway.json",checkIns, "brightkite/splittedCheckIn/OsloNorway.txt");
-        CheckInReader.splitAreaTo("StockholmSweden.json",checkIns, "brightkite/splittedCheckIn/StockholmSweden.txt");
-        CheckInReader.splitAreaTo("ZurichSwitzerland.json",checkIns, "brightkite/splittedCheckIn/ZurichSwitzerland.txt");
+        CheckInReader.splitAreaTo("ZurichSwitzerland.json",checkIns, "gowalla/splittedCheckIn/ZurichSwitzerland.txt");
+//        CheckInReader.splitAreaTo("GothenburgSweden.json",checkIns, "brightkite/splittedCheckIn/GothenburgSweden.txt");
+//        CheckInReader.splitAreaTo("LondonUK.json",checkIns, "brightkite/splittedCheckIn/LondonUK.txt");
+//        CheckInReader.splitAreaTo("MalmoSweden.json",checkIns, "brightkite/splittedCheckIn/MalmoSweden.txt");
+//        CheckInReader.splitAreaTo("NewcastleUponTyneUk.json",checkIns, "brightkite/splittedCheckIn/NewcastleUponTyneUk.txt");
+//        CheckInReader.splitAreaTo("OsloNorway.json",checkIns, "brightkite/splittedCheckIn/OsloNorway.txt");
+//        CheckInReader.splitAreaTo("StockholmSweden.json",checkIns, "brightkite/splittedCheckIn/StockholmSweden.txt");
+//        CheckInReader.splitAreaTo("ZurichSwitzerland.json",checkIns, "brightkite/splittedCheckIn/ZurichSwitzerland.txt");
     }
 }

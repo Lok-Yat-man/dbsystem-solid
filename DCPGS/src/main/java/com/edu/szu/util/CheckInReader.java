@@ -91,6 +91,8 @@ public class CheckInReader {
     public static void splitAreaTo(String areaFileName, List<CheckIn> checkIns, String target) throws IOException {
         log.info("splitting started");
         var split = splitArea(areaFileName, checkIns);
+        log.info("before split size: {}", checkIns.size());
+        log.info("after split size: {}", split.size());
         try (var bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/" + target)))) {
             for (CheckIn checkIn : split) {
                 bw.write(checkIn.toString() + "\r\n");
