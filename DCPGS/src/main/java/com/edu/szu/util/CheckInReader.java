@@ -35,6 +35,28 @@ public class CheckInReader {
             .excludeFieldsWithoutExposeAnnotation()
             .create();
 
+    public static List<CheckIn> getAllCheckInFromFile(String... files){
+        List<CheckIn> ans = new ArrayList<>();
+        for (String filePath : files) {
+            log.info("reading file: {}",filePath);
+            try (var bf = new BufferedReader(new InputStreamReader(
+                    new ByteArrayInputStream(IOUtils.resourceToByteArray(filePath, CheckInReader.class.getClassLoader()))))) {
+                String line;
+                while ((line = bf.readLine()) != null) {
+                    var checkIn = stringToCheckIn(line);
+                    if (checkIn == null) {
+                        continue;
+                    }
+                    ans.add(checkIn);
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            log.info("reading work of file:( {} ) finished",filePath);
+        }
+        return ans;
+    }
+
     public static List<CheckIn> getCheckInFromFile(String... filePaths) {
         locationMap = new HashMap<>();
         Set<CheckIn> ans = new HashSet<>();
@@ -99,7 +121,7 @@ public class CheckInReader {
                 bw.flush();
             }
         }
-        log.info("splitting finished");
+        log.info("splitting finished to target: {}",target);
     }
 
     public static void outPutCheckIn(List<ArrayList<CheckIn>> checkIns, String target) throws Exception {
