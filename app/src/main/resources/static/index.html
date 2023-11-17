@@ -22,8 +22,9 @@
 
             <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
 
-            <template><el-button id ="DCPGSParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
+
             <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS">
+                <el-button id ="DCPGSParamsCloser" size="small" round  @click="paramsSwitch('SWITCH')" :disabled="sideBarDisabled">close</el-button>
                 <span style="color: rgb(96, 98, 102)">cluster nums: </span>
                 <el-slider
                         v-model="DCPGS.clusterNums"
@@ -35,19 +36,19 @@
                 <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)">gowalla</el-radio>
                 <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%" @change="loadDSPGS('',-1)">brightkite</el-radio>
                 <el-form-item label="&epsilon;">
-                    <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0.3" :max="1"></el-input-number>
+                    <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0.3" :max="1" :disabled="sideBarDisabled"></el-input-number>
                 </el-form-item>
                 <el-form-item label="&omega;">
-                    <el-input-number v-model="DCPGS.params.omega" :precision="2" :step="0.1" :min="0" :max="1"></el-input-number>
+                    <el-input-number v-model="DCPGS.params.omega" :precision="2" :step="0.1" :min="0" :max="1" :disabled="sideBarDisabled"></el-input-number>
                 </el-form-item>
                 <el-form-item label="&tau;">
-                    <el-input-number v-model="DCPGS.params.tau" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
+                    <el-input-number v-model="DCPGS.params.tau" :precision="2" :step="0.1" :min="0" :max="1" :disabled="sideBarDisabled"></el-input-number>
                 </el-form-item>
                 <el-form-item label="maxD">
-                    <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="80" :max="200" ></el-input-number>
+                    <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="80" :max="200" :disabled="sideBarDisabled"></el-input-number>
                 </el-form-item>
                 <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading">confirm</el-button>
+                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading" >confirm</el-button>
                 </div>
             </el-form>
         </div>
@@ -115,7 +116,7 @@
 
         </el-button>
          <!-- 侧边导航栏-->
-         <el-row class="tac sideOut" id="sideBar" style="overflow:auto;">
+         <el-row class="tac sideOut" id="sideBar" style="overflow:auto;" >
             <el-col :span="12">
 <!--              <h3 style="text-align: center">Menu</h3>-->
 
@@ -132,14 +133,14 @@
                   </template>
                     <el-submenu index="1-1">
                         <template slot="title">Geo-social network</template>
-                        <el-menu-item index="1-1-1" @click="loadDSPGS('StockholmSweden', 13)">Stockholm Sweden</el-menu-item>
-                        <el-menu-item index="1-1-2" @click="loadDSPGS('MalmoSweden', 13)">Malmo Sweden</el-menu-item>
-                        <el-menu-item index="1-1-3" @click="loadDSPGS('GothenburgSweden', 13)">Gothenburg Sweden</el-menu-item>
-                        <el-menu-item index="1-1-4" @click="loadDSPGS('AustinUS', 13)">Austin US</el-menu-item>
-                        <el-menu-item index="1-1-5" @click="loadDSPGS('LondonUK', 13)">London UK</el-menu-item>
-                        <el-menu-item index="1-1-6" @click="loadDSPGS('NewcastleUponTyneUk', 13.5)">Newcastle Upon Tyne UK</el-menu-item>
-                        <el-menu-item index="1-1-7" @click="loadDSPGS('OsloNorway', 13)">Oslo Norway</el-menu-item>
-                        <el-menu-item index="1-1-8" @click="loadDSPGS('ZurichSwitzerland', 13)">Zurich Switzerland</el-menu-item>
+                        <el-menu-item index="1-1-1" @click="loadDSPGS('StockholmSweden', 13)" :disabled="sideBarDisabled">Stockholm Sweden</el-menu-item>
+                        <el-menu-item index="1-1-2" @click="loadDSPGS('MalmoSweden', 13)" :disabled="sideBarDisabled">Malmo Sweden</el-menu-item>
+                        <el-menu-item index="1-1-3" @click="loadDSPGS('GothenburgSweden', 13)" :disabled="sideBarDisabled">Gothenburg Sweden</el-menu-item>
+                        <el-menu-item index="1-1-4" @click="loadDSPGS('AustinUS', 13)" :disabled="sideBarDisabled">Austin US</el-menu-item>
+                        <el-menu-item index="1-1-5" @click="loadDSPGS('LondonUK', 13)" :disabled="sideBarDisabled">London UK</el-menu-item>
+                        <el-menu-item index="1-1-6" @click="loadDSPGS('NewcastleUponTyneUk', 13.5)" :disabled="sideBarDisabled">Newcastle Upon Tyne UK</el-menu-item>
+                        <el-menu-item index="1-1-7" @click="loadDSPGS('OsloNorway', 13)" :disabled="sideBarDisabled">Oslo Norway</el-menu-item>
+                        <el-menu-item index="1-1-8" @click="loadDSPGS('ZurichSwitzerland', 13)" :disabled="sideBarDisabled">Zurich Switzerland</el-menu-item>
                     </el-submenu>
                     <el-submenu index="1-2">
                        <template slot="title">Spatial textual clustering</template>

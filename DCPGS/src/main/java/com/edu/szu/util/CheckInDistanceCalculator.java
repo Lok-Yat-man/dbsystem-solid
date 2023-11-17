@@ -98,8 +98,8 @@ public class CheckInDistanceCalculator {
         if(val1.equals(val2)){
             return 0.0;
         }
-        var upi = locationMap.get(val1.getLocationId());
-        var upj = locationMap.get(val2.getLocationId());
+        var upi = new HashSet<>(locationMap.get(val1.getLocationId()));
+        var upj = new HashSet<>(locationMap.get(val2.getLocationId()));
         Set<Long> cuij = new HashSet<>();
         upi.forEach(user -> {
             if (isContributeUser(user, upj)) {

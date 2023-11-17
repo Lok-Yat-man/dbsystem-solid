@@ -13,9 +13,10 @@ new Vue({
             baseUrl: "http://localhost:8080",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "prod",//local or prod
+            env: "local",//local or prod
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
+            sideBarDisabled: false,
             DCPGS: {
                 loading: false,
                 dataset: "gowalla",//gowalla or brightkite
@@ -98,11 +99,13 @@ new Vue({
             }
             else if(state === 'DCPGS_UPDATE') {
                 this.DCPGS.loading = true;
+                this.sideBarDisabled = true;
                 await dcpgs.updateParams(this)
                     .then(()=>{
                         console.log("DCPGS params running finished")
                         this.switchStatus = "SWITCH";
                         this.DCPGS.loading = false;
+                        this.sideBarDisabled = false;
                     });
             }else if(state === 'KSTC_UPDATE'){
                 this.switchStatus = "KSTC"
