@@ -13,10 +13,11 @@ new Vue({
             baseUrl: "http://localhost:8080",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "local",//local or prod
+            env: "prod",//local or prod
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             sideBarDisabled: false,
+            mapLoading: false,
             DCPGS: {
                 loading: false,
                 dataset: "gowalla",//gowalla or brightkite

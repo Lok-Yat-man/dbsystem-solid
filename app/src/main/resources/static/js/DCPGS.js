@@ -51,6 +51,9 @@ async function loadDCPGS(vueThis, location, zoom) {
     let env = vueThis.env;
     let path = getPathFromLocation(location, env, vueThis.DCPGS.dataset);
     let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
+    vueThis.sideBarDisabled = true;
+    vueThis.DCPGS.loading = true;
+    vueThis.mapLoading = true;
     if (env === "prod") {
         await axios({
             method: "get",
@@ -64,6 +67,9 @@ async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.maxClusterNums = await getClusters(path[1], path[0], zoom, vueThis);
     loadPoints(vueThis, path[1], zoom);
     loadMarkers(vueThis);
+    vueThis.sideBarDisabled = false;
+    vueThis.DCPGS.loading = false;
+    vueThis.mapLoading = false;
 }
 
 async function getParams(vueThis, location) {
