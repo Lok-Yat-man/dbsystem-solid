@@ -63,16 +63,16 @@ public class DCPGSManager {
         //排序
         clusters.sort((list1,list2)->Integer.compare(list2.size(),list1.size()));
         //输出结果到文件
-//        CheckInJson checkInJson = CheckInReader.parseJson(clusters);
-//        CheckInReader.outPutCheckIn(clusters, "DCPGS/src/main/resources/" + filePath);
-//        var geoJsonFilePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
-//                dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
-//        var geoJson = CheckInReader.parseGeoJson(checkInJson);
-//        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/src/main/resources/" +
-//                geoJsonFilePath);
-//        jsonMap.put(filePath,checkInJson);
-//        geoJsonMap.put(geoJsonFilePath,geoJson);
-//        cacheMap.put(filePath,true);
+        CheckInJson checkInJson = CheckInReader.parseJson(clusters);
+        CheckInReader.outPutCheckIn(clusters, "DCPGS/src/main/resources/" + filePath);
+        var geoJsonFilePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
+                dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
+        var geoJson = CheckInReader.parseGeoJson(checkInJson);
+        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/src/main/resources/" +
+                geoJsonFilePath);
+        jsonMap.put(filePath,checkInJson);
+        geoJsonMap.put(geoJsonFilePath,geoJson);
+        cacheMap.put(filePath,true);
         long timeEnd = System.currentTimeMillis();
         log.info("DCPGS finished with {} clusters of key: {}, using time: {} s",
                 clusters.size(), key, (timeEnd - timeStart) / 1000.0);
