@@ -36,65 +36,7 @@ public class DCPGSManagerTest {
         edgeMap = EdgeReader.getEdges("brightkite/loc-brightkite_edges.txt");
         edgeMapSet.put("brightkite",edgeMap);
         dcpgsManager.setEdgeMapSet(edgeMapSet);
-        DCPGSParams dcpgsParams = new DCPGSParams();
-        dcpgsParams.setOmega(0.0);
-        dcpgsManager.setAllParams("StockholmSweden",dcpgsParams, "gowalla");
         dcpgsManager.dcpgsRun("gowalla/splittedCheckIn/StockholmSweden.txt","StockholmSweden","gowalla");
     }
 
-    @Test
-    public void culDCPGSDistance() throws Exception {
-        String[] checkInFilePath = {
-                "gowalla/splittedCheckIn/AustinUS.txt",
-                "gowalla/splittedCheckIn/GothenburgSweden.txt",
-                "gowalla/splittedCheckIn/LondonUK.txt",
-                "gowalla/splittedCheckIn/MalmoSweden.txt",
-                "gowalla/splittedCheckIn/NewcastleUponTyneUk.txt",
-                "gowalla/splittedCheckIn/StockholmSweden.txt",
-                "gowalla/splittedCheckIn/OsloNorway.txt",
-                "gowalla/splittedCheckIn/ZurichSwitzerland.txt",
-        };
-        var edgeMap = EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt");
-        CheckInDistanceCalculator.setEdgeMap(edgeMap);
-        for (String file : checkInFilePath) {
-            var checkIns = CheckInReader.getCheckInFromFile(file);
-            CheckInDistanceCalculator.setLocationMap(CheckInReader.getLocationMap());
-            log.info("checkIns size: {}", checkIns.size());
-            var eos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.split("/")[2].split("\\.")[0] + ".distance")));
-            eos.write("start,end,e,ds\n");
-            eos.flush();
-            for (int i = 0; i < checkIns.size(); i++) {
-                for (int j = i+1; j < checkIns.size(); j++) {
-                    var checkIn1 = checkIns.get(i);
-                    var checkIn2 = checkIns.get(j);
-                    var pair = Pair.of(checkIn1.getName(),checkIn2.getName());
-                    var e = CheckInDistanceCalculator.getE(checkIn1,checkIn2);
-                    var ds = CheckInDistanceCalculator.getDs(checkIn1,checkIn2);
-                    eos.write(String.format("%s,%s,%f,%f\n",pair.getStart(),pair.getEnd(),e,ds));
-                    eos.flush();
-                }
-            }
-            log.info("DCPGS distance pre run end with file:{}",file);
-        }
-    }
-
-    @Test
-    public void testRTree() throws IOException {
-        String checkInFilePath = "gowalla/splittedCheckIn/NewcastleUponTyneUk.txt";
-        RTree<String, CheckIn> rTree = RTree.star().maxChildren(30).create();
-        var checkIns = CheckInReader.getCheckInFromFile(checkInFilePath);
-        for (CheckIn checkIn : checkIns) {
-            rTree = rTree.add(checkIn.getName(),checkIn);
-        }
-        CheckInDistanceCalculator.setParams(new DCPGSParams());
-        CheckInDistanceCalculator.setEdgeMap(EdgeReader.getEdges("gowalla/loc-gowalla_edges.txt"));
-        CheckInDistanceCalculator.setLocationMap(CheckInReader.getLocationMap());
-        for(int i=0;i<10;++i){
-            Observable<Entry<String, CheckIn>> search = rTree.search(checkIns.get(2), 120);
-            ArrayList<CheckIn> neighbours = new ArrayList<>();
-            ArrayList<CheckIn> finalNeighbours = neighbours;
-            search.forEach(n -> finalNeighbours.add(n.geometry()));
-            System.out.println(neighbours.size());
-        }
-    }
 }

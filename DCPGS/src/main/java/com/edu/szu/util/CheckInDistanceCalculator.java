@@ -1,8 +1,8 @@
 package com.edu.szu.util;
 
+import com.edu.szu.api.PointDistanceCalculator;
 import com.edu.szu.entity.CheckIn;
 import com.edu.szu.entity.DCPGSParams;
-import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.HashSet;
@@ -10,43 +10,32 @@ import java.util.Map;
 import java.util.Set;
 
 @Log4j2
-public class CheckInDistanceCalculator {
+public class CheckInDistanceCalculator implements PointDistanceCalculator<CheckIn> {
     private static final double INF = 1.5;
-
-    private static long computeTime = 0;
-
-    private static long mNum = 0;
 
     /**
      * key = userId, value = set of users who is friend of key
      */
-    private static Map<Long, Set<Long>> edgeMap;
+    private final Map<Long, Set<Long>> edgeMap;
 
     /**
      * key = locationId, value=Set of users who visit this location
      */
-    private static Map<String, Set<Long>> locationMap;
+    private final Map<String, Set<Long>> locationMap;
 
-    @Setter
-    private static DCPGSParams params;
+    private final DCPGSParams params;
 
-
-    public static void setEdgeMap(Map<Long, Set<Long>> edgeMap) {
-        CheckInDistanceCalculator.edgeMap = edgeMap;
-    }
-
-    public static void setLocationMap(Map<String, Set<Long>> locationMap) {
-        CheckInDistanceCalculator.locationMap = locationMap;
+    public CheckInDistanceCalculator(Map<Long, Set<Long>> edgeMap, Map<String, Set<Long>> locationMap,
+                                     DCPGSParams params){
+        this.edgeMap = edgeMap;
+        this.locationMap = locationMap;
+        this.params = params;
     }
 
     /**
      * 计算地理社交距离 D_{gs}
      */
-    public static double calculateDistance(CheckIn val1, CheckIn val2) {
-//        ++computeTime;
-//        if((computeTime & 1048575) == 0){
-//            log.info("{} M times",++mNum);
-//        }
+    public double calculateDistance(CheckIn val1, CheckIn val2) {
         double dp = getDp(val1,val2);
         if(dp >= 1)
             return INF;
@@ -56,19 +45,10 @@ public class CheckInDistanceCalculator {
         return params.getOmega() * dp + (1-params.getOmega()) * ds;
     }
 
-    public static double calculateDistance(double e,double ds){
-        double dp = getDp(e);
-        if(dp >= 1)
-            return INF;
-        if(ds >= params.getTau())
-            return INF;
-        return params.getOmega() * dp + (1-params.getOmega()) * ds;
-    }
-
     /**
      * 计算欧氏距离 E(p_i,p_j)
      */
-    public static double getE(CheckIn val1, CheckIn val2){
+    private double getE(CheckIn val1, CheckIn val2){
         return EuclideanDistanceCalculator
                 .calculateDistance(val1.getLatitude(),val1.getLongitude(),
                         val2.getLatitude(),val2.getLongitude());
@@ -80,12 +60,8 @@ public class CheckInDistanceCalculator {
      * @param val2
      * @return
      */
-    public static double getDp(CheckIn val1, CheckIn val2){
+    private double getDp(CheckIn val1, CheckIn val2){
         return getE(val1,val2) / params.getMaxD();
-    }
-
-    public static double getDp(double e){
-        return e / params.getMaxD();
     }
 
     /**
@@ -94,7 +70,7 @@ public class CheckInDistanceCalculator {
      * @param val2
      * @return
      */
-    public static double getDs(CheckIn val1, CheckIn val2){
+    private double getDs(CheckIn val1, CheckIn val2){
         if(val1.equals(val2)){
             return 0.0;
         }
@@ -115,7 +91,7 @@ public class CheckInDistanceCalculator {
         return 1.0 - ((double) cuij.size() / (upi.size() + upj.size()));
     }
 
-    private static boolean isContributeUser(long user, Set<Long> targetLocation){
+    private boolean isContributeUser(long user, Set<Long> targetLocation){
         if(targetLocation.contains(user)){
             return true;
         }else{

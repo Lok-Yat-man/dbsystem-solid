@@ -54,29 +54,25 @@ public class DCPGSManager {
             throw new IllegalArgumentException("edgeMap is null");
         }
         long timeStart = System.currentTimeMillis();
-        CheckInDistanceCalculator.setParams(params);
-        CheckInDistanceCalculator.setEdgeMap(edgeMapSet.get(dataSet));
-        CheckInDistanceCalculator.setLocationMap(CheckInReader.getLocationMap());
+        CheckInDistanceCalculator calculator = new CheckInDistanceCalculator(edgeMapSet.get(dataSet), CheckInReader.getLocationMap(), params);
         for (CheckIn checkIn : checkIns) {
             rTree = rTree.add(checkIn.getName(),checkIn);
         }
-        DCPGS<CheckIn> dbscan = new DCPGS<>(checkIns,5);
-        dbscan.setPool(pool);
-        dbscan.setParams(params);
+        DCPGS<CheckIn> dbscan = new DCPGS<>(checkIns,5, calculator, pool, params);
         var clusters = dbscan.performClustering(rTree);
         //排序
         clusters.sort((list1,list2)->Integer.compare(list2.size(),list1.size()));
         //输出结果到文件
-        CheckInJson checkInJson = CheckInReader.parseJson(clusters);
-        CheckInReader.outPutCheckIn(clusters, "DCPGS/src/main/resources/" + filePath);
-        var geoJsonFilePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
-                dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
-        var geoJson = CheckInReader.parseGeoJson(checkInJson);
-        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/src/main/resources/" +
-                geoJsonFilePath);
-        jsonMap.put(filePath,checkInJson);
-        geoJsonMap.put(geoJsonFilePath,geoJson);
-        cacheMap.put(filePath,true);
+//        CheckInJson checkInJson = CheckInReader.parseJson(clusters);
+//        CheckInReader.outPutCheckIn(clusters, "DCPGS/src/main/resources/" + filePath);
+//        var geoJsonFilePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
+//                dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
+//        var geoJson = CheckInReader.parseGeoJson(checkInJson);
+//        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/src/main/resources/" +
+//                geoJsonFilePath);
+//        jsonMap.put(filePath,checkInJson);
+//        geoJsonMap.put(geoJsonFilePath,geoJson);
+//        cacheMap.put(filePath,true);
         long timeEnd = System.currentTimeMillis();
         log.info("DCPGS finished with {} clusters of key: {}, using time: {} s",
                 clusters.size(), key, (timeEnd - timeStart) / 1000.0);

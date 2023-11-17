@@ -1,13 +1,11 @@
 package com.edu.szu;
 
 import com.edu.szu.api.NamedPoint;
-import com.edu.szu.entity.CheckIn;
+import com.edu.szu.api.PointDistanceCalculator;
 import com.edu.szu.entity.DCPGSParams;
 import com.edu.szu.exception.DBSCANClusteringException;
-import com.edu.szu.util.CheckInDistanceCalculator;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
-import lombok.Setter;
 import rx.Observable;
 
 import java.util.*;
@@ -23,79 +21,35 @@ public class DCPGS<V extends NamedPoint> {
     /** index maintaining visited points */
     private final HashSet<V> visitedPoints = new HashSet<V>();
 
-    @Setter
-    private DCPGSParams params;
+    private final DCPGSParams params;
 
     private final Map<V, List<V>> neighbourMap = new HashMap<>();
 
-    @Setter
-    private ExecutorService pool;
+    private final ExecutorService pool;
 
-    /**
-     * Creates a DBSCAN clusterer instance.
-     * Upon instantiation, call {@link #performClustering()}
-     * to perform the actual clustering.
-     *
-     * @param inputValues Input values to be clustered
-     * @param minNumElements Minimum number of elements to constitute cluster
-     * @throws DBSCANClusteringException
-     */
-    public DCPGS(final Collection<V> inputValues, int minNumElements) throws DBSCANClusteringException {
-        setInputValues(inputValues);
-        setMinimalNumberOfMembersForCluster(minNumElements);
+    private final PointDistanceCalculator<V> pointDistanceCalculator;
+
+    public DCPGS(final Collection<V> inputValues, int minNumElements,
+                 PointDistanceCalculator<V> calculator, ExecutorService pool,
+                 DCPGSParams params) throws DBSCANClusteringException {
+        this.inputValues = (ArrayList<V>) inputValues;
+        this.minimumNumberOfClusterMembers = minNumElements;
+        this.pointDistanceCalculator = calculator;
+        this.pool = pool;
+        this.params = params;
     }
 
-    /**
-     * Sets a collection of input values to be clustered.
-     * Repeated call overwrite the original input values.
-     *
-     * @param collection
-     * @throws DBSCANClusteringException
-     */
-    public void setInputValues(final Collection<V> collection) throws DBSCANClusteringException {
-        if (collection == null) {
-            throw new DBSCANClusteringException("DBSCAN: List of input values is null.");
-        }
-        this.inputValues = new ArrayList<V>(collection);
-    }
-
-    /**
-     * Sets the minimal number of members to consider points of close proximity
-     * clustered.
-     *
-     * @param minimalNumberOfMembers
-     */
-    public void setMinimalNumberOfMembersForCluster(final int minimalNumberOfMembers) {
-        this.minimumNumberOfClusterMembers = minimalNumberOfMembers;
-    }
-
-    /**
-     * Merges the elements of the right collection to the left one and returns
-     * the combination.
-     *
-     * @param neighbours1 left collection
-     * @param neighbours2 right collection
-     * @return Modified left collection
-     */
-    private ArrayList<V> mergeRightToLeftCollection(final Set<V> cache,
-                                                    final ArrayList<V> neighbours1,
-                                                    final ArrayList<V> neighbours2) {
+    private void mergeRightToLeftCollection(final Set<V> cache,
+                                            final ArrayList<V> neighbours1,
+                                            final ArrayList<V> neighbours2) {
         for (V tempPt : neighbours2) {
             if (!cache.contains(tempPt)) {
                 neighbours1.add(tempPt);
                 cache.add(tempPt);
             }
         }
-        return neighbours1;
     }
 
-    /**
-     * Applies the clustering and returns a collection of clusters (i.e. a list
-     * of lists of the respective cluster members).
-     *
-     * @return
-     * @throws DBSCANClusteringException
-     */
     public ArrayList<ArrayList<V>> performClustering(RTree<String, V> rTree) throws Exception {
 
         if (inputValues == null) {
@@ -186,20 +140,13 @@ public class DCPGS<V extends NamedPoint> {
         return neighboursMap;
     }
 
-    /**
-     * Determines the neighbours of a given input value.
-     *
-     * @param inputValue Input value for which neighbours are to be determined
-     * @return list of neighbours
-     * @throws DBSCANClusteringException
-     */
     private ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
         ArrayList<V> neighbours = new ArrayList<V>();
         Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getMaxD());
         neighbour.forEach(n -> {
             V checkIn = (V) n.geometry();
-            if(CheckInDistanceCalculator.calculateDistance((CheckIn) inputValue,
-                    (CheckIn) checkIn) <= params.getEpsilon()){
+            if(pointDistanceCalculator.calculateDistance(inputValue, checkIn)
+                    <= params.getEpsilon()){
                 neighbours.add(checkIn);
             }
         });
