@@ -1,24 +1,9 @@
 package com.edu.szu;
 
-import com.edu.szu.api.Pair;
-import com.edu.szu.entity.CheckIn;
-import com.edu.szu.entity.DCPGSParams;
-import com.edu.szu.util.CheckInDistanceCalculator;
-import com.edu.szu.util.CheckInReader;
 import com.edu.szu.util.EdgeReader;
-import com.github.davidmoten.rtree.Entry;
-import com.github.davidmoten.rtree.RTree;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
-import rx.Observable;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
