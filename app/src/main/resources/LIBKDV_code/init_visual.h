@@ -131,6 +131,8 @@ struct statistics
 	double**outMatrix;
 	double***outCube;
 	//int out_r; int out_c; int out_t;
+
+	double middle_lat;
 };
 
 //void GPS_to_x_y(double longitude, double latitude, double& x, double& y, statistics& stat);

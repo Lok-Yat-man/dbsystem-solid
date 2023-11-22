@@ -48,14 +48,14 @@ void alg_visual::load_parameters(int argc, char**argv)
 	stat.bandwidth_s = 0.0001;*/
 
 	stat.num_threads = atoi(argv[3]);
-	stat.x_L = atof(argv[4]);
-	stat.x_U = atof(argv[5]);
-	stat.y_L = atof(argv[6]);
-	stat.y_U = atof(argv[7]);
+	stat.x_L = atof(argv[4]);  //x轴范围最低值
+	stat.x_U = atof(argv[5]);  //x轴范围最高值
+	stat.y_L = atof(argv[6]);  //y轴范围最低值
+	stat.y_U = atof(argv[7]);  //y轴范围最高值
 	stat.row_pixels = atoi(argv[8]);
 	stat.col_pixels = atoi(argv[9]);
 	stat.kernel_s_type = atoi(argv[10]);
-	stat.bandwidth_s = atof(argv[11]);
+	stat.bandwidth_s = atof(argv[11]);  //带宽
 
 	if (stat.KDV_type == 1) //KDV
 		stat.dim = 2;
@@ -183,6 +183,34 @@ void alg_visual::cube_normalization(double max_KDE)
 				stat.outCube[r][c][t] *= 255.0 / max_KDE;
 }
 
+void alg_visual::GPS_to_x(double longitude,double &x,statistics& stat)
+{
+    double middle_lat;
+    longitude = longitude * pi / 180;
+    middle_lat = stat.middle_lat * pi/ 180;
+    x = earth_radius * longitude * cos( middle_lat * 2 * pi / 360);
+}
+
+void alg_visual::GPS_to_y(double latitude,double &y,statistics& stat){
+	latitude=latitude*pi/180;
+	y=earth_radius*latitude;
+}
+
+void alg_visual::compute_middle_lat(statistics& stat){
+	int count=0;
+	for (int r = 0; r < stat.row_pixels; r++)
+	{
+		for (int c = 0; c < stat.col_pixels; c++)
+		{
+			if (stat.outMatrix[r][c] < small_epsilon)
+				continue;
+			stat.middle_lat += stat.queryVector[r*stat.col_pixels + c][1];
+			count++;
+		}
+	}
+	stat.middle_lat /=count;
+}
+
 string alg_visual::saveMatrix_toString_CSV()
 {
 	double max_KDE = -inf;
@@ -198,7 +226,7 @@ string alg_visual::saveMatrix_toString_CSV()
 		max_KDE = stat.max_EDWIN_KDE;
 
 	matrix_normalization(max_KDE);
-
+	compute_middle_lat(stat);
 	for (int r = 0; r < stat.row_pixels; r++)
 	{
 		for (int c = 0; c < stat.col_pixels; c++)
@@ -208,7 +236,10 @@ string alg_visual::saveMatrix_toString_CSV()
 
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
-
+			outString_ss << setprecision(10) << "(" << x << "," << y << "," << stat.outMatrix[r][c] << " )" << endl;
+			GPS_to_x(x,x,stat);
+			GPS_to_y(y,y,stat);
+			
 			outString_ss << setprecision(10) << x << "," << y << "," << stat.outMatrix[r][c] << endl;
 		}
 	}
@@ -286,6 +317,7 @@ string alg_visual::saveMatrix_toString()
 
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
+
 
 			outString_ss << setprecision(10) << "{\"x\": " << x << ", \"y\": " << y << ", \"value\": " << stat.outMatrix[r][c] << "}";
 		}

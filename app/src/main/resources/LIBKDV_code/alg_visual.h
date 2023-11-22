@@ -17,6 +17,9 @@ public:
 	void visual_Algorithm();
 	void matrix_normalization(double max_KDE);
 	void cube_normalization(double max_KDE);
+	void GPS_to_x(double longitude, double &x,statistics& stat);
+	void GPS_to_y(double latitude, double &y,statistics& stat);
+	void compute_middle_lat(statistics& stat);
 	string saveMatrix_toString_CSV();
 	string saveCube_toString_CSV();
 	string saveMatrix_toString();
