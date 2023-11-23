@@ -184,6 +184,30 @@ new Vue({
                 callback: action => {
                 }
             });
+        },
+
+        loadTest(){
+            this.map = new mapboxgl.Map({
+                container: 'map', // container id
+                style: 'mapbox://styles/mapbox/light-v11',
+                center: [-97.7575966669, 30.2634181234],
+                zoom: 5
+            });
+            this.map.on('load', ()=> {
+                this.map.addSource('line', {
+                    'type': 'geojson',
+                    'data': 'data//geojson/lineStringExample.json'
+                });
+                this.map.addLayer({
+                    'id': 'line-animation',
+                    'type': 'line',
+                    'source': 'line',
+                    'paint': {
+                        'line-width': 5,
+                        'line-color': '#ed6498'
+                    }
+                });
+            });
         }
 
     },
