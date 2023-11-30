@@ -73,6 +73,3 @@ void update_incr_values(statistics& stat)
 	stat.incr_t = (stat.t_U - stat.t_L) / stat.t_pixels;
 }
 
-void compute_middle_lat(statistics& stat){
-	
-}
