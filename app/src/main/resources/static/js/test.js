@@ -1,4 +1,5 @@
-function testLine(vueThis){
+import util from './utils.js'
+function testTree(vueThis){
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         style: 'mapbox://styles/mapbox/light-v11',
@@ -15,8 +16,18 @@ function testLine(vueThis){
             'type': 'line',
             'source': 'line',
             'paint': {
-                'line-width': 5,
-                'line-color': '#ed6498'
+                'line-width': 1,
+                'line-color': '#a292f8'
+            }
+        });
+        vueThis.map.addLayer({
+            'id': 'line-point',
+            'type': 'circle',
+            'source': 'line',
+            'paint': {
+                'circle-radius': 4,
+                'circle-color': '#032885',
+                'circle-opacity': 0.7,
             }
         });
     });
@@ -35,7 +46,7 @@ function testPolygon(vueThis){
             'type': 'geojson',
             'data': 'js/kdv/kdvPolygon.json'
         });
-        for(let i = 1;i<=1;++i){
+        for(let i = 1;i<=3;++i){
             vueThis.map.addLayer({
                 'id': 'poly' + i,
                 'type': 'fill',
@@ -43,8 +54,8 @@ function testPolygon(vueThis){
                 filter: ['==', 'index', i],
                 'layout': {},
                 'paint': {
-                    'fill-color': '#ff3149',
-                    'fill-opacity': 0.5
+                    'fill-color': util.getColor(i,20),
+                    'fill-opacity': 0.1
                 }
             });
             // 添加轮廓
@@ -55,7 +66,7 @@ function testPolygon(vueThis){
                 filter: ['==', 'index', i],
                 'layout': {},
                 'paint': {
-                    'line-color': '#0a1011',
+                    'line-color': util.getColor(i,20),
                     'line-width': 2,
                     'line-opacity':0.5
                 }
@@ -67,6 +78,6 @@ function testPolygon(vueThis){
 }
 
 export default {
-    testLine,
+    testTree,
     testPolygon
 }

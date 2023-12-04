@@ -188,7 +188,7 @@ new Vue({
         },
 
         loadTest(){
-            test.testPolygon(this);
+            test.testTree(this);
         }
 
     },
