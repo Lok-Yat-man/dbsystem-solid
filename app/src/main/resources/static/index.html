@@ -54,7 +54,7 @@
             </el-form>
         </div>
 
-        <div v-loading.lock="KSTC.loading"
+        <div v-loading="KSTC.loading"
                 class="params" v-if="switchStatus === 'KSTC'">
             <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
             <template><el-button id ="KSTCParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
@@ -75,14 +75,14 @@
                 <el-form-item label="minPts">
                     <el-input-number v-model="KSTC.query.minPts" :step="1" :min="2" :max="20" ></el-input-number>
                 </el-form-item>
-                <el-form-item label="maxDist">
-                    <el-input-number v-model="KSTC.query.maxDist" :step="1" :min="-1" ></el-input-number>
-                </el-form-item>
+<!--                <el-form-item label="maxDist">-->
+<!--                    <el-input-number v-model="KSTC.query.maxDist" :step="1" :min="-1" ></el-input-number>-->
+<!--                </el-form-item>-->
                 <el-form-item label="lon">
-                    <el-input-number v-model="KSTC.query.location.longitude" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
+                    <el-input-number v-model="KSTC.query.location.longitude" :min="-180" :max="180" ></el-input-number>
                 </el-form-item>
                 <el-form-item label="lat">
-                    <el-input-number v-model="KSTC.query.location.latitude" :precision="2" :step="0.1" :min="-90" :max="90" ></el-input-number>
+                    <el-input-number v-model="KSTC.query.location.latitude" :min="-90" :max="90" ></el-input-number>
                 </el-form-item>
                 <div style="text-align: center">
                     <el-button round @click="paramsSwitch('KSTC_UPDATE')">confirm</el-button>

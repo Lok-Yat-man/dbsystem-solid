@@ -9,6 +9,8 @@ import com.github.davidmoten.rtree.geometry.Rectangle;
 
 public final class GeoPointDouble implements Point {
 
+    public static long cnt = 0;
+
     private final double x;
     private final double y;
 
@@ -28,6 +30,7 @@ public final class GeoPointDouble implements Point {
 
     @Override
     public double distance(Rectangle r) {
+        ++cnt;
         return CommonAlgorithm.getDistance(x,y,r.x1(),r.y1());
     }
 

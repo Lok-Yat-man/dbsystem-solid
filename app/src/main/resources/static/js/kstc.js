@@ -161,7 +161,7 @@ async function doLoad(vueThis,lon,lat,zoom){
         zoom: zoom
     });
     vueThis.map.doubleClickZoom.disable();
-
+    console.log("current position: "+lon+","+lat);
     let marker = utils.currentPosition(lon, lat);
     marker.setPopup(utils.getPopUp("当前位置",false));
     marker.addTo(vueThis.map);

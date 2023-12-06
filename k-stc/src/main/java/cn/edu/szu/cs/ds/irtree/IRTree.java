@@ -1,4 +1,4 @@
-package cn.edu.szu.cs.irtree;
+package cn.edu.szu.cs.ds.irtree;
 
 import cn.edu.szu.cs.entity.Coordinate;
 

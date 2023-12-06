@@ -9,6 +9,7 @@ import cn.edu.szu.cs.util.CommonAlgorithm;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.cache.impl.LRUCache;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Pair;
@@ -17,7 +18,10 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.github.davidmoten.rtree.Entries;
 import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.Node;
 import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.internal.LeafDefault;
+import com.github.davidmoten.rtree.internal.NonLeafDefault;
 
 import java.lang.ref.SoftReference;
 import java.util.*;
@@ -34,7 +38,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 
-public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
+public class SimpleKSTC3<T extends RelatedObject> implements KSTC<T> {
     // Some tools
     /**
      * logger
@@ -48,12 +52,11 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
     /**
      * Maximum timeout per request.
      */
-    private static final long DEFAULT_TIMEOUT = 10_000L;
+    private static final long DEFAULT_TIMEOUT = 30_000L;
     /**
      * Thread pool for asynchronous computing
      */
     private static class ThreadPoolExecutorHolder{
-
         public static ThreadPoolExecutor threadPool = null;
         static {
             int processors = Runtime.getRuntime().availableProcessors();
@@ -72,7 +75,7 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
     /**
      * rTree is used to store the spatial information of related objects.
      */
-    private RTree<String,GeoPointDouble> rTree;
+    private RTree<RelatedObject,GeoPointDouble> rTree;
     /**
      * Preserve the extensibility of the way to obtain related objects.
      */
@@ -83,7 +86,7 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
     private static volatile SoftReference<LFUCache<String,Object>> mainCache = null;
     private LFUCache<String,Object> mainCache(){
         if(mainCache == null || mainCache.get() == null){
-            synchronized (SimpleKSTC2.class){
+            synchronized (SimpleKSTC3.class){
                 if(mainCache == null){
                     mainCache = new SoftReference<>(CacheUtil.newLFUCache(128));
                     logger.debug("Main cache initialized successfully.");
@@ -93,40 +96,92 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
         return mainCache.get();
     }
 
-    /**
-     * Trie is used to construct inverted index for prefix matching.
-     */
-    private Trie root;
-    private static class Trie{
-        boolean isWord;
-        Map<Character, Trie> children;
-        List<RelatedObject> objs;
+    public static class Trie{
 
-        void put(String keyword,RelatedObject object){
+        /**
+         * relatedObject cache is used to cache the results of inverted index.
+         */
+        private static volatile SoftReference<LRUCache<String,Set<RelatedObject>>> relatedObjectCache = null;
+        private LRUCache<String,Set<RelatedObject>> relatedObjectCache(){
+            if(relatedObjectCache == null){
+                synchronized (SimpleKSTC3.class){
+                    if(relatedObjectCache == null){
+                        relatedObjectCache=new SoftReference<>(CacheUtil.newLRUCache(32,DEFAULT_TIMEOUT));
+                        logger.debug("Inverted index cache initialized successfully.");
+                    }
+                }
+            }
+            return relatedObjectCache.get();
+        }
+
+
+        /**
+         * node cache is used to cache the results of inverted index.
+         */
+        private static volatile SoftReference<LRUCache<String,Set<Node<RelatedObject, GeoPointDouble>>>> nodeCache = null;
+        private LRUCache<String,Set<Node<RelatedObject, GeoPointDouble>>> nodeCache(){
+            if(nodeCache == null){
+                synchronized (SimpleKSTC3.class){
+                    if(nodeCache == null){
+                        nodeCache=new SoftReference<>(CacheUtil.newLRUCache(32,DEFAULT_TIMEOUT));
+                        logger.debug("Inverted index cache initialized successfully.");
+                    }
+                }
+            }
+            return nodeCache.get();
+        }
+
+        private boolean isWord;
+        private Map<Character, Trie> children;
+        private Set<RelatedObject> objs;
+        private Set<Node<RelatedObject, GeoPointDouble>> nodes;
+
+        public void putRelatedObject(String keyword, RelatedObject object){
             Trie cur=this;
             for (char ch : keyword.toLowerCase().toCharArray()) {
                 if(cur.children == null){
-                    cur.children = new HashMap<>();
+                    cur.children = new HashMap<>(128);
                 }
                 cur.children.putIfAbsent(ch,new Trie());
                 cur=cur.children.get(ch);
             }
             cur.isWord=true;
             if(cur.objs == null){
-                cur.objs=new LinkedList<>();
+                cur.objs=new HashSet<>();
             }
             cur.objs.add(object);
         }
+        public void putNode(String keyword,Node<RelatedObject, GeoPointDouble> node){
+            Trie cur=this;
+            for (char ch : keyword.toLowerCase().toCharArray()) {
+                if(cur.children == null){
+                    cur.children = new HashMap<>(128);
+                }
+                cur.children.putIfAbsent(ch,new Trie());
+                cur=cur.children.get(ch);
+            }
+            cur.isWord=true;
+            if(cur.nodes == null){
+                cur.nodes=new HashSet<>();
+            }
+            cur.nodes.add(node);
+        }
 
-        List<RelatedObject> search(String keyword){
+        public Set<RelatedObject> searchRelatedObject(String keyword){
+            if(StrUtil.isBlank(keyword)){
+                return Collections.emptySet();
+            }
+            if(relatedObjectCache().containsKey(keyword)){
+                return relatedObjectCache().get(keyword);
+            }
             Trie cur = this;
             for (char ch : keyword.toCharArray()) {
                 if(cur.children == null){
-                    return Collections.emptyList();
+                    return Collections.emptySet();
                 }
                 cur=cur.children.get(ch);
             }
-            List<RelatedObject> result = new LinkedList<>();
+            Set<RelatedObject> result = new HashSet<>();
             Queue<Trie> queue = new LinkedList<>();
             queue.offer(cur);
             while (!queue.isEmpty()){
@@ -138,98 +193,170 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
                     queue.addAll(node.children.values());
                 }
             }
+            relatedObjectCache().put(keyword,result);
             return result;
         }
-    }
 
-
-    private static volatile SoftReference<LRUCache<String,List<RelatedObject>>> invertedIndexCache = null;
-    private LRUCache<String,List<RelatedObject>> invertedIndexCache(){
-        if(invertedIndexCache == null){
-            synchronized (SimpleKSTC2.class){
-                if(invertedIndexCache == null){
-                    invertedIndexCache=new SoftReference<>(CacheUtil.newLRUCache(32,DEFAULT_TIMEOUT));
-                    logger.debug("Inverted index cache initialized successfully.");
+        public Set<Node<RelatedObject, GeoPointDouble>> searchNode(String keyword){
+            if(StrUtil.isBlank(keyword)){
+                return Collections.emptySet();
+            }
+            if(nodeCache().containsKey(keyword)){
+                return nodeCache().get(keyword);
+            }
+            Trie cur = this;
+            for (char ch : keyword.toCharArray()) {
+                if(cur.children == null){
+                    return Collections.emptySet();
+                }
+                cur=cur.children.get(ch);
+            }
+            Set<Node<RelatedObject, GeoPointDouble>> result = new HashSet<>();
+            Queue<Trie> queue = new LinkedList<>();
+            queue.offer(cur);
+            while (!queue.isEmpty()){
+                Trie node = queue.poll();
+                if(node.isWord){
+                    result.addAll(node.nodes);
+                }
+                if(node.children != null){
+                    queue.addAll(node.children.values());
                 }
             }
+            nodeCache().put(keyword,result);
+            return result;
         }
-        return invertedIndexCache.get();
+
     }
 
-    public SimpleKSTC2(IRelatedObjectService relatedObjectService) {
+
+
+
+    Trie trie = new Trie();
+    private Map<Node<RelatedObject, GeoPointDouble>,Trie> leafNodeTrieMap = new HashMap<>();
+    private Map<Node<RelatedObject, GeoPointDouble>,Trie> nonLeafNodeTrieMap = new HashMap<>();
+
+    public SimpleKSTC3(IRelatedObjectService relatedObjectService) {
         Assert.notNull(relatedObjectService,"relatedObjectService is null.");
         this.relatedObjectService=relatedObjectService;
         List<RelatedObject> objects = relatedObjectService.getAll();
         Assert.isTrue(objects instanceof RandomAccess,"If RandomAccess is not supported, the construction of rtree will become very slow.");
-        //buildrTree(objects);
-        buildTrieInvertedIndex(objects);
+        buildrTreeAndTrieInvertedIndex(objects);
+        rTree.root().ifPresent(this::buildTrieInvertedIndexForNodes);
     }
-    private void buildrTree(List<RelatedObject> objects){
-        List<Entry<String, GeoPointDouble>> entryList = objects.stream()
-                .map(object -> Entries.entry(object.getObjectId(), GeoPointDouble.create(object.getCoordinate().getLongitude(), object.getCoordinate().getLatitude())))
-                .collect(Collectors.toList());
-        rTree = RTree.star().create(entryList);
-        logger.debug("Rtree initialized successfully.");
-    }
-    private void buildTrieInvertedIndex(List<RelatedObject> objects){
-        root=new Trie();
-        for (RelatedObject relatedObject : objects) {
-            for (String label : relatedObject.getLabels()) {
-                root.put(label,relatedObject);
+    private void buildrTreeAndTrieInvertedIndex(List<RelatedObject> objects){
+        for (RelatedObject object : objects) {
+            for (String label : object.getLabels()) {
+                trie.putRelatedObject(label,object);
             }
         }
+        logger.debug("Trie initialized successfully.");
+        List<Entry<RelatedObject, GeoPointDouble>> entryList = objects.stream()
+                .map(object -> Entries.entry(object, GeoPointDouble.create(object.getCoordinate().getLongitude(), object.getCoordinate().getLatitude())))
+                .collect(Collectors.toList());
+        rTree = RTree
+                .star()
+                .maxChildren(30)
+                .create(entryList);
+        logger.debug("Rtree initialized successfully.");
+    }
+    private void buildTrieInvertedIndexForNodes(Node<RelatedObject, GeoPointDouble> node){
+        doBuildTrieInvertedIndex(node);
         logger.debug("Trie inverted index initialized successfully.");
     }
 
-
-
-    private Set<RelatedObject> getRelatedObjectIds(String keyword){
-        if(StrUtil.isBlank(keyword)){
-            return Collections.emptySet();
+    @SuppressWarnings("all")
+    private Set<String> doBuildTrieInvertedIndex(Node<RelatedObject, GeoPointDouble> node){
+        Set<String> result = new HashSet<>();
+        if(node instanceof LeafDefault){
+            LeafDefault<RelatedObject,GeoPointDouble> leafDefault = (LeafDefault<RelatedObject,GeoPointDouble>) node;
+            for (Entry<RelatedObject,GeoPointDouble> entry : leafDefault.entries()) {
+                result.addAll(entry.value().getLabels());
+            }
         }
-        List<RelatedObject> result = invertedIndexCache().get(keyword);
-        if(result == null){
-            result = root.search(keyword);
-            invertedIndexCache().put(keyword,result);
-        }
-        return new HashSet<>(result);
-    }
-
-    public Set<RelatedObject> getRelatedObjectIds(List<String> keyword){
-        if(keyword == null || keyword.isEmpty()){
-            return Collections.emptySet();
-        }
-        Set<RelatedObject> result = getRelatedObjectIds(keyword.get(0));
-        for (int i = 1; i < keyword.size(); i++) {
-            result.retainAll(getRelatedObjectIds(keyword.get(i)));
+        if(node instanceof NonLeafDefault){
+            NonLeafDefault<RelatedObject,GeoPointDouble> nonLeafDefault = (NonLeafDefault<RelatedObject,GeoPointDouble>) node;
+            for (Node<RelatedObject, GeoPointDouble> child : nonLeafDefault.children()) {
+                Set<String> childResult = doBuildTrieInvertedIndex(child);
+                for (String s : childResult) {
+                    trie.putNode(s,child);
+                }
+                result.addAll(childResult);
+            }
         }
         return result;
     }
 
+
     @SuppressWarnings("unchecked")
     private PriorityQueue<T> getSList(List<String> keywords,Coordinate coordinate,double maxDist,Comparator<T> comparator){
-        Set<RelatedObject> objs = getRelatedObjectIds(keywords);
-        return objs
+        return searchRelatedObjects(keywords)
                 .stream()
                 .filter(object -> CommonAlgorithm.calculateDistance(coordinate,object.getCoordinate()) < maxDist)
                 .map(object -> (T)object)
                 .collect(Collectors.toCollection(()->new PriorityQueue<>(comparator)));
 
     }
+
+    private Set<Node<RelatedObject,GeoPointDouble>> searchNodes(List<String> keywords){
+        if(keywords == null || keywords.isEmpty()){
+            return Collections.emptySet();
+        }
+
+        Set<Node<RelatedObject,GeoPointDouble>> result = trie.searchNode(keywords.get(0));
+        for (int i = 1; i < keywords.size(); i++) {
+            Set<Node<RelatedObject, GeoPointDouble>> nodes = trie.searchNode(keywords.get(i));
+            if(CollUtil.isEmpty(nodes)){
+                continue;
+            }
+            result.retainAll(nodes);
+        }
+        return result;
+    }
+
+    private Set<RelatedObject> searchRelatedObjects(List<String> keywords){
+        if(keywords == null || keywords.isEmpty()){
+            return Collections.emptySet();
+        }
+        Set<RelatedObject> res = trie.searchRelatedObject(keywords.get(0));
+        for (int i = 1; i < keywords.size(); i++) {
+            Set<RelatedObject> relatedObjects = trie.searchRelatedObject(keywords.get(i));
+            if(CollUtil.isEmpty(relatedObjects)){
+                continue;
+            }
+            res.retainAll(relatedObjects);
+        }
+        return res;
+    }
+
     @SuppressWarnings("unchecked")
     private List<T> rangeQuery(List<String> keywords,Coordinate coordinate,double epsilon){
-        Set<RelatedObject> relatedObjectIds = getRelatedObjectIds(keywords);
-        return relatedObjectIds
-                .stream()
-                .filter(object -> CommonAlgorithm.calculateDistance(
-                        object.getCoordinate(),
-                        coordinate
-                ) < epsilon)
-                .map(obj->(T)obj)
-                .collect(Collectors.toCollection(LinkedList::new));
+        Queue<Node<RelatedObject,GeoPointDouble>> queue = new LinkedList<>();
+        rTree.root().ifPresent(queue::add);
+        GeoPointDouble currentPosition = GeoPointDouble.create(coordinate.getLongitude(), coordinate.getLatitude());
+        Set<Node<RelatedObject, GeoPointDouble>> nodes = searchNodes(keywords);
+        List<T> result = new ArrayList<>();
+        while(!queue.isEmpty()){
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Node<RelatedObject,GeoPointDouble> node = queue.poll();
+                if(node.geometry().distance(currentPosition) > epsilon){
+                    continue;
+                }
+                if(node instanceof LeafDefault){
 
 
-
+                }
+                if(node instanceof NonLeafDefault){
+                    NonLeafDefault<RelatedObject,GeoPointDouble> nonLeafDefault = (NonLeafDefault<RelatedObject, GeoPointDouble>)node;
+                    nonLeafDefault.children()
+                            .stream()
+                            .filter(nodes::contains)
+                            .forEach(queue::add);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -300,10 +427,11 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
             T obj = sList.poll();
             Set<T> cluster = getCluster(obj, query, sList,noises);
             if(!cluster.isEmpty()){
+                intervalMs = getTimer().intervalMs("timeout");
                 rList.add(cluster);
                 logger.info("==> cluster {}, time cost:{}",rList.size(),getTimer().intervalMs("timeout"));
+                getTimer().intervalRestart();
             }
-            intervalMs = getTimer().intervalMs("timeout");
         }
         mainCache().put(
                 key,
@@ -415,5 +543,15 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
     }
 
 
+    public static void main(String[] args) {
 
+        List<Long> longs = Arrays.asList(
+                5L,5L,4L, 4L, 3L, 2L, 1L
+        );
+
+        TreeSet<Long> treeSet = new TreeSet<>();
+
+        Comparator<? super Long> comparator = treeSet.comparator();
+
+    }
 }

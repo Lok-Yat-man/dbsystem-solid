@@ -1,8 +1,7 @@
-package cn.edu.szu.cs.irtree;
+package cn.edu.szu.cs.ds.irtree;
 
 import cn.edu.szu.cs.entity.Coordinate;
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.irtree.IRTree;
 import cn.edu.szu.cs.service.IRelatedObjectService;
 import cn.edu.szu.cs.util.CommonAlgorithm;
 import cn.hutool.cache.CacheUtil;
@@ -47,10 +46,9 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
         this.relatedObjectService = relevantObjectService;
         nodeInvertedIndexMap = new HashMap<>();
         buildIRtree(rTree.root().get());
-
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("all")
     private Set<String> buildIRtree(Node<String,Geometry> curNode){
 
         // Processing leaf nodes
@@ -62,10 +60,9 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
                 List<String> labels = relatedObjectService.getLabelsById(entry.value()).stream().map(String::toLowerCase).collect(Collectors.toList());
                 set.addAll(labels);
             }
-
             return set;
-
         }
+
         if(curNode instanceof NonLeafDefault){
             NonLeafDefault<String,Geometry> nonLeaf = (NonLeafDefault<String,Geometry>) curNode;
             Map<String,List<Node<String, Geometry>>> nodeIf = new HashMap<>(nonLeaf.count());
