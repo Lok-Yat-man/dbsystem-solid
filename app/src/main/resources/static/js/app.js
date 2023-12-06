@@ -80,14 +80,14 @@ new Vue({
                 x_U: 114.5,
                 y_L: 22,
                 y_U: 22.6,
-                row_pixels: 10,
-                col_pixels: 10,
+                row_pixels: 100,
+                col_pixels: 100,
                 kernel_s_type: 1,
                 bandwidth_s: 1000,
                 t_L: 1,
                 t_U: 1,
                 kernel_t_type: 1,
-                bandwidth_t: 1000,
+                bandwidth_t: 7,
                 cur_time: 1
             }
         }

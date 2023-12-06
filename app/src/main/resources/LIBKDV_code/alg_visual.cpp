@@ -1,4 +1,6 @@
 #include "alg_visual.h"
+#include "Util.h"
+
 void alg_visual::load_parameters(int argc, char**argv)
 {
 	//Testing Mode (KDV_type = 1)
@@ -182,24 +184,6 @@ void alg_visual::cube_normalization(double max_KDE)
 				stat.outCube[r][c][t] *= 255.0 / max_KDE;
 }
 
-void alg_visual::GPS_to_xy(double longitude,double latitude,double &x,double &y,statistics& stat)
-{
-    double mid_lat;
-    longitude = longitude * pi / 180;
-	latitude=latitude*pi/180;
-    mid_lat = stat.middle_lat * pi/ 180;
-    x = earth_radius * longitude * cos( mid_lat * 2 * pi / 360);
-	y=earth_radius*latitude;
-}
-
-void alg_visual::xy_to_GPS(double x,double y,double& longitude,double& latitude,statistics& stat)
-{
-	double mid_lat;
-	mid_lat=stat.middle_lat*pi/180;
-	longitude =(x/(earth_radius*cos(mid_lat*2*pi/360)))*(180/pi);
-	latitude=(y/earth_radius)*(180/pi);
-}
-
 string alg_visual::saveMatrix_toString_CSV()
 {
 	double max_KDE = -inf;
@@ -216,27 +200,30 @@ string alg_visual::saveMatrix_toString_CSV()
 
 	
 	matrix_normalization(max_KDE);
+	
 	for (int r = 0; r < stat.row_pixels; r++)
 	{
 		for (int c = 0; c < stat.col_pixels; c++)
 		{
 			if (stat.outMatrix[r][c] < small_epsilon)
 				continue;
-
+		
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
-			
-			//xy_to_GPS(x,y,x,y,stat);
+			x+=x_mid;
+			y+=y_mid;
+			xy_to_GPS(x,y,x,y,stat);
 			outString_ss << setprecision(10) << x << "," << y << "," << stat.outMatrix[r][c] << endl;
 		}
 	}
 
-	clear_memory();
+	//clear_memory();
 	return outString_ss.str();
 }
 
 string alg_visual::saveCube_toString_CSV()
 {
+
 	double max_KDE = -inf;
 	double x, y, time;
 	stringstream outString_ss;
@@ -387,7 +374,7 @@ void alg_visual::clear_memory()
 {
 	int total_q = stat.row_pixels*stat.col_pixels;
 	int ori_n = stat.base_dataMatrix.size();
-
+	cout<<"featureVector:"<<sizeof(stat.featureVector)<<endl;
 	for (int i = 0; i < ori_n; i++)
 		delete[] stat.featureVector[i];
 	stat.featureVector.clear();
@@ -688,10 +675,8 @@ void alg_visual::load_datasets_CSV(char**argv)
 		if(y_max<stat.base_dataMatrix[i][1]) y_max=stat.base_dataMatrix[i][1];
 		if(y_min>stat.base_dataMatrix[i][1]) y_min=stat.base_dataMatrix[i][1];
 	}
-	//cout<<"x_max:"<<x_max<<" "<<"x_min"<<x_min<<endl;
-	//cout<<"y_max:"<<y_max<<" "<<"y_min"<<y_min<<endl;
-	double x_mid=(x_max+x_min)/2;
-	double y_mid=(y_max+y_min)/2;
+	x_mid=(x_max+x_min)/2;
+	y_mid=(y_max+y_min)/2;
 	//cout<<x_mid<<"]"<<y_mid<<endl;
 	for(int i=0;i<ori_n;i++){
 		stat.base_dataMatrix[i][0]-=x_mid;
