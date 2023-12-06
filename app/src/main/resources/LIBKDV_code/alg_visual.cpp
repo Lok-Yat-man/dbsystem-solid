@@ -210,8 +210,8 @@ string alg_visual::saveMatrix_toString_CSV()
 		
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
-			x+=x_mid;
-			y+=y_mid;
+			x+=stat.x_mid;
+			y+=stat.y_mid;
 			xy_to_GPS(x,y,x,y,stat);
 			outString_ss << setprecision(10) << x << "," << y << "," << stat.outMatrix[r][c] << endl;
 		}
@@ -675,12 +675,12 @@ void alg_visual::load_datasets_CSV(char**argv)
 		if(y_max<stat.base_dataMatrix[i][1]) y_max=stat.base_dataMatrix[i][1];
 		if(y_min>stat.base_dataMatrix[i][1]) y_min=stat.base_dataMatrix[i][1];
 	}
-	x_mid=(x_max+x_min)/2;
-	y_mid=(y_max+y_min)/2;
-	//cout<<x_mid<<"]"<<y_mid<<endl;
+	stat.x_mid=(x_max+x_min)/2;
+	stat.y_mid=(y_max+y_min)/2;
+	//cout<<stat.x_mid<<"]"<<stat.y_mid<<endl;
 	for(int i=0;i<ori_n;i++){
-		stat.base_dataMatrix[i][0]-=x_mid;
-		stat.base_dataMatrix[i][1]-=y_mid;
+		stat.base_dataMatrix[i][0]-=stat.x_mid;
+		stat.base_dataMatrix[i][1]-=stat.y_mid;
 		//cout<<stat.base_dataMatrix[i][0]<<"/"<<stat.base_dataMatrix[i][1]<<endl;
 	}
     std::cout << "line count: " << lineCount << endl;

@@ -60,6 +60,8 @@ struct statistics
 	//dim = 2 (Used for KDV and online STKDV) 
 	//dim = 3 (Used for batch-based STKDV and batch-based bandwidth exploration in KDV)
 	int dim;
+	double x_mid;
+    double y_mid;
 
 	double x_L; double x_U;
 	double y_L; double y_U;
