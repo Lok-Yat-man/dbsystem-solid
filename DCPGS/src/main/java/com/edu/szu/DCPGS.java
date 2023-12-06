@@ -5,7 +5,10 @@ import com.edu.szu.api.PointDistanceCalculator;
 import com.edu.szu.entity.DCPGSParams;
 import com.edu.szu.exception.DBSCANClusteringException;
 import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.Node;
 import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.internal.LeafDefault;
+import com.github.davidmoten.rtree.internal.NonLeafDefault;
 import rx.Observable;
 
 import java.util.*;
@@ -140,7 +143,34 @@ public class DCPGS<V extends NamedPoint> {
         return neighboursMap;
     }
 
-    private ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
+    public ArrayList<V> getNeighboursByLevelOrder(final V inputValue, RTree<String, V> rTree){
+        ArrayList<V> neighbours = new ArrayList<V>();
+        Deque<Node<String,V>> queue = new ArrayDeque<>();
+        var root = rTree.root().get();
+        queue.addLast(root);
+        while (!queue.isEmpty()){
+            var node = queue.getFirst();
+            queue.removeFirst();
+            if(node.geometry().distance(inputValue) <= params.getMaxD()){
+                if(node instanceof LeafDefault){
+                    LeafDefault<String,V> now = (LeafDefault<String,V>) node;
+                    now.entries().forEach(e -> {
+                        V geo = (V) e.geometry();
+                        if(pointDistanceCalculator.calculateDistance(inputValue, geo)
+                                <= params.getEpsilon()){
+                            neighbours.add(geo);
+                        }
+                    });
+                } else if(node instanceof NonLeafDefault){
+                    NonLeafDefault<String,V> now = (NonLeafDefault<String,V>) node;
+                    now.children().forEach(queue::addLast);
+                }
+            }
+        }
+        return neighbours;
+    }
+
+    public ArrayList<V> getNeighbours(final V inputValue, RTree<String, V> rTree){
         ArrayList<V> neighbours = new ArrayList<V>();
         Observable<Entry<String, V>> neighbour = rTree.search(inputValue.mbr(), params.getMaxD());
         neighbour.forEach(n -> {

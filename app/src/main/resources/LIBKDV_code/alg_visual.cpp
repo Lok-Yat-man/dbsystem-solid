@@ -1,5 +1,4 @@
 #include "alg_visual.h"
-
 void alg_visual::load_parameters(int argc, char**argv)
 {
 	//Testing Mode (KDV_type = 1)
@@ -183,32 +182,22 @@ void alg_visual::cube_normalization(double max_KDE)
 				stat.outCube[r][c][t] *= 255.0 / max_KDE;
 }
 
-void alg_visual::GPS_to_x(double longitude,double &x,statistics& stat)
+void alg_visual::GPS_to_xy(double longitude,double latitude,double &x,double &y,statistics& stat)
 {
-    double middle_lat;
+    double mid_lat;
     longitude = longitude * pi / 180;
-    middle_lat = stat.middle_lat * pi/ 180;
-    x = earth_radius * longitude * cos( middle_lat * 2 * pi / 360);
-}
-
-void alg_visual::GPS_to_y(double latitude,double &y,statistics& stat){
 	latitude=latitude*pi/180;
+    mid_lat = stat.middle_lat * pi/ 180;
+    x = earth_radius * longitude * cos( mid_lat * 2 * pi / 360);
 	y=earth_radius*latitude;
 }
 
-void alg_visual::compute_middle_lat(statistics& stat){
-	int count=0;
-	for (int r = 0; r < stat.row_pixels; r++)
-	{
-		for (int c = 0; c < stat.col_pixels; c++)
-		{
-			if (stat.outMatrix[r][c] < small_epsilon)
-				continue;
-			stat.middle_lat += stat.queryVector[r*stat.col_pixels + c][1];
-			count++;
-		}
-	}
-	stat.middle_lat /=count;
+void alg_visual::xy_to_GPS(double x,double y,double& longitude,double& latitude,statistics& stat)
+{
+	double mid_lat;
+	mid_lat=stat.middle_lat*pi/180;
+	longitude =(x/(earth_radius*cos(mid_lat*2*pi/360)))*(180/pi);
+	latitude=(y/earth_radius)*(180/pi);
 }
 
 string alg_visual::saveMatrix_toString_CSV()
@@ -225,8 +214,8 @@ string alg_visual::saveMatrix_toString_CSV()
 	else //KDV_type = 2
 		max_KDE = stat.max_EDWIN_KDE;
 
+	
 	matrix_normalization(max_KDE);
-	compute_middle_lat(stat);
 	for (int r = 0; r < stat.row_pixels; r++)
 	{
 		for (int c = 0; c < stat.col_pixels; c++)
@@ -236,10 +225,8 @@ string alg_visual::saveMatrix_toString_CSV()
 
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
-			outString_ss << setprecision(10) << "(" << x << "," << y << "," << stat.outMatrix[r][c] << " )" << endl;
-			GPS_to_x(x,x,stat);
-			GPS_to_y(y,y,stat);
 			
+			//xy_to_GPS(x,y,x,y,stat);
 			outString_ss << setprecision(10) << x << "," << y << "," << stat.outMatrix[r][c] << endl;
 		}
 	}
@@ -259,7 +246,7 @@ string alg_visual::saveCube_toString_CSV()
 	max_KDE = stat.max_EDWIN_KDE;
 
 	cube_normalization(max_KDE);
-
+	
 	for (int r = 0; r < stat.row_pixels; r++)
 	{
 		x = stat.x_L + r * stat.incr_x;
@@ -272,13 +259,13 @@ string alg_visual::saveCube_toString_CSV()
 				if (stat.outCube[r][c][t] < small_epsilon)
 					continue;
 
+				//xy_to_GPS(x,y,x,y,stat);
 				outString_ss << setprecision(10) << x << "," << y << "," << time << "," << stat.outCube[r][c][t] << endl;
 			}
 		}
 	}
 
 	cout << outString_ss.str() << endl;
-
 	clear_memory();
 	return outString_ss.str();
 }
@@ -612,7 +599,8 @@ void alg_visual::load_datasets(char**argv)
 
 		token = strtok((char*)lineString.c_str(), " :,}"); token = strtok(NULL, " :,}");
 		x = atof(token);
-		token = strtok(NULL, " :,}"); token = strtok(NULL, " :,}");
+		token = strtok(NULL, " :,}"); token = strtok(NULL, " :,}"); 
+	
 		y = atof(token);
 		stat.base_dataMatrix.push_back(new double[3]);
 		stat.base_dataMatrix[ori_n][0] = x;
@@ -659,19 +647,22 @@ void alg_visual::load_datasets_CSV(char**argv)
 	}
     int lineCount = 0;
 	getline(dataFile_CSV, lineString);
+	double sum=0;
 	while (getline(dataFile_CSV, lineString))
 	{
 		if (lineString == "")
 			break;
         lineCount++;
-		token = strtok((char*)lineString.c_str(), " ,");
+		token = strtok((char*)lineString.c_str(), " ,"); //
 		x = atof(token);
 		token = strtok(NULL, " ,");
 		y = atof(token);
+
 		stat.base_dataMatrix.push_back(new double[3]);
 		stat.base_dataMatrix[ori_n][0] = x;
 		stat.base_dataMatrix[ori_n][1] = y;
 
+		sum+=y;
 		if (stat.KDV_type == 2 || stat.KDV_type == 3) //Online STKDV or batch-based STKDV
 		{
 			token = strtok(NULL, " ,");
@@ -686,6 +677,27 @@ void alg_visual::load_datasets_CSV(char**argv)
 
 		ori_n++;
 	}
-    cout << "line count: " << lineCount << endl;
+	stat.middle_lat=sum/ori_n;
+	double x_max=0,x_min=inf,y_max=0,y_min=inf;
+	for(int i=0;i<ori_n;i++){
+		//cout<<stat.base_dataMatrix[i][0]<<"-----"<<stat.base_dataMatrix[i][1]<<endl;
+		GPS_to_xy(stat.base_dataMatrix[i][0],stat.base_dataMatrix[i][1],stat.base_dataMatrix[i][0],stat.base_dataMatrix[i][1],stat);
+		//cout<<stat.base_dataMatrix[i][0]<<"/"<<stat.base_dataMatrix[i][1]<<endl;
+		if(x_max<stat.base_dataMatrix[i][0]) x_max=stat.base_dataMatrix[i][0];
+		if(x_min>stat.base_dataMatrix[i][0]) x_min=stat.base_dataMatrix[i][0];
+		if(y_max<stat.base_dataMatrix[i][1]) y_max=stat.base_dataMatrix[i][1];
+		if(y_min>stat.base_dataMatrix[i][1]) y_min=stat.base_dataMatrix[i][1];
+	}
+	//cout<<"x_max:"<<x_max<<" "<<"x_min"<<x_min<<endl;
+	//cout<<"y_max:"<<y_max<<" "<<"y_min"<<y_min<<endl;
+	double x_mid=(x_max+x_min)/2;
+	double y_mid=(y_max+y_min)/2;
+	//cout<<x_mid<<"]"<<y_mid<<endl;
+	for(int i=0;i<ori_n;i++){
+		stat.base_dataMatrix[i][0]-=x_mid;
+		stat.base_dataMatrix[i][1]-=y_mid;
+		//cout<<stat.base_dataMatrix[i][0]<<"/"<<stat.base_dataMatrix[i][1]<<endl;
+	}
+    std::cout << "line count: " << lineCount << endl;
 	dataFile_CSV.close();
 }

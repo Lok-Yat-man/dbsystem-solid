@@ -17,6 +17,10 @@ var Module = typeof Module != 'undefined' ? Module : {};
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
 
+D:\coding\dbsystem-solid\app\src\main\resources\LIBKDV_code>set MYDIR=D:\Program Files\emsdk\upstream\emscripten\tools\ 
+
+D:\coding\dbsystem-solid\app\src\main\resources\LIBKDV_code>goto FOUND_MYDIR 
+
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
   }
@@ -190,7 +194,7 @@ Module['FS_createPath']("/", "data", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/data/cases.csv", "start": 0, "end": 2040976}], "remote_package_size": 2040976});
+    loadPackage({"files": [{"filename": "/data/cases.csv", "start": 0, "end": 2091863}], "remote_package_size": 2091863});
 
   })();
 
