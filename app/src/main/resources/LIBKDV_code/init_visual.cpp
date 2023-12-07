@@ -37,10 +37,14 @@ void initQuery(statistics& stat)
 	//code here
 	GPS_to_xy(stat.x_L,stat.y_L,stat.x_L,stat.y_L,stat);
 	GPS_to_xy(stat.x_U,stat.y_U,stat.x_U,stat.y_U,stat);
+	cout<<"!!x_L"<<stat.x_L<<" "<<stat.x_U;
+	cout<<" !!y_L"<<stat.y_L<<" "<<stat.y_U<<endl;
 	stat.x_L-=stat.x_mid;
 	stat.y_L-=stat.y_mid;
-	cout<<"!!x_L"<<stat.x_L;
-	cout<<" !!y_L"<<stat.y_L<<endl;
+	stat.x_U-=stat.x_mid;
+	stat.y_U-=stat.y_mid;
+	cout<<"!!x_L"<<stat.x_L<<" "<<stat.x_U;
+	cout<<" !!y_L"<<stat.y_L<<" "<<stat.y_U<<endl;
 	if (stat.row_pixels != 1 || stat.col_pixels != 1)
 	{
 		stat.incr_x = (stat.x_U - stat.x_L) / (stat.row_pixels - 1);

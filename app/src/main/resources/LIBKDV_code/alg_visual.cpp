@@ -207,11 +207,11 @@ string alg_visual::saveMatrix_toString_CSV()
 		{
 			if (stat.outMatrix[r][c] < small_epsilon)
 				continue;
-		
+		    cout<<"small_epsilon"<<small_epsilon<<endl;
 			x = stat.queryVector[r*stat.col_pixels + c][0];
 			y = stat.queryVector[r*stat.col_pixels + c][1];
-			x+=stat.x_mid;
-			y+=stat.y_mid;
+			x += stat.x_mid;
+			y += stat.y_mid;
 			xy_to_GPS(x,y,x,y,stat);
 			outString_ss << setprecision(10) << x << "," << y << "," << stat.outMatrix[r][c] << endl;
 		}
@@ -246,7 +246,9 @@ string alg_visual::saveCube_toString_CSV()
 				if (stat.outCube[r][c][t] < small_epsilon)
 					continue;
 
-				//xy_to_GPS(x,y,x,y,stat);
+                x += stat.x_mid;
+				y += stat.y_mid;
+				xy_to_GPS(x,y,x,y,stat);
 				outString_ss << setprecision(10) << x << "," << y << "," << time << "," << stat.outCube[r][c][t] << endl;
 			}
 		}

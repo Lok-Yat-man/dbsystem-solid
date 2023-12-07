@@ -84,7 +84,7 @@ new Vue({
                 row_pixels: 100,
                 col_pixels: 100,
                 kernel_s_type: 1,
-                bandwidth_s: 1000,
+                bandwidth_s: 3000,
                 t_L: 1,
                 t_U: 1,
                 kernel_t_type: 1,
