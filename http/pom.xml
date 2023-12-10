@@ -27,6 +27,12 @@
             <artifactId>k-stc</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.edu.szu</groupId>
+            <artifactId>kdv</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 

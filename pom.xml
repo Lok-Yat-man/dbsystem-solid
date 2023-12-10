@@ -19,6 +19,7 @@
         <module>DCPGS</module>
         <module>k-stc</module>
         <module>http</module>
+        <module>kdv</module>
     </modules>
 
     <properties>

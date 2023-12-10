@@ -81,8 +81,8 @@ new Vue({
                 x_U: 114.5,
                 y_L: 22,
                 y_U: 22.6,
-                row_pixels: 100,
-                col_pixels: 100,
+                row_pixels: 500,
+                col_pixels: 500,
                 kernel_s_type: 1,
                 bandwidth_s: 3000,
                 t_L: 1,
@@ -158,14 +158,7 @@ new Vue({
         loadKDV(){
             this.currentAlgorithm = "kdv";
             this.paramsSwitch('SWITCH');
-            let kdvDataPath = ""
-            if(this.env === "local"){
-                kdvDataPath = "data/kdv/kdv2.geojson"
-            }else if(this.env === "prod") {
-                kdvDataPath = "http://localhost:8080/kdv/geojson"
-            }
-            kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
-            console.log(kdv.callKdvCpp(this));
+            kdv.loadHeatMap(this);
         },
 
         loadKStc(str){
