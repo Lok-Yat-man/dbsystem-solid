@@ -153,7 +153,7 @@ async function getClusters(geoJsonPath, clusterPath, zoom, vueThis) {
         const jsonData = response.data;
         vueThis.DCPGS.clusters = jsonData.data;
         vueThis.DCPGS.maxClusterNUms = vueThis.DCPGS.clusters.length;
-        vueThis.DCPGS.clusterNums = Math.round(vueThis.DCPGS.clusters.length / 2);
+        vueThis.DCPGS.clusterNums = Math.min(10, vueThis.DCPGS.maxClusterNUms);
         nums = vueThis.DCPGS.clusters.length;
         console.log("get cluster finished, clusterNums: ", vueThis.DCPGS.maxClusterNUms);
     });

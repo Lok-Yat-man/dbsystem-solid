@@ -2,6 +2,7 @@ import util from "./utils.js";
 
 function loadHeatMap(vueThis){
     let request = compute(vueThis.kdv);
+    console.log(request);
     axios.post("http://localhost:8080/kdv/geojson", request)
         .then(function (response) {
             console.log(response.data);
@@ -17,12 +18,14 @@ function loadHeatMap(vueThis){
                     type: 'geojson',
                     data: response.data
                 });
+                console.log(response.data);
                 vueThis.map.addLayer(
                     {
                         id: 'trees-heat',
                         type: 'heatmap',
                         source: 'points-source',
                         maxzoom: 24,
+                        minzoom: 5,
                         paint: {
                             // increase weight as diameter breast height increases
                             "heatmap-weight": {
@@ -36,7 +39,7 @@ function loadHeatMap(vueThis){
                             // increase intensity as zoom level increases
                             'heatmap-intensity': {
                                 stops: [
-                                    [23, 1],
+                                    [15, 1],
                                     [24, 3]
                                 ]
                             },
