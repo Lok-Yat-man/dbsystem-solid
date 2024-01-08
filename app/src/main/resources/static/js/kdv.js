@@ -2,15 +2,15 @@ import util from "./utils.js";
 
 function loadHeatMap(vueThis){
     let request = compute(vueThis.kdv);
-    console.log(request);
+    console.log("request: " + request);
     axios.post("http://localhost:8080/kdv/geojson", request)
         .then(function (response) {
             console.log(response.data);
             vueThis.map = new mapboxgl.Map({
                 container: 'map', // container id
                 style: 'mapbox://styles/mapbox/light-v11',
-                center: response.data.features[0].geometry.coordinates,
-                zoom: 9
+                center: [(113.8482+114.4473)/2, (22.2025+22.4655)/2],
+                zoom: 10.9
             });
             vueThis.map.on('load', function () {
                 // 添加 GeoJSON 数据源
@@ -25,7 +25,7 @@ function loadHeatMap(vueThis){
                         type: 'heatmap',
                         source: 'points-source',
                         maxzoom: 24,
-                        minzoom: 5,
+                        minzoom: 9,
                         paint: {
                             // increase weight as diameter breast height increases
                             "heatmap-weight": {
@@ -40,7 +40,7 @@ function loadHeatMap(vueThis){
                             'heatmap-intensity': {
                                 stops: [
                                     [15, 1],
-                                    [24, 3]
+                                    [24, 1]
                                 ]
                             },
                             // assign color values be applied to points depending on their density
@@ -74,16 +74,16 @@ function loadHeatMap(vueThis){
                             // increase radius as zoom increases
                             'heatmap-radius': {
                                 stops: [
-                                    [9,10],
+                                    [11.5,10],
                                     [24, 30]
                                 ]
                             },
                             // decrease opacity to transition into the circle layer
                             'heatmap-opacity': {
-                                default: 0.6,
+                                default: 0.93,
                                 stops: [
-                                    [9, 0.6],
-                                    [24, 0.6]
+                                    [9, 0.93],
+                                    [24, 0.93]
                                 ]
                             }
                         }
@@ -97,14 +97,23 @@ function loadHeatMap(vueThis){
 function compute(kdv){
     // Module.onRuntimeInitialized = function() {
     // };
-    return Module.compute(kdv.kdv_type, kdv.num_threads, kdv.x_L, kdv.x_U,
-        kdv.y_L,kdv.y_U,kdv.row_pixels,kdv.col_pixels,kdv.kernel_s_type, kdv.bandwidth_s,
-        kdv.t_L,kdv.t_U,kdv.kernel_s_type,kdv.bandwidth_t,kdv.cur_time);
+    // return Module.compute(kdv.kdv_type, kdv.num_threads, kdv.x_L, kdv.x_U,
+    //     kdv.y_L,kdv.y_U,kdv.row_pixels,kdv.col_pixels,kdv.kernel_s_type, kdv.bandwidth_s,
+    //     kdv.t_L,kdv.t_U,kdv.kernel_s_type,kdv.bandwidth_t,kdv.cur_time);
+
+    // dbsystem
+    Module.load_data();
+    return Module.compute(1, 1, 0.01, 250, 250,
+        0, 0, 113.8482, 114.4473, 22.2025, 22.4655, kdv.t_L, kdv.t_U, kdv.cur_time, kdv.bandwidth_t);
+    // return Module.compute(1, 1, kdv.bandwidth_s, kdv.row_pixels, kdv.col_pixels,
+    //     st, ed, kdv.x_L, kdv.x_U, kdv.y_L, kdv.y_U, kdv.t_L, kdv.t_U, kdv.cur_time, kdv.bandwidth_t);
 }
 
 function callKdvCpp(vueThis){
+    console.log("callKdvCpp");
     // 2, 1, 113.5, 114.5, 22, 22.6, 10, 10, 1, 1000, 1, 1, 1, 1000, 1
     let request = compute(vueThis.kdv);
+    console.log("request: " + request);
     axios.post("http://localhost:8080/kdv/geojson", request)
         .then(function (response) {
             console.log(response.data);

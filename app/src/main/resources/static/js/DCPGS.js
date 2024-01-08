@@ -31,6 +31,7 @@ function addLayer(i,vueThis){
 }
 
 function layerPopup(i, vueThis){
+    let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
     vueThis.map.on('click', 'layer' + i, function (e) {
         let coordinates = e.features[0].geometry.coordinates.slice();
         let clusterId = e.features[0].properties.clusterId;
@@ -39,9 +40,33 @@ function layerPopup(i, vueThis){
         setLngLat(coordinates).addTo(vueThis.map);
     });
     vueThis.map.on('mouseenter', 'layer' + i, () => {
+        vueThis.map.removeLayer('layer' + i);
+        vueThis.map.addLayer({
+            id: 'layer' + i,
+            type: 'circle',
+            source: 'points-source',
+            filter: ['==', 'clusterId', "" + i],
+            paint: {
+                'circle-radius': 5.0,
+                'circle-color': color,
+                'circle-opacity': 0.7,
+            },
+        });
         vueThis.map.getCanvas().style.cursor = 'pointer';
     });
     vueThis.map.on('mouseleave', 'layer' + i, () => {
+        vueThis.map.removeLayer('layer' + i);
+        vueThis.map.addLayer({
+            id: 'layer' + i,
+            type: 'circle',
+            source: 'points-source',
+            filter: ['==', 'clusterId', "" + i],
+            paint: {
+                'circle-radius': 3.5,
+                'circle-color': color,
+                'circle-opacity': 0.7,
+            },
+        });
         vueThis.map.getCanvas().style.cursor = '';
     });
 }
