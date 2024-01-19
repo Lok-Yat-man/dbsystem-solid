@@ -17,7 +17,6 @@ public class KDVEndpoint {
 
     @PostMapping("/geojson")
     public KDVGeoJson getGeoJson(@RequestBody String request){
-        log.info("request: \n{}",request);
         return kdvManager.getKDVGeoJson(request);
     }
 
