@@ -29,6 +29,9 @@ public class DCPGSManager {
 
     @Setter Map<String, Map<Long, Set<Long>>> edgeMapSet;
 
+    public String resourcePath;
+
+
     ExecutorService pool = new ThreadPoolExecutor(4, 5, 8,TimeUnit.SECONDS,
             new ArrayBlockingQueue<>(6), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
 
@@ -64,11 +67,11 @@ public class DCPGSManager {
         clusters.sort((list1,list2)->Integer.compare(list2.size(),list1.size()));
         //输出结果到文件
         CheckInJson checkInJson = CheckInReader.parseJson(clusters);
-        CheckInReader.outPutCheckIn(clusters, "DCPGS/src/main/resources/" + filePath);
+        CheckInReader.outPutCheckIn(clusters, resourcePath + filePath);
         var geoJsonFilePath = String.format("%s/geojson/%s_%.1f_%.1f_%.1f_%.1f.geojson",
                 dataSet,key,params.getEpsilon(),params.getOmega(),params.getTau(),params.getMaxD());
         var geoJson = CheckInReader.parseGeoJson(checkInJson);
-        CheckInReader.parseGeoJsonTo(geoJson, "DCPGS/src/main/resources/" +
+        CheckInReader.parseGeoJsonTo(geoJson, resourcePath +
                 geoJsonFilePath);
         jsonMap.put(filePath,checkInJson);
         geoJsonMap.put(geoJsonFilePath,geoJson);
@@ -78,19 +81,27 @@ public class DCPGSManager {
                 clusters.size(), key, (timeEnd - timeStart) / 1000.0);
     }
 
-    public DCPGSManager() {
+    public DCPGSManager(){
+        this("DCPGS/src/main/resources/");
+    }
+
+    public DCPGSManager(String resourcePath) {
+        log.info("resourcePath: {}", resourcePath);
+        this.resourcePath = resourcePath;
         jsonMap = new HashMap<>();
         geoJsonMap = new HashMap<>();
         paramsMap = new HashMap<>();
         cacheMap = new HashMap<>();
-        File directory = new File("DCPGS/src/main/resources/gowalla/result");
+        File directory = new File(resourcePath + "gowalla/result");
+        log.info("directory: {}", directory.getAbsolutePath());
         File[] files = directory.listFiles();
         if (files != null) {
+            log.info("files: {}", files.length);
             for (File file : files) {
                 cacheMap.put("gowalla/result/" + file.getName(),true);
             }
         }
-        directory = new File("DCPGS/src/main/resources/brightkite/result");
+        directory = new File(resourcePath + "brightkite/result");
         files = directory.listFiles();
         if (files != null) {
             for (File file : files) {

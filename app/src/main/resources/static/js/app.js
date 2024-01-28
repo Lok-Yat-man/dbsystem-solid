@@ -77,12 +77,12 @@ new Vue({
                 dataFileName: "./cases.csv",
                 kdv_type: 1,
                 num_threads: 1,
-                x_L: 113.5,
-                x_U: 114.5,
-                y_L: 22,
-                y_U: 22.6,
-                row_pixels: 10,
-                col_pixels: 10,
+                x_L: 113.8482,
+                x_U: 114.4473,
+                y_L: 22.2025,
+                y_U: 22.4655,
+                row_pixels: 500,
+                col_pixels: 250,
                 kernel_s_type: 1,
                 bandwidth_s: 1000,
                 t_L: 1,
@@ -158,14 +158,7 @@ new Vue({
         loadKDV(){
             this.currentAlgorithm = "kdv";
             this.paramsSwitch('SWITCH');
-            let kdvDataPath = ""
-            if(this.env === "local"){
-                kdvDataPath = "data/kdv/kdv2.geojson"
-            }else if(this.env === "prod") {
-                kdvDataPath = "http://localhost:8080/kdv/geojson"
-            }
-            kdv.loadHeatMap(this,kdvDataPath,[114.0253382853974,22.442117078178544],12);
-            console.log(kdv.callKdvCpp(this));
+            kdv.loadHeatMap(this);
         },
 
         loadKStc(str){
