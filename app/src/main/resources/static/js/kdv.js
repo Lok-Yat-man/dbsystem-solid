@@ -3,7 +3,7 @@ import util from "./utils.js";
 function loadHeatMap(vueThis){
     let request = compute(vueThis.kdv);
     console.log("request: " + request);
-    axios.post("http://localhost:8080/kdv/geojson", request)
+    axios.post(vueThis.baseUrl + "/kdv/geojson", request)
         .then(function (response) {
             console.log(response.data);
             vueThis.map = new mapboxgl.Map({
@@ -114,7 +114,7 @@ function callKdvCpp(vueThis){
     // 2, 1, 113.5, 114.5, 22, 22.6, 10, 10, 1, 1000, 1, 1, 1, 1000, 1
     let request = compute(vueThis.kdv);
     console.log("request: " + request);
-    axios.post("http://localhost:8080/kdv/geojson", request)
+    axios.post(vueThis.baseUrl + "/kdv/geojson", request)
         .then(function (response) {
             console.log(response.data);
             vueThis.map = new mapboxgl.Map({

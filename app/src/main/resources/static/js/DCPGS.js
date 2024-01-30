@@ -75,7 +75,7 @@ async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.location = location;
     let env = vueThis.env;
     let path = getPathFromLocation(location, env, vueThis.DCPGS.dataset);
-    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
+    let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset;
     vueThis.sideBarDisabled = true;
     vueThis.DCPGS.loading = true;
     vueThis.mapLoading = true;
@@ -98,7 +98,7 @@ async function loadDCPGS(vueThis, location, zoom) {
 }
 
 async function getParams(vueThis, location) {
-    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset
+    let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset
     await axios({
         method: "get",
         url: basePath + "/params/" + location
@@ -111,7 +111,7 @@ async function getParams(vueThis, location) {
 }
 
 async function updateParams(vueThis) {
-    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
+    let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset;
     await axios({
         method: "put",
         data: vueThis.DCPGS.params,
