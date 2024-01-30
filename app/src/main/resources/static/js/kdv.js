@@ -8,7 +8,7 @@ function loadHeatMap(vueThis){
             console.log(response.data);
             vueThis.map = new mapboxgl.Map({
                 container: 'map', // container id
-                style: 'mapbox://styles/mapbox/light-v11',
+                style: vueThis.mapStyle,
                 center: [(113.8482+114.4473)/2, (22.2025+22.4655)/2],
                 zoom: 10.9
             });
@@ -119,7 +119,7 @@ function callKdvCpp(vueThis){
             console.log(response.data);
             vueThis.map = new mapboxgl.Map({
                 container: 'map', // container id
-                style: 'mapbox://styles/mapbox/light-v11',
+                style: vueThis.mapStyle,
                 center: [114.1161616, 22.36363636],
                 zoom: 9
             });

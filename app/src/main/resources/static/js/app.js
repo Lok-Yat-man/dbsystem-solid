@@ -12,6 +12,8 @@ new Vue({
     data(){
         return {
             baseUrl: "http://localhost:8080",
+            mapStyle: "mapbox://styles/mapbox/dark-v11",
+            // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
             env: "local",//local or prod

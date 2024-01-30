@@ -126,7 +126,7 @@ async function updateParams(vueThis) {
 function loadPoints(vueThis, geoJsonPath, zoom) {
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: vueThis.mapStyle,
         // style: 'mapbox://styles/mapbox/streets-v12',
         // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: [-97.7575966669, 30.2634181234],

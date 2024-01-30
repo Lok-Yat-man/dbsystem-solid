@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/params.css">
     <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/sideBar.css">
     <link rel="icon" href="./img/szu_icon.png" type="image/x-icon">
 
 </head>
@@ -113,25 +114,23 @@
             </el-form>
         </div>
 
-        <el-button class="switchOut" size="small" :icon="sideBar.switchIcon" id="sideBarSwitch" @click="sideBarSwitch">
+        <img src="./img/btn-open.png" alt="switch" @click="sideBarSwitch" id="sideBarSwitch" class="switchOut">
 
         </el-button>
          <!-- 侧边导航栏-->
-         <el-row class="tac sideOut" id="sideBar" style="overflow:auto;" >
+         <el-row class="tac sideOut" id="sideBar" style="overflow:hidden;" >
             <el-col :span="12">
 <!--              <h3 style="text-align: center">Menu</h3>-->
 
               <el-menu
                 class="el-menu-vertical-demo"
                 default-active="1-1-1"
-                background-color="rgba(255,255,255,0.1)"
-                backgroud-image="./img/bg_tagBigBtnClick.png"
+                text-color="#00FFFF"
                 unique-opened
                 v-loading="mapLoading"
               >
                 <el-submenu index="1">
                   <template slot="title">
-                    <i class="el-icon-location"></i>
                     <span>Clustering</span>
                   </template>
                     <el-submenu index="1-1">
@@ -162,7 +161,6 @@
                 </el-submenu>
                 <el-submenu index="2">
                   <template slot="title">
-                  <i class="el-icon-menu"></i>
                   <span slot="title">Visualization</span>
                    </template>
                     <el-submenu index="2-1">
