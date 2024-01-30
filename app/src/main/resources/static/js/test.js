@@ -2,7 +2,7 @@ import util from './utils.js'
 function testTree(vueThis){
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: vueThis.mapStyle,
         center: [-97.7575966669, 30.2634181234],
         zoom: 5
     });
