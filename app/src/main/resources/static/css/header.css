@@ -35,22 +35,25 @@
     margin-left:6%;
     margin-top:1%;
 }
-.title2{
-    margin-left:30%;
+.title2 {
     display: flex;
-    justify-content: space-between;
-    height:100px;
+    justify-content:space-between;
+    margin-top:1%;
+    margin-left:33%;
+    width:1000px;
 }
-#school-image{
-    width: 25%;
-}
-#college-image{
-    width:40%;
-}
-#lab-image{
-    width:40%;
-}
+
 .ename{
+    width: 505px;
+    height: 18px;
+    font-size: 16px;
+    font-family: CJNgaiHKS, CJNgaiHKS;
+    font-weight: bold;
+    color: #00FFFF;
+    line-height: 36px;
+    letter-spacing: 1px;
+}
+.cname{
     width: 505px;
     height: 18px;
     font-size: 16px;
