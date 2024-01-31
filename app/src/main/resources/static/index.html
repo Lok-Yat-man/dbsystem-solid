@@ -9,130 +9,128 @@
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/params.css">
     <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/sideBar.css">
+    <link rel="stylesheet" href="css/sidebar.css">
     <link rel="icon" href="./img/szu_icon.png" type="image/x-icon">
 
 </head>
 <body>
-    <div id="app">
-        <div id="map"></div>
-        <div id="paramsSwitch" v-if="switchStatus === 'SWITCH'">
-            <el-button type="primary" icon="el-icon-edit" circle @click="paramsSwitch('')"></el-button>
-        </div>
 
-        <div class="params" v-if="switchStatus === 'DCPGS'">
+<div id="app">
+    <div id="map"></div>
+    <div id="paramsSwitch" v-if="switchStatus === 'SWITCH'">
+        <el-button type="primary" icon="el-icon-edit" circle @click="paramsSwitch('')"></el-button>
+    </div>
 
-            <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
+    <div class="params" v-if="switchStatus === 'DCPGS'">
+
+        <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
 
 
-            <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS" v-loading="mapLoading">
-                <el-button id ="DCPGSParamsCloser" size="small" round  @click="paramsSwitch('SWITCH')" >close</el-button>
-                <span style="color: rgb(96, 98, 102)">cluster nums: </span>
-                <el-slider
-                        v-model="DCPGS.clusterNums"
-                        :min="1" :max="DCPGS.maxClusterNums"
-                        show-input
-                        @change="updateClusterNums">
-                </el-slider>
-                <span style="color: rgb(96, 98, 102)">dataset: </span>
-                <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)">gowalla</el-radio>
-                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%" @change="loadDSPGS('',-1)">brightkite</el-radio>
-                <el-form-item label="&epsilon;">
-                    <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="&omega;">
-                    <el-input-number v-model="DCPGS.params.omega" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="&tau;">
-                    <el-input-number v-model="DCPGS.params.tau" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="maxD">
-                    <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="10" :max="300" ></el-input-number>
-                </el-form-item>
-                <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading" >confirm</el-button>
-                </div>
-            </el-form>
-        </div>
+        <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS" v-loading="mapLoading">
+            <el-button id ="DCPGSParamsCloser" size="small" round  @click="paramsSwitch('SWITCH')" >close</el-button>
+            <span style="color: rgb(96, 98, 102)">cluster nums: </span>
+            <el-slider
+                    v-model="DCPGS.clusterNums"
+                    :min="1" :max="DCPGS.maxClusterNums"
+                    show-input
+                    @change="updateClusterNums">
+            </el-slider>
+            <span style="color: rgb(96, 98, 102)">dataset: </span>
+            <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)">gowalla</el-radio>
+            <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%" @change="loadDSPGS('',-1)">brightkite</el-radio>
+            <el-form-item label="&epsilon;">
+                <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="&omega;">
+                <el-input-number v-model="DCPGS.params.omega" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="&tau;">
+                <el-input-number v-model="DCPGS.params.tau" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="maxD">
+                <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="10" :max="300" ></el-input-number>
+            </el-form-item>
+            <div style="text-align: center">
+                <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading" >confirm</el-button>
+            </div>
+        </el-form>
+    </div>
 
-        <div v-loading.lock="KSTC.loading"
-                class="params" v-if="switchStatus === 'KSTC'">
-            <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
-            <template><el-button id ="KSTCParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
-            <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
+    <div v-loading.lock="KSTC.loading"
+         class="params" v-if="switchStatus === 'KSTC'">
+        <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
+        <template><el-button id ="KSTCParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
+        <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
 
-                <el-form-item label="word">
-                    <el-input v-model="KSTC.query.keywords" placeholder="以,分隔"></el-input>
-                </el-form-item>
+            <el-form-item label="word">
+                <el-input v-model="KSTC.query.keywords" placeholder="以,分隔"></el-input>
+            </el-form-item>
 
-                <el-form-item label="epsilon">
-                    <el-input-number v-model="KSTC.query.epsilon" :precision="1" :step="1" :min="1"></el-input-number>
-                </el-form-item>
+            <el-form-item label="epsilon">
+                <el-input-number v-model="KSTC.query.epsilon" :precision="1" :step="1" :min="1"></el-input-number>
+            </el-form-item>
 
-                <el-form-item label="k">
-                    <el-input-number v-model="KSTC.query.k" :step="1" :min="1" :max="20" ></el-input-number>
-                </el-form-item>
+            <el-form-item label="k">
+                <el-input-number v-model="KSTC.query.k" :step="1" :min="1" :max="20" ></el-input-number>
+            </el-form-item>
 
-                <el-form-item label="minPts">
-                    <el-input-number v-model="KSTC.query.minPts" :step="1" :min="2" :max="20" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="maxDist">
-                    <el-input-number v-model="KSTC.query.maxDist" :step="1" :min="-1" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="lon">
-                    <el-input-number v-model="KSTC.query.location.longitude" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="lat">
-                    <el-input-number v-model="KSTC.query.location.latitude" :precision="2" :step="0.1" :min="-90" :max="90" ></el-input-number>
-                </el-form-item>
-                <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('KSTC_UPDATE')">confirm</el-button>
-                </div>
-            </el-form>
+            <el-form-item label="minPts">
+                <el-input-number v-model="KSTC.query.minPts" :step="1" :min="2" :max="20" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="maxDist">
+                <el-input-number v-model="KSTC.query.maxDist" :step="1" :min="-1" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="lon">
+                <el-input-number v-model="KSTC.query.location.longitude" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="lat">
+                <el-input-number v-model="KSTC.query.location.latitude" :precision="2" :step="0.1" :min="-90" :max="90" ></el-input-number>
+            </el-form-item>
+            <div style="text-align: center">
+                <el-button round @click="paramsSwitch('KSTC_UPDATE')">confirm</el-button>
+            </div>
+        </el-form>
 
-        </div>
+    </div>
 
-        <div class="params" v-if="switchStatus === 'spatial_skylines'">
-            <h3 style="color: rgb(96, 98, 102)">spatial_skylines params: </h3>
-            <template><el-button id ="spatial_skylinesParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
-            <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
-                <el-form-item label="params_1">
-                    <el-input-number v-model="spatial_skylines.query.params_1" :precision="1" :step="1" :min="1" :max="100"></el-input-number>
-                </el-form-item>
-                <el-form-item label="params_2">
-                    <el-input-number v-model="spatial_skylines.query.params_2" :step="1" :min="1" :max="20" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="params_3">
-                    <el-input-number v-model="spatial_skylines.query.params_3" :step="1" :min="2" :max="20" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="params_4">
-                    <el-input-number v-model="spatial_skylines.query.params_4" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
-                </el-form-item>
-                <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('spatial_skylines_UPDATE')">confirm</el-button>
-                </div>
-            </el-form>
-        </div>
+    <div class="params" v-if="switchStatus === 'spatial_skylines'">
+        <h3 style="color: rgb(96, 98, 102)">spatial_skylines params: </h3>
+        <template><el-button id ="spatial_skylinesParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
+        <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
+            <el-form-item label="params_1">
+                <el-input-number v-model="spatial_skylines.query.params_1" :precision="1" :step="1" :min="1" :max="100"></el-input-number>
+            </el-form-item>
+            <el-form-item label="params_2">
+                <el-input-number v-model="spatial_skylines.query.params_2" :step="1" :min="1" :max="20" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="params_3">
+                <el-input-number v-model="spatial_skylines.query.params_3" :step="1" :min="2" :max="20" ></el-input-number>
+            </el-form-item>
+            <el-form-item label="params_4">
+                <el-input-number v-model="spatial_skylines.query.params_4" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
+            </el-form-item>
+            <div style="text-align: center">
+                <el-button round @click="paramsSwitch('spatial_skylines_UPDATE')">confirm</el-button>
+            </div>
+        </el-form>
+    </div>
+    <img src="./img/btn-open.png" alt="switch" @click="sideBarSwitch" id="sideBarSwitch" class="switchOut">
+    <!-- 侧边导航栏-->
+    <el-row class="tac sideOut" id="sideBar" style="overflow:hidden;" >
+        <el-col :span="12">
+            <!--              <h3 style="text-align: center">Menu</h3>-->
 
-        <img src="./img/btn-open.png" alt="switch" @click="sideBarSwitch" id="sideBarSwitch" class="switchOut">
-
-        </el-button>
-         <!-- 侧边导航栏-->
-         <el-row class="tac sideOut" id="sideBar" style="overflow:hidden;" >
-            <el-col :span="12">
-<!--              <h3 style="text-align: center">Menu</h3>-->
-
-              <el-menu
-                class="el-menu-vertical-demo"
-                default-active="1-1-1"
-                text-color="#00FFFF"
-                unique-opened
-                v-loading="mapLoading"
-              >
+            <el-menu
+                    class="el-menu-vertical-demo"
+                    default-active="1-1-1"
+                    text-color="#00FFFF"
+                    unique-opened
+                    v-loading="mapLoading"
+            >
                 <el-submenu index="1">
-                  <template slot="title">
-                    <span>Clustering</span>
-                  </template>
+                    <template slot="title">
+                        <span>Clustering</span>
+                    </template>
                     <el-submenu index="1-1">
                         <template slot="title">Geo-social network</template>
                         <el-menu-item index="1-1-1" @click="loadDSPGS('StockholmSweden', 13)" >Stockholm Sweden</el-menu-item>
@@ -145,12 +143,12 @@
                         <el-menu-item index="1-1-8" @click="loadDSPGS('ZurichSwitzerland', 13)" >Zurich Switzerland</el-menu-item>
                     </el-submenu>
                     <el-submenu index="1-2">
-                       <template slot="title">Spatial textual clustering</template>
+                        <template slot="title">Spatial textual clustering</template>
                         <el-menu-item index="1-2-3" @click="loadKStc('')">Simple KSTC</el-menu-item>
 
                     </el-submenu>
                     <el-submenu index="1-3">
-                       <template slot="title">Textually spatial skylines</template>
+                        <template slot="title">Textually spatial skylines</template>
                         <el-menu-item index="1-3-1"  @click="paramsSwitch('spatial_skylines')">1-3-1</el-menu-item>
                     </el-submenu>
 
@@ -160,55 +158,43 @@
                     </el-submenu>
                 </el-submenu>
                 <el-submenu index="2">
-                  <template slot="title">
-                  <span slot="title">Visualization</span>
-                   </template>
+                    <template slot="title">
+                        <span slot="title">Visualization</span>
+                    </template>
                     <el-submenu index="2-1">
-                   <template slot="title">KDV</template>
-                  <el-menu-item index="2-1-1" @click="loadKDV">kdv</el-menu-item>
+                        <template slot="title">KDV</template>
+                        <el-menu-item index="2-1-1" @click="loadKDV">kdv</el-menu-item>
                     </el-submenu>
 
                     <el-submenu index="2-2">
-                   <template slot="title">Temporal KDV</template>
-                  <el-menu-item index="2-2-1">2-2-1</el-menu-item>
+                        <template slot="title">Temporal KDV</template>
+                        <el-menu-item index="2-2-1">2-2-1</el-menu-item>
                     </el-submenu>
 
-                  <el-submenu index="2-3">
-                   <template slot="title">Line KDV</template>
-                  <el-menu-item index="2-3-1">2-3-1</el-menu-item>
+                    <el-submenu index="2-3">
+                        <template slot="title">Line KDV</template>
+                        <el-menu-item index="2-3-1">2-3-1</el-menu-item>
                     </el-submenu>
                 </el-submenu>
-              </el-menu>
-            </el-col>
-          </el-row>
-
-          <div id="header" >
-
-              <p id="lang">中文</p>
-
-              <div class="subheader" id="header3">
-                  <a href ="https://bigdata.szu.edu.cn/" target="_blank"><img decoding="async" class="header_image" id="header-img3" src="./img/lab.png" /></a>
-                  <div class="logo_description" id="lab_title">
-                      <div class="name" >大数据与应用数据研究所</div>
-                      <div class="ename" >Big Data Institute Shenzhen University</div>
-                  </div>
-              </div>
-
-              <div class="subheader" id="header2">
-                  <a href ="https://csse.szu.edu.cn/" target="_blank"><img decoding="async" class="header_image" id="header-img2" src="./img/college.png" /></a>
-                  <div class="logo_description" id="college_title">
-                      <div class="name" >深圳大学计算机与软件学院</div>
-                      <div class="ename" >College of Computer Science and Software Engineering, SZU</div>
-                  </div>
-              </div>
-
-              <div class="subheader" id="header1">
-                  <a href ="https://www.szu.edu.cn/" target="_blank"> <img decoding="async" class="header_image" id="header-img1" src="./img/szu.png" /> </a>
-              </div>
-
-          </div>
-
+            </el-menu>
+        </el-col>
+    </el-row>
+    <!--顶部导航栏-->
+    <div id="header">
+        <img class="header-image" id="top-image" src="./img/bg_top.png"/>
+        <img class="header-title" id="title-image" src="./img/STARS.png"/>
+        <div class="subheader">
+            <div class="title1">
+                <div class="ename">Spatial-Temporal Analytics with Rapid System</div>
+            </div>
+            <div class="title2">
+                <img decoding="async" id="school-image" src="./img/bg_szu.png">
+                <img id="college-image" src="./img/bg_college.png">
+                <img id="lab-image" src="./img/bg_lab.png">
+            </div>
+        </div>
     </div>
+</div>
 </body>
 <script src="js/kdv/kdvCpp.js"></script>
 <script src="js/environment/d3.js"></script>
