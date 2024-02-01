@@ -17,42 +17,87 @@
 
 <div id="app">
     <div id="map"></div>
-    <div id="paramsSwitch" v-if="switchStatus === 'SWITCH'">
-        <el-button type="primary" icon="el-icon-edit" circle @click="paramsSwitch('')"></el-button>
-    </div>
+    <img src="./img/params/btn-popupOpen.png" alt="switch" @click="sideBarSwitch('params','paramsSwitch','paramsIn', 'paramsOut', 'paramSwitchIn', 'paramSwitchOut')"
+         id="paramsSwitch" class="paramSwitchIn">
 
-    <div class="params" v-if="switchStatus === 'DCPGS'">
+    <div class="params paramsIn" id="params" v-if="switchStatus === 'DCPGS'">
 
-        <h3 style="color: rgb(96, 98, 102)">DCPGS params: </h3>
-
+        <h3 class="params_header">DCPGS</h3>
 
         <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS" v-loading="mapLoading">
-            <el-button id ="DCPGSParamsCloser" size="small" round  @click="paramsSwitch('SWITCH')" >close</el-button>
-            <span style="color: rgb(96, 98, 102)">cluster nums: </span>
-            <el-slider
-                    v-model="DCPGS.clusterNums"
-                    :min="1" :max="DCPGS.maxClusterNums"
-                    show-input
-                    @change="updateClusterNums">
-            </el-slider>
-            <span style="color: rgb(96, 98, 102)">dataset: </span>
+            <div class="param_adjuster" style="width: 100%">
+                <span class="item_label">cluster nums</span>
+                <div class="adjuster" @click="DCPGS.clusterNums = paramAdjust(DCPGS.clusterNums,false,DCPGS.maxClusterNums,0,1,0);updateClusterNums();" style="margin-left: 5px;">
+                    <div class="icon-minus"></div>
+                </div>
+                <input class="param_input" type="text" v-model="DCPGS.clusterNums" @change="updateClusterNums">
+                <div class="adjuster" @click="DCPGS.clusterNums = paramAdjust(DCPGS.clusterNums,true,DCPGS.maxClusterNums,0,1,0);updateClusterNums();">
+                    <div class="icon-plus"></div>
+                </div>
+            </div>
+            <br><br>
+<!--            暂时弃用-->
+<!--            <el-slider-->
+<!--                    v-model="DCPGS.clusterNums"-->
+<!--                    :min="1" :max="DCPGS.maxClusterNums"-->
+<!--                    @change="updateClusterNums">-->
+<!--            </el-slider>-->
+<!--            <br><br>-->
+            <span class="item_label" style="padding-left: 15px">dataset</span>
+            <br>
+            <div class="left_gap"></div>
             <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)">gowalla</el-radio>
             <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%" @change="loadDSPGS('',-1)">brightkite</el-radio>
-            <el-form-item label="&epsilon;">
-                <el-input-number v-model="DCPGS.params.epsilon" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
-            </el-form-item>
-            <el-form-item label="&omega;">
-                <el-input-number v-model="DCPGS.params.omega" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
-            </el-form-item>
-            <el-form-item label="&tau;">
-                <el-input-number v-model="DCPGS.params.tau" :precision="2" :step="0.1" :min="0" :max="1" ></el-input-number>
-            </el-form-item>
-            <el-form-item label="maxD">
-                <el-input-number v-model="DCPGS.params.maxD" :step="10" :min="10" :max="300" ></el-input-number>
-            </el-form-item>
-            <div style="text-align: center">
-                <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading" >confirm</el-button>
+            <br>
+            <span class="item_label" style="padding-left: 15px">params</span>
+            <br>
+            <div class="param_adjuster">
+                <span class="item_label">&epsilon;</span>
+                <div class="adjuster" @click="DCPGS.params.epsilon = paramAdjust(DCPGS.params.epsilon,false,1.0,0,0.1,2)" style="margin-left: 5px;">
+                    <div class="icon-minus"></div>
+                </div>
+                <input class="param_input" type="text" v-model="DCPGS.params.epsilon">
+                <div class="adjuster" @click="DCPGS.params.epsilon = paramAdjust(DCPGS.params.epsilon,true,1.0,0,0.1,2)">
+                    <div class="icon-plus"></div>
+                </div>
             </div>
+            <div class="param_adjuster">
+                <span class="item_label">&nbsp;&nbsp;&nbsp;&ensp;&ensp;&omega;</span>
+                <div class="adjuster" @click="DCPGS.params.omega = paramAdjust(DCPGS.params.omega,false,1.0,0,0.1,2)" style="margin-left: 5px;">
+                    <div class="icon-minus"></div>
+                </div>
+                <input class="param_input" type="text" v-model="DCPGS.params.omega">
+                <div class="adjuster" @click="DCPGS.params.omega = paramAdjust(DCPGS.params.omega,true,1.0,0,0.1,2)">
+                    <div class="icon-plus"></div>
+                </div>
+            </div>
+            <br><br>
+            <div class="param_adjuster">
+                <span class="item_label">&tau;</span>
+                <div class="adjuster" @click="DCPGS.params.tau = paramAdjust(DCPGS.params.tau,false,1.0,0,0.1,2)" style="margin-left: 5px;">
+                    <div class="icon-minus"></div>
+                </div>
+                <input class="param_input" type="text" v-model="DCPGS.params.tau">
+                <div class="adjuster" @click="DCPGS.params.tau = paramAdjust(DCPGS.params.tau,true,1.0,0,0.1,2)">
+                    <div class="icon-plus"></div>
+                </div>
+            </div>
+            <div class="param_adjuster">
+                <span class="item_label">maxD</span>
+                <div class="adjuster" @click="DCPGS.params.maxD = paramAdjust(DCPGS.params.maxD,false,300,10,10,0)" style="margin-left: 5px;">
+                    <div class="icon-minus"></div>
+                </div>
+                <input class="param_input" type="text" v-model="DCPGS.params.maxD">
+                <div class="adjuster" @click="DCPGS.params.maxD = paramAdjust(DCPGS.params.maxD,true,300,10,10,0)">
+                    <div class="icon-plus"></div>
+                </div>
+            </div>
+            <br><br>
+
+<!--            <div style="text-align: center">-->
+<!--                <button class="confirm_button" @click="paramsSwitch('DCPGS_UPDATE')">confirm</button>-->
+<!--&lt;!&ndash;                <el-button round @click="paramsSwitch('DCPGS_UPDATE')" :loading="DCPGS.loading" >confirm</el-button>&ndash;&gt;-->
+<!--            </div>-->
         </el-form>
     </div>
 
@@ -114,7 +159,7 @@
             </div>
         </el-form>
     </div>
-    <img src="./img/btn-open.png" alt="switch" @click="sideBarSwitch" id="sideBarSwitch" class="switchOut">
+    <img src="./img/sidebar/btn-fold.png" alt="switch" @click="sideBarSwitch('sideBar','sideBarSwitch','sideIn','sideOut','switchIn','switchOut')" id="sideBarSwitch" class="switchOut" style="cursor: pointer">
     <!-- 侧边导航栏-->
     <el-row class="tac sideOut" id="sideBar" style="overflow:hidden;" >
         <el-col :span="12">
@@ -123,7 +168,6 @@
             <el-menu
                     class="el-menu-vertical-demo"
                     default-active="1-1-1"
-                    text-color="#00FFFF"
                     unique-opened
                     v-loading="mapLoading"
             >

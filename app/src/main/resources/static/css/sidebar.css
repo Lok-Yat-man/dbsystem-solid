@@ -1,10 +1,10 @@
 .tac{
-    background-image: url(../img/bg_tab.png);
+    background-image: url(../img/sidebar/bg_tab.png);
     position: absolute;
     z-index: 1000;
     width: 372px;
-    height: 90%;
-    top: 100px;
+    height: 94%;
+    top: 65px;
 }
 
 .el-col{
@@ -28,44 +28,50 @@
 
 .el-submenu{
     margin-left: 15px;
-    background-image: url(../img/bg_tabBigBtnNormal.png);
+    background-image: url(../img/sidebar/bg_tabBigBtnNormal.png);
     background-repeat: no-repeat;
 }
 
 .el-submenu .el-submenu{
     margin-left: 30px;
-    background-image: url(../img/bg_tabMiddleBtnNormal.png);
+    background-image: url(../img/sidebar/bg_tabMiddleBtnNormal.png);
     background-repeat: no-repeat;
 }
 
 .el-menu-item{
     margin-left: 20px;
-    background-image: url(../img/bg_tabLittleBtnNormal.png);
+    background-image: url(../img/sidebar/bg_tabLittleBtnNormal.png);
     background-repeat: no-repeat;
+    padding-right: 0;
+    color: rgba(0, 255, 255, 0.6);
 }
 
 .el-menu-item.is-active{
-    background-image: url(../img/bg_tabLittleBtnClick.png);
+    background-image: url(../img/sidebar/bg_tabLittleBtnClick.png);
     background-repeat: no-repeat;
+    padding-right: 0;
+    color: rgba(0, 255, 255, 1);
 }
 
 .el-submenu.is-active{
-    background-image: url(../img/bg_tabBigBtnClick.png);
+    background-image: url(../img/sidebar/bg_tabBigBtnClick.png);
     background-repeat: no-repeat;
 }
 
 .el-submenu .el-submenu.is-active{
-    background-image: url(../img/bg_tabMiddleBtnClick.png);
+    background-image: url(../img/sidebar/bg_tabMiddleBtnClick.png);
     background-repeat: no-repeat;
 }
 
 .el-submenu .el-submenu__title{
     font-weight: bold;
     left: 25%;
+    color: #00FFFF;
 }
 
 .el-submenu .el-submenu .el-submenu__title{
     left: 10%;
+    color: #00FFFF;
 }
 
 .el-submenu .el-menu-item {
@@ -77,8 +83,8 @@
 
 #sideBarSwitch{
     position: absolute;
-    top: 50%;
-    left: 372px;
+    top: 40%;
+    left: 367px;
     background-image: url("../img/btn-open.png");
 }
 
@@ -115,7 +121,7 @@
 }
 
 @keyframes sideBarSwitchOut {
-    0% { left: 372px; }
+    0% { left: 367px; }
     25% {left: 279px;}
     50% { left: 186px; }
     75% { left: 93px; }
@@ -127,7 +133,7 @@
     25% {left: 93px;}
     50% { left: 186px; }
     75% { left: 279px; }
-    100% { left: 372px; }
+    100% { left: 367px; }
 }
 
 .el-col-12{

@@ -8,7 +8,7 @@
 }
 #header-top{
     align-items: center;
-    width:100%
+    width:100%;
     display:flex;
     flex-direction:row;
 }
@@ -52,6 +52,7 @@
     color: #00FFFF;
     line-height: 36px;
     letter-spacing: 1px;
+    white-space: nowrap;
 }
 .cname{
     width: 505px;
@@ -62,4 +63,5 @@
     color: #00FFFF;
     line-height: 36px;
     letter-spacing: 1px;
+    white-space: nowrap;
 }
