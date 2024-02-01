@@ -131,6 +131,8 @@ new Vue({
             return Number(ans.toFixed(fractionDigits));
         },
 
+
+
         sideBarSwitch(id, switchId,inName, outName, switchInName, switchOutName){
             let sideBar = document.getElementById(id);
             if(sideBar.classList.contains(outName)){
