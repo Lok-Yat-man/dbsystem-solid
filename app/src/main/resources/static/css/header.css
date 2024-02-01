@@ -7,6 +7,7 @@
     height: 180px;
 }
 #header-top{
+    position:fixed;
     align-items: center;
     width:100%;
     display:flex;
@@ -40,9 +41,13 @@
     justify-content:space-between;
     margin-top:1%;
     margin-left:33%;
-    width:1000px;
 }
-
+#school{
+    margin-right:5%;
+}
+#college{
+    margin-right:5%;
+}
 .ename{
     width: 505px;
     height: 18px;
@@ -55,6 +60,7 @@
     white-space: nowrap;
 }
 .cname{
+    position:relative;
     width: 505px;
     height: 18px;
     font-size: 16px;
