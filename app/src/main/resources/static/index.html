@@ -18,8 +18,8 @@
 <div id="app">
     <div id="map"></div>
     <img src="./img/params/btn-popupOpen.png" alt="switch"
-         @click="sideBarSwitch('params','dcpgsSwitch','paramsIn', 'paramsOut', 'paramSwitchIn', 'paramSwitchOut')"
-         id="dcpgsSwitch" class="paramsSwitch paramSwitchIn">
+         @click="sideBarSwitch('params','paramSwitch','paramsIn', 'paramsOut', 'paramSwitchIn', 'paramSwitchOut')"
+         id="paramSwitch" class="paramsSwitch paramSwitchIn">
     <div class="paramsIn" id="params">
         <div class="params"  v-if="switchStatus === 'DCPGS'">
 
@@ -105,61 +105,107 @@
                 <!--            </div>-->
             </el-form>
         </div>
-
-        <div v-loading.lock="KSTC.loading"
-             class="params" v-if="switchStatus === 'KSTC'">
-            <h3 style="color: rgb(96, 98, 102)">k-stc params: </h3>
-            <template><el-button id ="KSTCParamsCloser" size="small" plain @click="paramsSwitch('SWITCH')">close</el-button></template>
+<!--v-loading.lock="KSTC.loading"-->
+        <div
+             class="params" v-if="switchStatus === 'KSTC'" style="height: 450px; ">
+            <h3 class="params_header">k-stc</h3>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
 
                 <el-form-item label="word">
                     <el-input v-model="KSTC.query.keywords" placeholder="以,分隔"></el-input>
                 </el-form-item>
 
-                <el-form-item label="epsilon">
-                    <el-input-number v-model="KSTC.query.epsilon" :precision="1" :step="1" :min="1"></el-input-number>
-                </el-form-item>
-
-                <el-form-item label="k">
-                    <el-input-number v-model="KSTC.query.k" :step="1" :min="1" :max="20" ></el-input-number>
-                </el-form-item>
-
-                <el-form-item label="minPts">
-                    <el-input-number v-model="KSTC.query.minPts" :step="1" :min="2" :max="20" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="maxDist">
-                    <el-input-number v-model="KSTC.query.maxDist" :step="1" :min="-1" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="lon">
-                    <el-input-number v-model="KSTC.query.location.longitude" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="lat">
-                    <el-input-number v-model="KSTC.query.location.latitude" :precision="2" :step="0.1" :min="-90" :max="90" ></el-input-number>
-                </el-form-item>
-                <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('KSTC_UPDATE')">confirm</el-button>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">epsilon</span>
+                    <div class="adjuster" @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,false,1.0,0,0.1,1)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="KSTC.query.epsilon">
+                    <div class="adjuster" @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,true,1.0,0,0.1,1)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">k</span>
+                    <div class="adjuster" @click="KSTC.query.k = paramAdjust(KSTC.query.k,false,20,1,1,0)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="KSTC.query.k">
+                    <div class="adjuster" @click="KSTC.query.k = paramAdjust(KSTC.query.k,true,20,1,1,0)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">minPts</span>
+                    <div class="adjuster" @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,false,20,2,1,0)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="KSTC.query.minPts">
+                    <div class="adjuster" @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,true,20,2,1,0)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">maxDist</span>
+                    <div class="adjuster" @click="KSTC.query.maxDist = paramAdjust(KSTC.query.maxDist,false,9999999999,-1,1,0)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="KSTC.query.maxDist">
+                    <div class="adjuster" @click="KSTC.query.maxDist = paramAdjust(KSTC.query.maxDist,true,9999999999,-1,1,0)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">lon</span>
+                    <div class="adjuster" @click="KSTC.query.location.longitude = paramAdjust(KSTC.query.location.longitude,false,180,-180,0.1,2)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="KSTC.query.location.longitude">
+                    <div class="adjuster" @click="KSTC.query.location.longitude = paramAdjust(KSTC.query.location.longitude,true,180,-180,0.1,2)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">lat</span>
+                    <div class="adjuster" @click="KSTC.query.location.latitude = paramAdjust(KSTC.query.location.latitude,false,90,-90,0.1,2)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="KSTC.query.location.latitude">
+                    <div class="adjuster" @click="KSTC.query.location.latitude = paramAdjust(KSTC.query.location.latitude,true,90,-90,0.1,2)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <div class="params_confirm">
+                    <div class="confirm_button" @click="paramsSwitch('KSTC_UPDATE')">
+                        <span class="confirm_label">confirm</span>
+                    </div>
                 </div>
             </el-form>
 
         </div>
 
         <div class="params" v-if="switchStatus === 'spatial_skylines'">
-            <h3 style="color: rgb(96, 98, 102)">spatial_skylines params: </h3>
+            <h3 class="params_header">spatial_skylines</h3>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
-                <el-form-item label="params_1">
-                    <el-input-number v-model="spatial_skylines.query.params_1" :precision="1" :step="1" :min="1" :max="100"></el-input-number>
-                </el-form-item>
-                <el-form-item label="params_2">
-                    <el-input-number v-model="spatial_skylines.query.params_2" :step="1" :min="1" :max="20" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="params_3">
-                    <el-input-number v-model="spatial_skylines.query.params_3" :step="1" :min="2" :max="20" ></el-input-number>
-                </el-form-item>
-                <el-form-item label="params_4">
-                    <el-input-number v-model="spatial_skylines.query.params_4" :precision="2" :step="0.1" :min="-180" :max="180" ></el-input-number>
-                </el-form-item>
-                <div style="text-align: center">
-                    <el-button round @click="paramsSwitch('spatial_skylines_UPDATE')">confirm</el-button>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">params_1</span>
+                    <div class="adjuster" @click="spatial_skylines.query.params_1 = paramAdjust(spatial_skylines.query.params_1,false,1.0,0,0.1,2)" style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="spatial_skylines.query.params_1">
+                    <div class="adjuster" @click="spatial_skylines.query.params_1 = paramAdjust(spatial_skylines.query.params_1,true,1.0,0,0.1,2)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <div class="params_confirm">
+                    <div class="confirm_button" @click="paramsSwitch('spatial_skylines_UPDATE')">
+                        <span class="confirm_label">confirm</span>
+                    </div>
                 </div>
             </el-form>
         </div>

@@ -15,7 +15,7 @@
     /*z-index: 9999;*/
     position: absolute;
     right: 0;
-    bottom: 5%;
+    bottom: 15%;
     width: 298px;
     height: 357px;
 }
@@ -30,7 +30,7 @@
     cursor: pointer;
     position: absolute;
     right: 298px;
-    bottom: 13%;
+    bottom: 23%;
     z-index: 9999;
 }
 
@@ -151,7 +151,7 @@
     background-color: rgba(255,255,255,0.0);
     border: 0;
     text-align: center;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: normal;
     color: #00FFFF;
     line-height: 15px;
@@ -193,6 +193,8 @@
     height: 37px;
     text-align: center;
     cursor: pointer;
+    position: absolute;
+    bottom: 7%;
 }
 
 .confirm_label{
