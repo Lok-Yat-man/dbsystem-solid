@@ -75,7 +75,7 @@ async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.location = location;
     let env = vueThis.env;
     let path = getPathFromLocation(location, env, vueThis.DCPGS.dataset);
-    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
+    let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset;
     vueThis.sideBarDisabled = true;
     vueThis.DCPGS.loading = true;
     vueThis.mapLoading = true;
@@ -98,7 +98,7 @@ async function loadDCPGS(vueThis, location, zoom) {
 }
 
 async function getParams(vueThis, location) {
-    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset
+    let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset
     await axios({
         method: "get",
         url: basePath + "/params/" + location
@@ -111,7 +111,7 @@ async function getParams(vueThis, location) {
 }
 
 async function updateParams(vueThis) {
-    let basePath = "http://localhost:8080/dcpgs/" + vueThis.DCPGS.dataset;
+    let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset;
     await axios({
         method: "put",
         data: vueThis.DCPGS.params,
@@ -126,7 +126,7 @@ async function updateParams(vueThis) {
 function loadPoints(vueThis, geoJsonPath, zoom) {
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        style: 'mapbox://styles/mapbox/light-v11',
+        style: vueThis.mapStyle,
         // style: 'mapbox://styles/mapbox/streets-v12',
         // style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: [-97.7575966669, 30.2634181234],

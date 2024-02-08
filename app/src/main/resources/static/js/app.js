@@ -4,7 +4,7 @@ import kstc from "./kstc.js"
 import test from "./test.js"
 // import { Loading } from './environment/elementUI'
 
-mapboxgl.accessToken = 'pk.eyJ1IjoiY29uZ3dhbmciLCJhIjoiY2tjZWwxNW5uMDdoMjJ3cDZnaGF2bmJlYiJ9.NOKscgbt1C-DCo38sxtUFw';
+mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
 
 
 new Vue({
@@ -12,6 +12,9 @@ new Vue({
     data(){
         return {
             baseUrl: "http://localhost:8080",
+            mapStyle: "mapbox://styles/mapbox/dark-v11",
+            // mapStyle: "mapbox://styles/mapbox/traffic-night-v2",
+            // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
             env: "local",//local or prod
@@ -105,7 +108,7 @@ new Vue({
                 await dcpgs.updateParams(this)
                     .then(()=>{
                         console.log("DCPGS params running finished")
-                        this.switchStatus = "SWITCH";
+                        this.switchStatus = "DCPGS";
                         this.DCPGS.loading = false;
                         this.sideBarDisabled = false;
                     });
@@ -118,24 +121,34 @@ new Vue({
             }
         },
 
-        sideBarSwitch(){
-            let sideBar = document.getElementById("sideBar");
-            if(sideBar.classList.contains("sideOut")){
-                sideBar.classList.add("sideIn");
-                sideBar.classList.remove("sideOut");
-            }else if(sideBar.classList.contains("sideIn")){
-                sideBar.classList.add("sideOut");
-                sideBar.classList.remove("sideIn");
+        paramAdjust(param, plus, maxValue, minValue, gap, fractionDigits){
+            let ans = parseFloat(param);
+            if(plus) {
+                ans = ans + gap > maxValue ? maxValue : ans + gap;
+            }else{
+                ans = ans - gap < minValue ? minValue : ans - gap;
             }
-            let barSwitch = document.getElementById("sideBarSwitch");
-            if(barSwitch.classList.contains("switchOut")){
-                barSwitch.classList.add("switchIn");
-                barSwitch.classList.remove("switchOut");
-                this.sideBar.switchIcon = "el-icon-arrow-left";
-            }else if(barSwitch.classList.contains("switchIn")){
-                barSwitch.classList.add("switchOut");
-                barSwitch.classList.remove("switchIn");
-                this.sideBar.switchIcon = "el-icon-arrow-right";
+            return Number(ans.toFixed(fractionDigits));
+        },
+
+
+
+        sideBarSwitch(id, switchId,inName, outName, switchInName, switchOutName){
+            let sideBar = document.getElementById(id);
+            if(sideBar.classList.contains(outName)){
+                sideBar.classList.add(inName);
+                sideBar.classList.remove(outName);
+            }else if(sideBar.classList.contains(inName)){
+                sideBar.classList.add(outName);
+                sideBar.classList.remove(inName);
+            }
+            let barSwitch = document.getElementById(switchId);
+            if(barSwitch.classList.contains(switchOutName)){
+                barSwitch.classList.add(switchInName);
+                barSwitch.classList.remove(switchOutName);
+            }else if(barSwitch.classList.contains(switchInName)){
+                barSwitch.classList.add(switchOutName);
+                barSwitch.classList.remove(switchInName);
             }
         },
 
@@ -146,7 +159,7 @@ new Vue({
         async loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
 
-            this.paramsSwitch('SWITCH');
+            this.paramsSwitch('DCPGS');
             if(location === '')
                 location = this.DCPGS.location;
             if(zoom === -1)
@@ -157,7 +170,7 @@ new Vue({
 
         loadKDV(){
             this.currentAlgorithm = "kdv";
-            this.paramsSwitch('SWITCH');
+            this.paramsSwitch('kdv');
             kdv.loadHeatMap(this);
         },
 

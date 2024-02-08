@@ -1,44 +1,73 @@
 #header{
     position:fixed;
-    background-color: rgba(255,255,255,0.6);
+    display: inline-block;
+    /*background-color: rgba(255,255,255,0.6);*/
     z-index:999;
     width:100%;
-    height: 100px;
-    display: flex;
-    flex-direction: row-reverse;
+    height: 180px;
 }
-
+#header-top{
+    position:fixed;
+    align-items: center;
+    width:100%;
+    display:flex;
+    flex-direction:row;
+}
+.header-image{
+    position:fixed;
+    height: 144px;
+    width:100%;
+    /*background-color:rgba(255,255,255,0.6);*/
+}
+.header-title{
+    position:fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left:40%;
+    margin-top:0.5%;
+}
 .subheader{
     box-sizing: border-box;
-    height: 60px;
     display: flex;
-    align-items: center;
-    margin-right: 20px;
-    margin-left: 20px;
-    margin-top: 17px;
+    flex-direction: row;
 }
-
-.header_image{
-    height: 60px;
-    margin-right: 10px;
+.title1{
+    margin-left:6%;
+    margin-top:1%;
 }
-
-#lang{
-    font-size:20px;
-    margin-top: 40px;
-    margin-right: 20px;
+.title2 {
+    display: flex;
+    justify-content:space-between;
+    margin-top:1%;
+    margin-left:33%;
 }
-
-.name{
-    font: 400 23px/1.5 "Microsoft YaHei", Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-    font-weight: 700;
-    letter-spacing: 3px;
-    word-break: keep-all;
+#school{
+    margin-right:5%;
 }
-
+#college{
+    margin-right:5%;
+}
 .ename{
-    font: 400 13px/1.5 "Microsoft YaHei",Arial, sans-serif;
-    -webkit-tap-highlight-color: transparent;
-    transform-origin: left;
+    width: 505px;
+    height: 18px;
+    font-size: 16px;
+    font-family: CJNgaiHKS, CJNgaiHKS;
+    font-weight: bold;
+    color: #00FFFF;
+    line-height: 36px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+.cname{
+    position:relative;
+    width: 505px;
+    height: 18px;
+    font-size: 16px;
+    font-family: CJNgaiHKS, CJNgaiHKS;
+    font-weight: bold;
+    color: #00FFFF;
+    line-height: 36px;
+    letter-spacing: 1px;
+    white-space: nowrap;
 }
