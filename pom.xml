@@ -20,6 +20,7 @@
         <module>k-stc</module>
         <module>http</module>
         <module>kdv</module>
+        <module>skyline</module>
     </modules>
 
     <properties>
