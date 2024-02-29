@@ -1,13 +1,13 @@
 import utils from "./utils.js";
 
-function getPathFromLocation(location, env, dataset) {
-    let basePath = "http://localhost:8080/dcpgs/" + dataset;
+function getPathFromLocation(location, env, baseUrl, dataset) {
+    let basePath = baseUrl + "/dcpgs/" + dataset;
     let geoJsonPath = "";
     let clusterPath = "";
     if (env === "local") {
         geoJsonPath = "data/geoJson/" + location + ".geojson";
         clusterPath = "./data/" + location + ".json";
-    } else if (env === "prod") {
+    } else {
         geoJsonPath = basePath + "/geoJson/" + location;
         clusterPath = basePath + "/json/" + location;
     }
@@ -74,12 +74,12 @@ function layerPopup(i, vueThis){
 async function loadDCPGS(vueThis, location, zoom) {
     vueThis.DCPGS.location = location;
     let env = vueThis.env;
-    let path = getPathFromLocation(location, env, vueThis.DCPGS.dataset);
+    let path = getPathFromLocation(location, env, vueThis.baseUrl, vueThis.DCPGS.dataset);
     let basePath = vueThis.baseUrl + "/dcpgs/" + vueThis.DCPGS.dataset;
     vueThis.sideBarDisabled = true;
     vueThis.DCPGS.loading = true;
     vueThis.mapLoading = true;
-    if (env === "prod") {
+    if (env !== "local") {
         await axios({
             method: "get",
             url: basePath + "/run/" + location

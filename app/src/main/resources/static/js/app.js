@@ -17,7 +17,7 @@ new Vue({
             // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "local",//local or prod
+            env: "local",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             sideBarDisabled: false,
@@ -201,7 +201,10 @@ new Vue({
 
     //挂载
     mounted() {
-        console.log("mounted")
+        if(this.env === "szu_server"){
+            this.baseUrl = "http://172.31.238.174:8080";
+        }
+        console.log("mounted, baseUrl: ", this.baseUrl);
         this.loadDSPGS('StockholmSweden', 13)
     },
 })
