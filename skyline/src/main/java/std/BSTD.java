@@ -107,7 +107,7 @@ public class BSTD {
                         Rectangle uncertainty = generateSkylinesMBR(S, queries);
                         // for each entry ∈ LeafNode
                         for (Entry<String, Geometry> ee : ((LeafDefault<String, Geometry>) e).entries()) {
-                            if (isDominant(ee, uncertainty)) {
+                            if (isDominant(ee, uncertainty, queries)) {
                                 continue;
                             }
                             S.add(ee);
@@ -183,11 +183,20 @@ public class BSTD {
         return MBR;
     }
 
-    public boolean isDominant(Entry<String, Geometry> e, Rectangle uncertainty) {
+    public boolean isDominant(Entry<String, Geometry> e, Rectangle uncertainty, List<Query> queries) {
         RelevantObject relevantObject = invertedIndex.getValue(e.value());
         double log = relevantObject.getCoordinate().getLongitude();
         double lat = relevantObject.getCoordinate().getLatitude();
-        return !uncertainty.contains(log, lat);
+        boolean isSpatialDominant = !uncertainty.contains(log, lat);
+        for (Query query : queries) {
+            List<String> queryKeywords = query.getKeywords();
+            List<String> weightKey = invertedIndex.getValue(e.value()).getWeightKey();
+            boolean isTextualDominant = Collections.disjoint(queryKeywords, weightKey);
+            if (!(isSpatialDominant || isTextualDominant)) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
