@@ -1,7 +1,8 @@
 import dcpgs from "./DCPGS.js";
 import kdv from "./kdv.js";
-import kstc from "./kstc.js"
-import test from "./test.js"
+import kstc from "./kstc.js";
+import test from "./test.js";
+import topk from "./topk.js";
 // import { Loading } from './environment/elementUI'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
