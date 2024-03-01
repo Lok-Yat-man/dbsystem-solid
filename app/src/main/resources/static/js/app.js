@@ -76,6 +76,18 @@ new Vue({
                     params_4:0.5
                 }
             },
+          // /**加**/
+            topk: {
+              labelPosition:"right",
+              location:"",
+              layerLoaded: 0,
+              query:{
+                longitude_topk: -3.483,
+                latitude_topk: 52.983,
+                keywords_topk: 'birthday,temp',
+                k_topk: 3
+              }
+            },
             kdv: {
                 dataFileName: "./cases.csv",
                 kdv_type: 1,
@@ -115,6 +127,22 @@ new Vue({
             }else if(state === 'KSTC_UPDATE'){
                 this.switchStatus = "KSTC"
                 await kstc.loadKSTC(this);
+            }
+            else if(state === 'topK') {
+              this.switchStatus = 'topK'
+              var lon = this.topk.query.longitude_topk;
+              var la = this.topk.query.latitude_topk;
+              await topk.LoadtopK(this,lon,la);
+            }
+            else if(state === 'topK_UPDATE') {
+              this.switchStatus = 'topK'
+              var lon = this.topk.query.longitude_topk;
+              var la = this.topk.query.latitude_topk;
+              var key = this.topk.query.keywords_topk;
+              var k = this.topk.query.k_topk;
+              //await topk.LoadtopK(this, lon, la);
+              await topk.PostTopK(this, lon, la, key, k);
+              //await topk.LoadtopK(this,lon,la);
             }
             else{
                 this.switchStatus = state;
@@ -193,6 +221,15 @@ new Vue({
             });
         },
 
+        loadTopK(){
+          this.currentAlgorithm = "topK";
+          this.paramsSwitch('topK');
+          this.switchStatus = "topK"
+          var lon = this.topk.query.longitude_topk;
+          var la = this.topk.query.latitude_topk;
+          topk.LoadtopK(this, lon, la);
+
+        },
         loadTest(){
             test.testTree(this);
         }
