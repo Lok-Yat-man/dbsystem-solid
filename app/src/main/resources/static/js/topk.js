@@ -9,7 +9,7 @@ var current = null;
 async function LoadtopK(vueThis, lon, la) {
   vueThis.map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/mapbox/light-v11',
+    style: 'mapbox://styles/mapbox/dark-v11',
     center: [lon, la],
     zoom: 8
   });

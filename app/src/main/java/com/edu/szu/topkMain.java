@@ -69,7 +69,6 @@ class Graph {
   public Vector<Tuple<Integer, Double>> FindPoint = new Vector<>(); //记录top-k结果
 }
 
-@SpringBootApplication
 @RestController
 public class topkMain {
   Double QLongitude, QLatitude;
@@ -90,9 +89,10 @@ public class topkMain {
     JSONArray jsonArray = new JSONArray();
 
     /*读取顶点的keyword信息*/
-    File file1 = new File("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/txt/uk/eid2keyword.txt");
+    /*把绝对路径改为相对路径*/
+    File file1 = new File("app/src/main/resources/static/data/txt/uk/eid2keyword.txt");
     /*读取顶点的经纬度信息*/
-    File file2 = new File("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/txt/uk/eid2coor.txt");
+    File file2 = new File("app/src/main/resources/static/data/txt/uk/eid2coor.txt");
     Point[] points = new Point[1000000];
     for(int k=0;k<1000000;k++) {
       points[k] = new Point();
@@ -148,14 +148,14 @@ public class topkMain {
     //拆分relation2id文件中的关键字，提取最后一个单词作为关键字，并将信息存储到Relationship中
     /*uk*/
 
-    File fileS = new  File("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/txt/uk/relationship.txt");
+    File fileS = new  File("app/src/main/resources/static/data/txt/uk/relationship.txt");
     Relationship relationship = new Relationship();
     try {
       if(!fileS.exists()) {
         fileS.createNewFile();
       }
       BufferedWriter writeRelation = new BufferedWriter(new FileWriter(fileS));
-      BufferedReader readRelation = new BufferedReader(new FileReader("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/txt/uk/relation2id.txt"));
+      BufferedReader readRelation = new BufferedReader(new FileReader("app/src/main/resources/static/data/txt/uk/relation2id.txt"));
       String lineOfRelation;
       lineOfRelation = readRelation.readLine();
       String []numOfR = lineOfRelation.split("#");
@@ -204,7 +204,7 @@ public class topkMain {
       //graph.neighbors[zt] = new int[total];
     }
     try {
-      BufferedReader readTest = new BufferedReader(new FileReader("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/txt/uk/train2id.txt")); //测试数据
+      BufferedReader readTest = new BufferedReader(new FileReader("app/src/main/resources/static/data/txt/uk/train2id.txt")); //测试数据
       String lineOfTest;
       lineOfTest = readTest.readLine();
       while((lineOfTest = readTest.readLine()) != null) {
