@@ -30,7 +30,7 @@ public class DCPGSEndpoint {
         return manager.getParams(location,dataSet);
     }
 
-    @GetMapping("/run/{location}")
+    @PostMapping("/run/{location}")
     public boolean dcpgsRun(@PathVariable String dataSet,@PathVariable String location) throws Exception {
         String path = dataSet + "/splittedCheckIn/" + location + ".txt";
         manager.dcpgsRun(path, location, dataSet);
