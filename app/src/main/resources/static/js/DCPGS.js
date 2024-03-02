@@ -81,7 +81,7 @@ async function loadDCPGS(vueThis, location, zoom) {
     vueThis.mapLoading = true;
     if (env !== "local") {
         await axios({
-            method: "get",
+            method: "post",
             url: basePath + "/run/" + location
         }).then((response) => {
             const runningStatus = response.data;
