@@ -231,7 +231,8 @@ public class topkMain {
       e.printStackTrace();
     }
 
-    String[] inputKeywordAsString = inputKeyword.split(",");
+    /**关键字之间以空格分隔**/
+    String[] inputKeywordAsString = inputKeyword.split(" ");
     //初始化
     for(int zt=0;zt<total;zt++) {
       points[zt].hasKey = new boolean[inputKeywordAsString.length];
