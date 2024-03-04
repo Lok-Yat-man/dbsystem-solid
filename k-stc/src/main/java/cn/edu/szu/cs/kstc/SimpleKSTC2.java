@@ -1,14 +1,10 @@
 package cn.edu.szu.cs.kstc;
 
 import cn.edu.szu.cs.entity.Coordinate;
-import cn.edu.szu.cs.entity.GeoPointDouble;
-import cn.edu.szu.cs.entity.Query;
+import cn.edu.szu.cs.entity.KSTCQuery;
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.irtree.IRTree;
-import cn.edu.szu.cs.ivtidx.InvertedIndex;
-import cn.edu.szu.cs.ivtidx.TrieInvertedIndex;
 import cn.edu.szu.cs.service.IRelatedObjectService;
-import cn.edu.szu.cs.util.CommonAlgorithm;
+import cn.edu.szu.cs.util.CommonUtil;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.cache.impl.LRUCache;
@@ -18,9 +14,6 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import com.github.davidmoten.rtree.Entries;
-import com.github.davidmoten.rtree.Entry;
-import com.github.davidmoten.rtree.RTree;
 
 import java.lang.ref.SoftReference;
 import java.util.*;
@@ -77,6 +70,7 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
      * Preserve the extensibility of the way to obtain related objects.
      */
     private IRelatedObjectService relatedObjectService;
+
     /**
      * The main cache is used to cache results. Using soft references ensures that there will be no out-of-memory errors.
      */
@@ -207,21 +201,21 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private PriorityQueue<T> getSList(List<String> keywords,Coordinate coordinate,double maxDist,Comparator<T> comparator){
+    private PriorityQueue<T> getSList(List<String> keywords,double[] coordinate,double maxDist,Comparator<T> comparator){
         Set<RelatedObject> objs = getRelatedObjectIds(keywords);
         return objs
                 .stream()
-                .filter(object -> CommonAlgorithm.calculateDistance(coordinate,object.getCoordinate()) < maxDist)
+                .filter(object -> CommonUtil.calculateDistance(coordinate,object.getCoordinate()) < maxDist)
                 .map(object -> (T)object)
                 .collect(Collectors.toCollection(()->new PriorityQueue<>(comparator)));
 
     }
     @SuppressWarnings("unchecked")
-    private List<T> rangeQuery(List<String> keywords,Coordinate coordinate,double epsilon){
+    private List<T> rangeQuery(List<String> keywords,double[] coordinate,double epsilon){
         Set<RelatedObject> relatedObjectIds = getRelatedObjectIds(keywords);
         return relatedObjectIds
                 .stream()
-                .filter(object -> CommonAlgorithm.calculateDistance(
+                .filter(object -> CommonUtil.calculateDistance(
                         object.getCoordinate(),
                         coordinate
                 ) < epsilon)
@@ -234,26 +228,26 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
 
     /**
      * cut off precision of cache key.
-     * @param query
+     * @param KSTCQuery
      * @return
      */
-    private String getCacheKey(Query query){
+    private String getCacheKey(KSTCQuery KSTCQuery){
         Coordinate coordinate = Coordinate.create(
-                Math.round(query.getLocation().getLongitude() * 1000.0) / 1000.0,
-                Math.round(query.getLocation().getLatitude() * 1000.0) / 1000.0
+                Math.round(KSTCQuery.getCoordinate()[0] * 1000.0) / 1000.0,
+                Math.round(KSTCQuery.getCoordinate()[1] * 1000.0) / 1000.0
         );
-        long maxDist = Math.round(query.getMaxDistance());
-        long epsilon = Math.round(query.getEpsilon());
-        return coordinate+"_"+query.getKeywords()+"_"+epsilon+"_"+query.getMinPts()+"_"+maxDist;
+        long maxDist = Math.round(KSTCQuery.getMaxDistance());
+        long epsilon = Math.round(KSTCQuery.getEpsilon());
+        return coordinate+"_"+ KSTCQuery.getKeywords()+"_"+epsilon+"_"+ KSTCQuery.getMinPts()+"_"+maxDist;
     }
 
 
 
-    private List<Set<T>> basic(Query query){
+    private List<Set<T>> basic(KSTCQuery KSTCQuery){
         logger.info("=> k-stc search start.");
-        logger.info("=> k-stc query params: {}.",query.toString());
+        logger.info("=> k-stc query params: {}.", KSTCQuery.toString());
         getTimer().start("basic");
-        List<Set<T>> list = doBasic(query);
+        List<Set<T>> list = doBasic(KSTCQuery);
         long intervalMs = getTimer().intervalMs("basic");
         releaseTimer();
         logger.info("=> k-stc search time cost:{} ms",intervalMs);
@@ -264,21 +258,21 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
 
     /**
      * Basic algorithm of k-stc
-     * @param query
+     * @param KSTCQuery
      * @return
      */
     @SuppressWarnings("unchecked")
-    private List<Set<T>> doBasic(Query query){
-        query.setKeywords(
-                query.getKeywords().stream().map(String::toLowerCase).collect(Collectors.toList())
+    private List<Set<T>> doBasic(KSTCQuery KSTCQuery){
+        KSTCQuery.setKeywords(
+                KSTCQuery.getKeywords().stream().map(String::toLowerCase).collect(Collectors.toList())
         );
 
-        String key = getCacheKey(query);
+        String key = getCacheKey(KSTCQuery);
         if(mainCache().containsKey(key)){
             Pair<List<Set<T>>, Integer> listIntegerPair = (Pair<List<Set<T>>, Integer>) mainCache().get(key);
-            if(listIntegerPair.getValue()>=query.getK()){
+            if(listIntegerPair.getValue()>= KSTCQuery.getK()){
                 logger.debug("==> hit cache.");
-                return listIntegerPair.getKey().stream().limit(query.getK()).collect(Collectors.toList());
+                return listIntegerPair.getKey().stream().limit(KSTCQuery.getK()).collect(Collectors.toList());
             }
         }
 
@@ -287,18 +281,18 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
         // sort objs ascent by distance
         getTimer().start("timeout");
         PriorityQueue<T> sList = getSList(
-                query.getKeywords(),
-                query.getLocation(),
-                query.getMaxDistance(),
-                Comparator.comparingDouble(a -> CommonAlgorithm.calculateDistance(query.getLocation(), a.getCoordinate()))
+                KSTCQuery.getKeywords(),
+                KSTCQuery.getCoordinate(),
+                KSTCQuery.getMaxDistance(),
+                Comparator.comparingDouble(a -> CommonUtil.calculateDistance(KSTCQuery.getCoordinate(), a.getCoordinate()))
         );
         logger.info("==> getsList time cost:{}",getTimer().intervalMs("timeout"));
-        List<Set<T>> rList = new ArrayList<>(query.getK());
+        List<Set<T>> rList = new ArrayList<>(KSTCQuery.getK());
         long intervalMs = getTimer().intervalMs("timeout");
-        while(!sList.isEmpty() && rList.size()< query.getK() && intervalMs <= DEFAULT_TIMEOUT){
+        while(!sList.isEmpty() && rList.size()< KSTCQuery.getK() && intervalMs <= DEFAULT_TIMEOUT){
             // get the nearest obj
             T obj = sList.poll();
-            Set<T> cluster = getCluster(obj, query, sList,noises);
+            Set<T> cluster = getCluster(obj, KSTCQuery, sList,noises);
             if(!cluster.isEmpty()){
                 rList.add(cluster);
                 logger.info("==> cluster {}, time cost:{}",rList.size(),getTimer().intervalMs("timeout"));
@@ -307,16 +301,16 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
         }
         mainCache().put(
                 key,
-                new Pair<>(rList, query.getK())
+                new Pair<>(rList, KSTCQuery.getK())
         );
         // timeout, async
-        if(!sList.isEmpty() && rList.size() < query.getK()){
+        if(!sList.isEmpty() && rList.size() < KSTCQuery.getK()){
             logger.info("Timeout. Async compute.");
             CompletableFuture.runAsync(
                     ()->continueComputeAsync(
                             rList,
                             sList,
-                            query,
+                            KSTCQuery,
                             noises,
                             key
                     ),
@@ -326,21 +320,21 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
         return rList;
     }
 
-    private void continueComputeAsync(List<Set<T>> rList,PriorityQueue<T> sList,Query query,Set<T> noises,String key){
-        while(!sList.isEmpty() && rList.size()< query.getK()){
+    private void continueComputeAsync(List<Set<T>> rList, PriorityQueue<T> sList, KSTCQuery KSTCQuery, Set<T> noises, String key){
+        while(!sList.isEmpty() && rList.size()< KSTCQuery.getK()){
             // get the nearest obj
             T obj = sList.poll();
-            Set<T> cluster = getCluster(obj, query, sList,noises);
+            Set<T> cluster = getCluster(obj, KSTCQuery, sList,noises);
             if(!cluster.isEmpty()){
                 rList.add(cluster);
             }
         }
-        mainCache().put(key,new Pair<>(rList,query.getK()));
+        mainCache().put(key,new Pair<>(rList, KSTCQuery.getK()));
         logger.info("Async compute finished.");
     }
 
     private Set<T> getCluster(T p,
-                                           Query q,
+                                           KSTCQuery q,
                                            PriorityQueue<T> sList,
                                            Set<T> noises){
         List<T> neighbors = rangeQuery(q.getKeywords(), p.getCoordinate(),q.getEpsilon());
@@ -389,29 +383,29 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
 
     /**
      * check query params.
-     * @param query
+     * @param KSTCQuery
      */
-    private void checkQuery(Query query){
-        Assert.notNull(query.getLocation(),"please input location.");
-        Assert.checkBetween(query.getLocation().getLongitude(),-180.0,180.0,"wrong lon.");
-        Assert.checkBetween(query.getLocation().getLatitude(),-90.0,90.0,"wrong lat.");
-        Assert.checkBetween(query.getK(),1,20,"wrong k.");
-        Assert.checkBetween(query.getEpsilon(),1.0,Double.MAX_VALUE,"wrong epsilon.");
-        Assert.checkBetween(query.getMinPts(),2,Integer.MAX_VALUE,"wrong minPts.");
-        Assert.checkBetween(query.getMaxDistance(),0,Double.MAX_VALUE,"wrong maxDistance.");
-        Assert.notNull(query.getKeywords(),"keywords is null.");
-        Assert.isFalse(query.getKeywords().isEmpty(),"keywords is empty.");
+    private void checkQuery(KSTCQuery KSTCQuery){
+        //Assert.notNull(KSTCQuery.getLocation(),"please input location.");
+        //Assert.checkBetween(KSTCQuery.getLocation().getLongitude(),-180.0,180.0,"wrong lon.");
+        //Assert.checkBetween(KSTCQuery.getLocation().getLatitude(),-90.0,90.0,"wrong lat.");
+        //Assert.checkBetween(KSTCQuery.getK(),1,20,"wrong k.");
+        Assert.checkBetween(KSTCQuery.getEpsilon(),1.0,Double.MAX_VALUE,"wrong epsilon.");
+        Assert.checkBetween(KSTCQuery.getMinPts(),2,Integer.MAX_VALUE,"wrong minPts.");
+        Assert.checkBetween(KSTCQuery.getMaxDistance(),0,Double.MAX_VALUE,"wrong maxDistance.");
+        Assert.notNull(KSTCQuery.getKeywords(),"keywords is null.");
+        Assert.isFalse(KSTCQuery.getKeywords().isEmpty(),"keywords is empty.");
     }
 
     /**
      * kstc search.
-     * @param query
+     * @param KSTCQuery
      * @return
      */
     @Override
-    public List<Set<T>> kstcSearch(Query query) {
-        checkQuery(query);
-        return basic(query);
+    public List<Set<T>> kstcSearch(KSTCQuery KSTCQuery) {
+        checkQuery(KSTCQuery);
+        return basic(KSTCQuery);
     }
 
 

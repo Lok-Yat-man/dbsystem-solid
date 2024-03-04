@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface IRTree<T> {
 
-    List<T> rangeQuery(List<String> keywords, Coordinate coordinate, double epsilon);
+    List<T> rangeQuery(List<String> keywords, double[] coordinate, double epsilon);
 
 }

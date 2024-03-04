@@ -1,23 +1,18 @@
 package cn.edu.szu.cs.util;
 
-import cn.edu.szu.cs.entity.Coordinate;
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.LFUCache;
-
 /**
  *  CommonAlgorithm
  * @author Whitence
  * @date 2023/10/1 10:25
  * @version 1.0
  */
-public class CommonAlgorithm {
+public class CommonUtil {
 
 
-    public static Double calculateDistance(Coordinate a, Coordinate b){
-        return getDistance(a.getLongitude(),a.getLatitude(),b.getLongitude(),b.getLatitude());
+    public static Double calculateDistance(double[] a, double[] b){
+        return getDistance(a[0],a[1],b[0],b[1]);
     }
 
-    private static LFUCache<String,Double> CACHE = CacheUtil.newLFUCache(100);
     /**
      * 地球半径,单位 km
      */

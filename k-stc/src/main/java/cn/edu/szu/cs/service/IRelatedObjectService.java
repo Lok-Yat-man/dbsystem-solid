@@ -21,5 +21,4 @@ public interface IRelatedObjectService {
 
     List<RelatedObject> getAll();
 
-
 }

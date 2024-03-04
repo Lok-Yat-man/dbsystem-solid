@@ -112,71 +112,71 @@
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
 
                 <el-form-item label="word">
-                    <el-input v-model="KSTC.query.keywords" placeholder="以,分隔"></el-input>
+                    <el-input v-model="KSTC.KSTCQuery.keywords" placeholder="以,分隔"></el-input>
                 </el-form-item>
 
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">epsilon</span>
-                    <div class="adjuster" @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,false,1.0,0,0.1,1)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.epsilon = paramAdjust(KSTC.KSTCQuery.epsilon,false,1.0,0,0.1,1)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.epsilon">
-                    <div class="adjuster" @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,true,1.0,0,0.1,1)">
+                    <input class="param_input" type="text" v-model="KSTC.KSTCQuery.epsilon">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.epsilon = paramAdjust(KSTC.KSTCQuery.epsilon,true,1.0,0,0.1,1)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">k</span>
-                    <div class="adjuster" @click="KSTC.query.k = paramAdjust(KSTC.query.k,false,20,1,1,0)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.k = paramAdjust(KSTC.KSTCQuery.k,false,20,1,1,0)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.k">
-                    <div class="adjuster" @click="KSTC.query.k = paramAdjust(KSTC.query.k,true,20,1,1,0)">
+                    <input class="param_input" type="text" v-model="KSTC.KSTCQuery.k">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.k = paramAdjust(KSTC.KSTCQuery.k,true,20,1,1,0)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">minPts</span>
-                    <div class="adjuster" @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,false,20,2,1,0)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.minPts = paramAdjust(KSTC.KSTCQuery.minPts,false,20,2,1,0)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.minPts">
-                    <div class="adjuster" @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,true,20,2,1,0)">
+                    <input class="param_input" type="text" v-model="KSTC.KSTCQuery.minPts">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.minPts = paramAdjust(KSTC.KSTCQuery.minPts,true,20,2,1,0)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">maxDist</span>
-                    <div class="adjuster" @click="KSTC.query.maxDist = paramAdjust(KSTC.query.maxDist,false,9999999999,-1,1,0)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.maxDist = paramAdjust(KSTC.KSTCQuery.maxDist,false,9999999999,-1,1,0)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.maxDist">
-                    <div class="adjuster" @click="KSTC.query.maxDist = paramAdjust(KSTC.query.maxDist,true,9999999999,-1,1,0)">
+                    <input class="param_input" type="text" v-model="KSTC.KSTCQuery.maxDist">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.maxDist = paramAdjust(KSTC.KSTCQuery.maxDist,true,9999999999,-1,1,0)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">lon</span>
-                    <div class="adjuster" @click="KSTC.query.location.longitude = paramAdjust(KSTC.query.location.longitude,false,180,-180,0.1,2)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.location.longitude = paramAdjust(KSTC.KSTCQuery.location.longitude,false,180,-180,0.1,2)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.location.longitude">
-                    <div class="adjuster" @click="KSTC.query.location.longitude = paramAdjust(KSTC.query.location.longitude,true,180,-180,0.1,2)">
+                    <input class="param_input" type="text" v-model="KSTC.KSTCQuery.location.longitude">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.location.longitude = paramAdjust(KSTC.KSTCQuery.location.longitude,true,180,-180,0.1,2)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">lat</span>
-                    <div class="adjuster" @click="KSTC.query.location.latitude = paramAdjust(KSTC.query.location.latitude,false,90,-90,0.1,2)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.location.latitude = paramAdjust(KSTC.KSTCQuery.location.latitude,false,90,-90,0.1,2)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.location.latitude">
-                    <div class="adjuster" @click="KSTC.query.location.latitude = paramAdjust(KSTC.query.location.latitude,true,90,-90,0.1,2)">
+                    <input class="param_input" type="text" v-model="KSTC.KSTCQuery.location.latitude">
+                    <div class="adjuster" @click="KSTC.KSTCQuery.location.latitude = paramAdjust(KSTC.KSTCQuery.location.latitude,true,90,-90,0.1,2)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
@@ -194,11 +194,11 @@
             <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">params_1</span>
-                    <div class="adjuster" @click="spatial_skylines.query.params_1 = paramAdjust(spatial_skylines.query.params_1,false,1.0,0,0.1,2)" style="margin-left: 5px;">
+                    <div class="adjuster" @click="spatial_skylines.KSTCQuery.params_1 = paramAdjust(spatial_skylines.KSTCQuery.params_1,false,1.0,0,0.1,2)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="spatial_skylines.query.params_1">
-                    <div class="adjuster" @click="spatial_skylines.query.params_1 = paramAdjust(spatial_skylines.query.params_1,true,1.0,0,0.1,2)">
+                    <input class="param_input" type="text" v-model="spatial_skylines.KSTCQuery.params_1">
+                    <div class="adjuster" @click="spatial_skylines.KSTCQuery.params_1 = paramAdjust(spatial_skylines.KSTCQuery.params_1,true,1.0,0,0.1,2)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>

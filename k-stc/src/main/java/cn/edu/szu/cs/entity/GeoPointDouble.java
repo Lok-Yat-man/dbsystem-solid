@@ -1,6 +1,6 @@
 package cn.edu.szu.cs.entity;
 
-import cn.edu.szu.cs.util.CommonAlgorithm;
+import cn.edu.szu.cs.util.CommonUtil;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Point;
@@ -28,7 +28,7 @@ public final class GeoPointDouble implements Point {
 
     @Override
     public double distance(Rectangle r) {
-        return CommonAlgorithm.getDistance(x,y,r.x1(),r.y1());
+        return CommonUtil.getDistance(x,y,r.x1(),r.y1());
     }
 
     @Override

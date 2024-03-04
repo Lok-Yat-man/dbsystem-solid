@@ -1,10 +1,8 @@
 package cn.edu.szu.cs.irtree;
 
-import cn.edu.szu.cs.entity.Coordinate;
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.irtree.IRTree;
 import cn.edu.szu.cs.service.IRelatedObjectService;
-import cn.edu.szu.cs.util.CommonAlgorithm;
+import cn.edu.szu.cs.util.CommonUtil;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import cn.hutool.core.collection.CollUtil;
@@ -34,7 +32,7 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
     /**
      * Record the relationship between non-leaf nodes and IF
      */
-    private Map<Node<String,Geometry>,Map<String,List<Node<String, Geometry>>>> nodeInvertedIndexMap;
+    private Map<Node<String,Geometry>,Map<String,List<Node<String, Geometry>>> > nodeInvertedIndexMap;
 
     private LFUCache<String,List<Entry<String,Geometry>>> cache = CacheUtil.newLFUCache(100);
 
@@ -47,7 +45,6 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
         this.relatedObjectService = relevantObjectService;
         nodeInvertedIndexMap = new HashMap<>();
         buildIRtree(rTree.root().get());
-
     }
 
     @SuppressWarnings("unchecked")
@@ -137,11 +134,11 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
     }
 
     @Override
-    public synchronized List<RelatedObject> rangeQuery(List<String> keywords, Coordinate coordinate, double epsilon) {
+    public synchronized List<RelatedObject> rangeQuery(List<String> keywords, double[] coordinate, double epsilon) {
         Assert.isTrue(rTree.root().isPresent(),"rtree not exist.");
         Assert.isTrue(epsilon>0.0,"rtree not exist.");
-        Assert.checkBetween(coordinate.getLongitude(),-180.0,180.0,"wrong lon.");
-        Assert.checkBetween(coordinate.getLatitude(),-90,90,"wrong lat.");
+        Assert.checkBetween(coordinate[0],-180.0,180.0,"wrong lon.");
+        Assert.checkBetween(coordinate[1],-90,90,"wrong lat.");
         if(keywords == null || keywords.isEmpty()){
             return Collections.emptyList();
         }
@@ -151,8 +148,8 @@ public final class SimpleIRTree implements IRTree<RelatedObject> {
                 filterByKeywords(keywords)
                         .stream()
                         .filter(
-                                entry -> CommonAlgorithm.calculateDistance(
-                                        Coordinate.create(entry.geometry().mbr().x1(), entry.geometry().mbr().y1()),
+                                entry -> CommonUtil.calculateDistance(
+                                        new double[]{entry.geometry().mbr().x1(), entry.geometry().mbr().y1()},
                                         coordinate
                                 ) < epsilon
                         ).map(Entry::value)

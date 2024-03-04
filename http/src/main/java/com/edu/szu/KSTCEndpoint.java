@@ -1,7 +1,7 @@
 package com.edu.szu;
 
 import cn.edu.szu.cs.entity.Coordinate;
-import cn.edu.szu.cs.entity.Query;
+import cn.edu.szu.cs.entity.KSTCQuery;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
@@ -32,25 +32,20 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
             ){
-        Query query = Query.builder()
-                .keyword(
+        KSTCQuery kstcQuery = cn.edu.szu.cs.entity.KSTCQuery.builder()
+                .keywords(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
                 )
-                .location(
-                        Coordinate.create(
-                                lon,
-                                lat
-                        )
-                )
+                .coordinate(new double[]{lon, lat})
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
                 .maxDistance(maxDist)
                 .build();
 
-        log.info("markers: "+query.toString());
+        log.info("markers: "+ kstcQuery.toString());
         return kstcService.loadMarkers(
-                query
+                kstcQuery
         );
     }
 
@@ -64,24 +59,19 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
     ){
-        Query query = Query.builder()
-                .keyword(
+        KSTCQuery kstcQuery = cn.edu.szu.cs.entity.KSTCQuery.builder()
+                .keywords(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
                 )
-                .location(
-                        Coordinate.create(
-                                lon,
-                                lat
-                        )
-                )
+                .coordinate(new double[]{lon, lat})
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
                 .maxDistance(maxDist)
                 .build();
-        log.info("geoJson: "+query.toString());
+        log.info("geoJson: "+ kstcQuery.toString());
         return kstcService.loadGeoJson(
-                query
+                kstcQuery
         );
     }
 }

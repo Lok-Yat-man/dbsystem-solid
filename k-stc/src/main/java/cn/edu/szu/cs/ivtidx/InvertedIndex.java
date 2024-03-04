@@ -7,7 +7,9 @@ import java.util.*;
 public interface InvertedIndex<T> {
 
 
-    PriorityQueue<T> getSList(List<String> keywords, Coordinate coordinate, double maxDistance, Comparator<T> comparator);
+    SortedSet<T> getSList(List<String> keywords, double[] coordinate, double maxDistance, Comparator<T> comparator);
 
-    Map<String,List<String>> getAll();
+    SortedSet<T> getTList(List<String> keywords);
+
+    Map<String,Set<String>> getAll();
 }

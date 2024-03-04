@@ -2,7 +2,7 @@ package com.edu.szu.service.impl;
 
 import cn.edu.szu.cs.entity.Coordinate;
 import cn.edu.szu.cs.kstc.KSTC;
-import cn.edu.szu.cs.entity.Query;
+import cn.edu.szu.cs.entity.KSTCQuery;
 import cn.edu.szu.cs.entity.RelatedObject;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
@@ -22,8 +22,8 @@ public class KstcServiceImpl implements KstcService {
     }
 
 
-    private GeoJson doLoadGeoJson(Query query){
-        List<Set<RelatedObject>> list = kstc.kstcSearch(query);
+    private GeoJson doLoadGeoJson(KSTCQuery KSTCQuery){
+        List<Set<RelatedObject>> list = kstc.kstcSearch(KSTCQuery);
         GeoJson geoJson = new GeoJson();
         for (int i = 0; i < list.size(); i++) {
             Set<RelatedObject> relatedObjects = list.get(i);
@@ -44,12 +44,12 @@ public class KstcServiceImpl implements KstcService {
     }
 
     @Override
-    public GeoJson loadGeoJson(Query query) {
-        return doLoadGeoJson(query);
+    public GeoJson loadGeoJson(KSTCQuery KSTCQuery) {
+        return doLoadGeoJson(KSTCQuery);
     }
 
-    private List<Marker> doLoadMarkers(Query query){
-        List<Set<RelatedObject>> list = kstc.kstcSearch(query);
+    private List<Marker> doLoadMarkers(KSTCQuery KSTCQuery){
+        List<Set<RelatedObject>> list = kstc.kstcSearch(KSTCQuery);
         List<Marker> res = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             int size = list.get(i).size();
@@ -75,7 +75,7 @@ public class KstcServiceImpl implements KstcService {
     }
 
     @Override
-    public List<Marker> loadMarkers(Query query) {
-        return doLoadMarkers(query);
+    public List<Marker> loadMarkers(KSTCQuery KSTCQuery) {
+        return doLoadMarkers(KSTCQuery);
     }
 }

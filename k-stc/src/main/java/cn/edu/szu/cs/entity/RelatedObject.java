@@ -14,10 +14,16 @@ public interface RelatedObject {
 
    String getObjectId();
 
-   Coordinate getCoordinate();
+   double[] getCoordinate();
 
    String getName();
 
    List<String> getLabels();
+
+   Double getWeight(String label);
+
+   Double setWeight(String label);
+
+   RelatedObject clone();
 
 }

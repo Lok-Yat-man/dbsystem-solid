@@ -5,28 +5,29 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- *  相关对象
+ * 相关对象
+ *
  * @author Whitence
- * @date 2023/10/1 10:31
  * @version 1.0
+ * @date 2023/10/1 10:31
  */
 public class SimpleRelatedObject implements Serializable, RelatedObject {
 
-    private  String objectId;
+    private String objectId;
 
-    private Coordinate coordinate;
+    private double[] coordinate;
 
     private String name;
 
-    private  List<String> labels;
+    private List<String> labels;
 
     public SimpleRelatedObject() {
     }
 
-    public SimpleRelatedObject(String objectId, Coordinate coordinate,String name, List<String> labels) {
+    public SimpleRelatedObject(String objectId, double[] coordinate, String name, List<String> labels) {
         this.objectId = objectId;
         this.coordinate = coordinate;
-        this.name=name;
+        this.name = name;
         this.labels = labels;
     }
 
@@ -34,7 +35,7 @@ public class SimpleRelatedObject implements Serializable, RelatedObject {
         this.objectId = objectId;
     }
 
-    public void setCoordinate(Coordinate coordinate) {
+    public void setCoordinate(double[] coordinate) {
         this.coordinate = coordinate;
     }
 
@@ -42,8 +43,8 @@ public class SimpleRelatedObject implements Serializable, RelatedObject {
         this.labels = labels;
     }
 
-    public void setName(String name){
-        this.name=name;
+    public void setName(String name) {
+        this.name = name;
     }
 
 
@@ -53,7 +54,7 @@ public class SimpleRelatedObject implements Serializable, RelatedObject {
     }
 
     @Override
-    public Coordinate getCoordinate() {
+    public double[] getCoordinate() {
         return coordinate;
     }
 
@@ -65,6 +66,16 @@ public class SimpleRelatedObject implements Serializable, RelatedObject {
     @Override
     public List<String> getLabels() {
         return labels;
+    }
+
+    @Override
+    public Double getWeight(String label) {
+        return 0.0;
+    }
+
+    @Override
+    public RelatedObject clone() {
+        return new SimpleRelatedObject(objectId, coordinate, name, labels);
     }
 
     @Override

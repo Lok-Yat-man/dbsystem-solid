@@ -2,17 +2,9 @@ package kstc;
 
 import cn.edu.szu.cs.entity.Coordinate;
 import cn.edu.szu.cs.entity.GeoPointDouble;
-import cn.edu.szu.cs.entity.Query;
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.ivtidx.DefaultInvertedIndex;
-import cn.edu.szu.cs.ivtidx.InvertedIndex;
-import cn.edu.szu.cs.kstc.KSTC;
-import cn.edu.szu.cs.kstc.SimpleKSTC2;
 import cn.edu.szu.cs.service.DefaultRelatedObjectServiceImpl;
 import cn.edu.szu.cs.service.IRelatedObjectService;
-import cn.edu.szu.cs.util.CommonAlgorithm;
-import cn.hutool.core.thread.ConcurrencyTester;
-import cn.hutool.core.thread.ThreadUtil;
 import com.github.davidmoten.rtree.Entries;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
@@ -38,8 +30,8 @@ public class KSTCTest {
                         object -> Entries.entry(
                                 object.getObjectId(),
                                 GeoPointDouble.create(
-                                        object.getCoordinate().getLongitude(),
-                                        object.getCoordinate().getLatitude()
+                                        object.getCoordinate()[0],
+                                        object.getCoordinate()[1]
                                 )
                         )
                 )
