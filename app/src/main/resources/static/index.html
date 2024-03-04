@@ -209,6 +209,30 @@
                 </div>
             </el-form>
         </div>
+
+        <div class="params" v-if="switchStatus === 'topK'">
+        <h3 style="color: rgb(196, 98, 102); margin-left: 20px" >top_k params: </h3>
+        <template><el-button id ="topKParamsCloser" size="small" plain @click="paramsSwitch('topK')">close</el-button></template>
+        <el-form :label-position="topk.labelPosition" label-width=" 100px" :model="topk" >
+          <el-form-item label="Longitude" >
+            <input v-model="topk.query.longitude_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px" ></input>
+          </el-form-item>
+          <el-form-item label="Latitude">
+            <input v-model="topk.query.latitude_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          </el-form-item>
+          <el-form-item label="Keywords">
+            <input v-model="topk.query.keywords_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          </el-form-item>
+          <el-form-item label="K">
+            <input v-model="topk.query.k_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          </el-form-item>
+
+          <div style="text-align: center; margin-bottom: 15px;">
+            <el-button round @click="paramsSwitch('topK_UPDATE')" >confirm</el-button>
+          </div>
+
+        </el-form>
+      </div>
     </div>
 
     <img src="./img/sidebar/btn-fold.png" alt="switch" @click="sideBarSwitch('sideBar','sideBarSwitch','sideIn','sideOut','switchIn','switchOut', null)" id="sideBarSwitch" class="switchOut" style="cursor: pointer">
@@ -249,8 +273,8 @@
                     </el-submenu>
 
                     <el-submenu index="1-4">
-                        <template slot="title">Mapbox test ground</template>
-                        <el-menu-item index="1-4-1"  @click="loadTest()">1-4-1</el-menu-item>
+                        <template slot="title">Top-k Relevant Retrieval</template>
+                        <el-menu-item index="1-4-1"  @click="loadTopK()">uk</el-menu-item>
                     </el-submenu>
                 </el-submenu>
                 <el-submenu index="2">
@@ -276,26 +300,7 @@
         </el-col>
     </el-row>
     <!--顶部导航栏-->
-    <div id="header">
-        <img class="header-image" id="top-image" src="./img/bg_top.png"/>
-        <img class="header-title" id="title-image" src="./img/STARS.png"/>
-        <div class="subheader">
-            <div class="title1">
-                <div class="ename">Spatial-Temporal Analytics with Rapid System</div>
-            </div>
-            <div class="title2">
-                <div id="school">
-                    <span class="cname">深圳大学</span>
-                </div>
-                <div id="college">
-                    <span class="cname">深圳大学计算机与软件学院</span>
-                </div>
-                <div id="lab">
-                    <span class="cname">大数据与应用数据研究所</span>
-                </div>
-            </div>
-        </div>
-    </div>
+    <db-header></db-header>
 </div>
 </body>
 <script src="js/kdv/kdvCpp.js"></script>
@@ -305,4 +310,5 @@
 <script src="js/environment/mapboxgl.js"></script>
 <script src="js/environment/axios.js"></script>
 <script type="module" src="js/app.js"></script>
+<script src="js/template/header.js"></script>
 </html>

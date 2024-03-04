@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
         DCPGSEndpoint.class,
         KSTCEndpoint.class,
         KDVEndpoint.class,
+        topkMain.class
 })
 @SpringBootApplication
 @Log4j2
