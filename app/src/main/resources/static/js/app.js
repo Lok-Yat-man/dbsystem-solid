@@ -85,7 +85,7 @@ new Vue({
               query:{
                 longitude_topk: -3.483,
                 latitude_topk: 52.983,
-                keywords_topk: 'birthday,temp',
+                keywords_topk: 'museum painting david',
                 k_topk: 3
               }
             },
@@ -228,8 +228,11 @@ new Vue({
           this.switchStatus = "topK"
           var lon = this.topk.query.longitude_topk;
           var la = this.topk.query.latitude_topk;
-          topk.LoadtopK(this, lon, la);
-
+          var key = this.topk.query.keywords_topk;
+          var k = this.topk.query.k_topk;
+         // topk.LoadtopK(this, lon, la);
+          /**页面自动加载首次查询结果**/
+          topk.PostTopK(this, lon, la, key, k);
         },
         loadTest(){
             test.testTree(this);

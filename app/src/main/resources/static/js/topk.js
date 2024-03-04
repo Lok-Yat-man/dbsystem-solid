@@ -58,7 +58,8 @@ async function LoadtopK(vueThis, lon, la) {
 
 async function LoadResult(vueThis, id, lon, la, finds, key) {
 
-    let inputKeywordAsString = key.split(",");
+    /**关键字之间以空格分隔**/
+    let inputKeywordAsString = key.split(" ");
     let array = [];
     let point_key= [];
     //遍历所有有关键字的点，将点上的关键字聚合起来，不重复显示结点
