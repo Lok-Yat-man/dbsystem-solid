@@ -1,4 +1,7 @@
 import com.github.davidmoten.rtree.geometry.Geometry;
+import entity.RelevantObject;
+import ivtidx.DefaultLeafInvertedIndex;
+import ivtidx.InvertedIndex;
 import std.BSTD;
 import com.github.davidmoten.rtree.Entry;
 import entity.Coordinate;
@@ -11,6 +14,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BSTDTest {
     private BSTD b = new BSTD();
@@ -36,26 +40,26 @@ public class BSTDTest {
                         -75.1,
                         40.1
                 ),
-                Arrays.asList("Food","Restaurants","Chinese")
+                Arrays.asList("Chinese", "Restaurant")
         );
 
         //queries.add(query1);
         queries.add(query2);
 
 
-        List<Entry<String, Geometry>> valuesEntry = b.bstd(queries);
+//        List<Entry<String, Geometry>> valuesEntry = b.bstd(queries);
+        List<RelevantObject> relevantObjects = b.bstd(queries);
 
-        List<String> values = valuesEntry.stream()
-                .map(Entry::value)
-                .collect(Collectors.toList());
+//        List<String> values = valuesEntry.stream()
+//                .map(Entry::value)
+//                .collect(Collectors.toList());
+//
+//
+//        //System.out.println(valuesEntry);
+//
+//
+        System.out.println(relevantObjects);
 
-
-        //System.out.println(valuesEntry);
-
-
-        IRelevantObjectService relevantObjectService = new DefaultRelevantObjectServiceImpl();
-        System.out.println(relevantObjectService.getByIds(values));
-
-        System.out.println(valuesEntry.size());
+        System.out.println(relevantObjects.size());
     }
 }
