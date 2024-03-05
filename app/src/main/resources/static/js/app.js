@@ -3,6 +3,7 @@ import kdv from "./kdv.js";
 import kstc from "./kstc.js";
 import test from "./test.js";
 import topk from "./topk.js";
+import bstd from "./bstd.js";
 // import { Loading } from './environment/elementUI'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
@@ -71,10 +72,9 @@ new Vue({
                 location:"",
                 layerLoaded: 0,
                 query:{
-                    params_1:0.5,
-                    params_2:0.5,
-                    params_3:0.5,
-                    params_4:0.5
+                    longitude: -75.16,
+                    latitude: 39.95,
+                    keywords: 'Restaurants, Chinese'
                 }
             },
           // /**加**/
@@ -128,6 +128,13 @@ new Vue({
             }else if(state === 'KSTC_UPDATE'){
                 this.switchStatus = "KSTC"
                 await kstc.loadKSTC(this);
+            }
+            else if (state === 'BSTD_UPDATE') {
+                this.switchStatus = 'spatial_skylines';
+                let longitude = this.spatial_skylines.query.longitude;
+                let latitude = this.spatial_skylines.query.latitude;
+                let keywords = this.spatial_skylines.query.keywords;
+                await bstd.loadBSTD(this, longitude, latitude, keywords);
             }
             else if(state === 'topK') {
               this.switchStatus = 'topK'
@@ -220,6 +227,16 @@ new Vue({
                 callback: action => {
                 }
             });
+        },
+
+        loadBSTD() {
+            this.currentAlgorithm = "spatial_skylines";
+            this.switchStatus = "spatial_skylines";
+            this.paramsSwitch("spatial_skylines");
+            let longitude = this.spatial_skylines.query.longitude;
+            let latitude = this.spatial_skylines.query.latitude;
+            let keywords = this.spatial_skylines.query.keywords;
+            bstd.loadBSTD(this, longitude, latitude, keywords);
         },
 
         loadTopK(){
