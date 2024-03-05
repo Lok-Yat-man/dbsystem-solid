@@ -14,24 +14,15 @@ public class Query implements Serializable {
 
     private List<String> keywords;
 
-    private int k;
-
-    private double distanceConstraint;
-
-    private int minPts;
-
     public Query(){}
 
-    public Query(Coordinate location, List<String> keywords, int k, double distanceConstraint, int minPts) {
+    public Query(Coordinate location, List<String> keywords) {
         this.location = location;
         this.keywords = keywords;
-        this.k = k;
-        this.distanceConstraint = distanceConstraint;
-        this.minPts = minPts;
     }
 
-    public static Query create(Coordinate location, List<String> keywords, int k, double distanceConstraint, int minPts){
-        return new Query(location, keywords, Math.min(k,10), Math.min(distanceConstraint,50.0), minPts);
+    public static Query create(Coordinate location, List<String> keywords){
+        return new Query(location, keywords);
     }
 
     @Override
@@ -39,9 +30,6 @@ public class Query implements Serializable {
         return "Query{" +
                 "location=" + location +
                 ", keywords=" + keywords +
-                ", k=" + k +
-                ", distanceConstraint=" + distanceConstraint +
-                ", minPts=" + minPts +
                 '}';
     }
 }

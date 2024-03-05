@@ -56,8 +56,8 @@ new Vue({
                         "longitude":-75.16,
                         "latitude":39.95
                     },
-                    "k":1,
-                    "epsilon": 1000,
+                    "k":10,
+                    "epsilon": 100.0,
                     "minPts":10,
                     "maxDist":-1
                 },

@@ -1,8 +1,11 @@
 package cn.edu.szu.cs.util;
 
 import cn.edu.szu.cs.entity.Coordinate;
+import cn.edu.szu.cs.entity.GeoPointDouble;
 import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
+
+import java.util.List;
 
 /**
  *  CommonAlgorithm
@@ -53,5 +56,9 @@ public class CommonAlgorithm {
         s =  s * EARTH_RADIUS;
 //        return Math.round(s * 10000) / 10000;
         return Math.round(s * 1e4) / 1e4;
+    }
+
+    public static List<GeoPointDouble> generateRandomGeoPointDoubleList(int i) {
+        return null;
     }
 }

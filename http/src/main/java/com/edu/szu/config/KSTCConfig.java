@@ -1,13 +1,14 @@
 package com.edu.szu.config;
 
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.irtree.IRTree;
-import cn.edu.szu.cs.irtree.SimpleIRTree;
+import cn.edu.szu.cs.ds.irtree.IRTree;
+import cn.edu.szu.cs.ds.irtree.SimpleIRTree;
 import cn.edu.szu.cs.ivtidx.DefaultInvertedIndex;
 import cn.edu.szu.cs.ivtidx.InvertedIndex;
 import cn.edu.szu.cs.kstc.KSTC;
 import cn.edu.szu.cs.kstc.SimpleKSTC;
 import cn.edu.szu.cs.kstc.SimpleKSTC2;
+import cn.edu.szu.cs.kstc.SimpleKSTC3;
 import cn.edu.szu.cs.service.DefaultRelatedObjectServiceImpl;
 import cn.edu.szu.cs.service.IRelatedObjectService;
 import cn.hutool.core.io.resource.ClassPathResource;
@@ -86,6 +87,16 @@ public class KSTCConfig {
     @Bean("kstc2")
     public KSTC<RelatedObject> kstc2(IRelatedObjectService relatedObjectService){
         return new SimpleKSTC2<>(relatedObjectService);
+    }
+
+
+    /**
+     * kstc alg
+     * @return
+     */
+    @Bean("kstc3")
+    public KSTC<RelatedObject> kstc3(IRelatedObjectService relatedObjectService){
+        return new SimpleKSTC3<>(relatedObjectService);
     }
 
     @Bean

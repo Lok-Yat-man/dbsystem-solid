@@ -27,11 +27,8 @@ public class BSTDTest {
                         -74.16256713867188,
                         39.94322204589844
                 ),
-                Arrays.asList("Restaurants"),
-                //Arrays.asList("Water"),
-                5,
-                60.0,
-                3
+                Arrays.asList("Restaurants")
+                //Arrays.asList("Water")
         );
 */
         Query query2 = Query.create(
@@ -39,10 +36,7 @@ public class BSTDTest {
                         -75.1,
                         40.1
                 ),
-                Arrays.asList("Food"),
-                5,
-                60.0,
-                3
+                Arrays.asList("Food","Restaurants","Chinese")
         );
 
         //queries.add(query1);
