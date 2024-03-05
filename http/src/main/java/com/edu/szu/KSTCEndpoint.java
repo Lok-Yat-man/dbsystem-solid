@@ -22,6 +22,7 @@ public class KSTCEndpoint {
 
     private KstcService kstcService;
 
+
     @GetMapping("/markers")
     public List<Marker> markers(
             @RequestParam("keywords") String keywords,
