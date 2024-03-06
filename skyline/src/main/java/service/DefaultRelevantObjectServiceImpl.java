@@ -22,7 +22,7 @@ public class DefaultRelevantObjectServiceImpl implements IRelevantObjectService 
 
     public DefaultRelevantObjectServiceImpl() {
 
-        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("objs.txt");
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("objsSkyline.txt");
 
         if (resourceAsStream == null) {
             throw new RuntimeException("objs.txt不存在！");
