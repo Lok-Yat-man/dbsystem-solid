@@ -68,8 +68,8 @@ public class BSTDConfig {
      * @return bstd
      */
     @Bean("bstd")
-    public BSTD bstd(IRTree irTree, InvertedIndex<RelevantObject> invertedIndexBSTD) {
-        return new BSTD(irTree, invertedIndexBSTD);
+    public BSTD bstd(IRTree irTree, IRelevantObjectService relevantObjectService, InvertedIndex<RelevantObject> invertedIndexBSTD) {
+        return new BSTD(irTree, relevantObjectService, invertedIndexBSTD);
     }
 
     @Bean

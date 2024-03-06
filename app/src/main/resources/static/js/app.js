@@ -68,14 +68,18 @@ new Vue({
                 lastKeywords:[]
             },
             spatial_skylines:{
+                loading: false,
+                timeout: false,
                 labelPosition:"right",
                 location:"",
                 layerLoaded: 0,
+                markers: [],
                 query:{
                     longitude: -75.16,
                     latitude: 39.95,
-                    keywords: 'Restaurants, Chinese'
-                }
+                    keywords: 'Restaurants,Chinese'
+                },
+                lastKeywords:[]
             },
           // /**加**/
             topk: {
@@ -134,7 +138,7 @@ new Vue({
                 let longitude = this.spatial_skylines.query.longitude;
                 let latitude = this.spatial_skylines.query.latitude;
                 let keywords = this.spatial_skylines.query.keywords;
-                await bstd.loadBSTD(this, longitude, latitude, keywords);
+                await bstd.loadBSTD2(this, longitude, latitude, keywords);
             }
             else if(state === 'topK') {
               this.switchStatus = 'topK'
@@ -236,7 +240,16 @@ new Vue({
             let longitude = this.spatial_skylines.query.longitude;
             let latitude = this.spatial_skylines.query.latitude;
             let keywords = this.spatial_skylines.query.keywords;
-            bstd.loadBSTD(this, longitude, latitude, keywords);
+            bstd.LoadBSTD(this, longitude, latitude, keywords);
+        },
+
+        loadBSTD2() {
+            this.currentAlgorithm = "spatial_skylines";
+            this.switchStatus = "spatial_skylines";
+            this.paramsSwitch("spatial_skylines");
+            let longitude = this.spatial_skylines.query.longitude;
+            let latitude = this.spatial_skylines.query.latitude;
+            bstd.LoadBSTD2(this, longitude, latitude);
         },
 
         loadTopK(){
