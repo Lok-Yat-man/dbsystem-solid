@@ -154,10 +154,10 @@ async function doLoad(vueThis,lon,lat,zoom){
     vueThis.KSTC.lastKeywords=vueThis.KSTC.query.keywords.split(",");
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
-        mapStyle: vueThis.mapStyle,
+        style: vueThis.mapStyle,
         //style: 'mapbox://styles/mapbox/light-v11',
         // style: 'mapbox://styles/mapbox/streets-v12',
-        style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
+        //style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
         center: [lon, lat],
         zoom: zoom
     });

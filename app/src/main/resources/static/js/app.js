@@ -52,12 +52,12 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    "keywords": "Food",
+                    "keywords": "Food,Coffee",
                     "location":{
                         "longitude":-75.16,
                         "latitude":39.95
                     },
-                    "k":10,
+                    "k":1,
                     "epsilon": 100.0,
                     "minPts":10,
                     "maxDist":-1
