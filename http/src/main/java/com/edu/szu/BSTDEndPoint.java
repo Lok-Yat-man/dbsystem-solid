@@ -1,5 +1,7 @@
 package com.edu.szu;
 
+import com.edu.szu.entity.GeoJson;
+import com.edu.szu.entity.GeoJsonSkyline;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.entity.ObjectPoint;
 import com.edu.szu.service.BstdService;
@@ -41,5 +43,26 @@ public class BSTDEndPoint {
                 .build();
         log.info("objectPoints: " + query.toString());
         return bstdService.loadObjectPoint(query);
+    }
+
+    @GetMapping("/geojson")
+    public GeoJsonSkyline geoJsonSkyline(
+            @RequestParam("longitude") Double longitude,
+            @RequestParam("latitude") Double latitude,
+            @RequestParam("keywords") String keywords
+    ) {
+        Query query = Query.builder()
+                .location(
+                        Coordinate.create(
+                                longitude,
+                                latitude
+                        )
+                )
+                .keyword(Arrays.stream(keywords.split(",")).collect(Collectors.toList()))
+                .build();
+        log.info("geoJson: " + query.toString());
+        return bstdService.loadGeoJsonSkyline(
+                query
+        );
     }
 }

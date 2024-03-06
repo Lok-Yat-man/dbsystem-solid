@@ -47,8 +47,9 @@ public class BSTD {
 
     }
 
-    public BSTD(IRTree irTree, InvertedIndex<RelevantObject> invertedIndex) {
+    public BSTD(IRTree irTree, IRelevantObjectService relevantObjectService, InvertedIndex<RelevantObject> invertedIndex) {
         this.irTree = irTree;
+        this.relevantObjectService = relevantObjectService;
         this.invertedIndex = invertedIndex;
     }
 
