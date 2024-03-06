@@ -2,12 +2,9 @@ package irtree;
 
 import com.github.davidmoten.rtree.*;
 import com.github.davidmoten.rtree.geometry.Geometry;
-import com.github.davidmoten.rtree.geometry.HasGeometry;
 import com.github.davidmoten.rtree.geometry.Point;
-import com.github.davidmoten.rtree.geometry.internal.GeometryUtil;
 import com.github.davidmoten.rtree.internal.LeafDefault;
 import com.github.davidmoten.rtree.internal.NonLeafDefault;
-import entity.*;
 import lombok.Getter;
 import lombok.Setter;
 import service.IRelevantObjectService;
@@ -45,7 +42,7 @@ public final class IRTree {
     public IRTree(IRelevantObjectService relevantObjectService) {
 
         try (
-                InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("rtree.txt");
+                InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("rtreeSkyline.txt");
         ) {
             // deserialize rTree
             RTree<String, Geometry> rTree = Serializers.flatBuffers().utf8().read(
