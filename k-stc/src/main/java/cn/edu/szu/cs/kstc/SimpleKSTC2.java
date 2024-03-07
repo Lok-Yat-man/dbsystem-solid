@@ -44,7 +44,7 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
     /**
      * Maximum timeout per request.
      */
-    private static final long DEFAULT_TIMEOUT = 30_000L;
+    private static final long DEFAULT_TIMEOUT = 10_000L;
     /**
      * Thread pool for asynchronous computing
      */
@@ -65,7 +65,10 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
         }
     }
 
-
+    /**
+     * rTree is used to store the spatial information of related objects.
+     */
+    private RTree<String,GeoPointDouble> rTree;
     /**
      * Preserve the extensibility of the way to obtain related objects.
      */
@@ -158,13 +161,13 @@ public class SimpleKSTC2<T extends RelatedObject> implements KSTC<T> {
         //buildrTree(objects);
         buildTrieInvertedIndex(objects);
     }
-    //private void buildrTree(List<RelatedObject> objects){
-    //    List<Entry<String, GeoPointDouble>> entryList = objects.stream()
-    //            .map(object -> Entries.entry(object.getObjectId(), GeoPointDouble.create(object.getCoordinate().getLongitude(), object.getCoordinate().getLatitude())))
-    //            .collect(Collectors.toList());
-    //    rTree = RTree.star().create(entryList);
-    //    logger.debug("Rtree initialized successfully.");
-    //}
+    private void buildrTree(List<RelatedObject> objects){
+        List<Entry<String, GeoPointDouble>> entryList = objects.stream()
+                .map(object -> Entries.entry(object.getObjectId(), GeoPointDouble.create(object.getCoordinate().getLongitude(), object.getCoordinate().getLatitude())))
+                .collect(Collectors.toList());
+        rTree = RTree.star().create(entryList);
+        logger.debug("Rtree initialized successfully.");
+    }
     private void buildTrieInvertedIndex(List<RelatedObject> objects){
         root=new Trie();
         for (RelatedObject relatedObject : objects) {

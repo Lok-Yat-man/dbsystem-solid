@@ -2,6 +2,7 @@ package com.edu.szu;
 
 import cn.edu.szu.cs.entity.Coordinate;
 import cn.edu.szu.cs.entity.GeoPointDouble;
+import com.edu.szu.config.BSTDConfig;
 import com.edu.szu.config.DCPGSConfig;
 
 import com.edu.szu.config.KDVConfig;
@@ -24,11 +25,14 @@ import java.util.stream.Collectors;
         DCPGSConfig.class,
         KSTCConfig.class,
         KDVConfig.class,
+        BSTDConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,
         KSTCEndpoint.class,
         KDVEndpoint.class,
+        BSTDEndPoint.class,
+        topkMain.class
 })
 @SpringBootApplication
 @Log4j2

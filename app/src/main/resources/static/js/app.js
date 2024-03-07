@@ -1,7 +1,9 @@
 import dcpgs from "./DCPGS.js";
 import kdv from "./kdv.js";
-import kstc from "./kstc.js"
-import test from "./test.js"
+import kstc from "./kstc.js";
+import test from "./test.js";
+import topk from "./topk.js";
+import bstd from "./bstd.js";
 // import { Loading } from './environment/elementUI'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
@@ -17,7 +19,7 @@ new Vue({
             // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "local",//local or prod
+            env: "local",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             sideBarDisabled: false,
@@ -50,13 +52,13 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    "keywords": "Food",
+                    "keywords": "Food,Coffee",
                     "location":{
                         "longitude":-75.16,
                         "latitude":39.95
                     },
                     "k":1,
-                    "epsilon": 1000,
+                    "epsilon": 100.0,
                     "minPts":10,
                     "maxDist":-1
                 },
@@ -66,15 +68,30 @@ new Vue({
                 lastKeywords:[]
             },
             spatial_skylines:{
+                loading: false,
+                timeout: false,
                 labelPosition:"right",
                 location:"",
                 layerLoaded: 0,
+                markers: [],
                 query:{
-                    params_1:0.5,
-                    params_2:0.5,
-                    params_3:0.5,
-                    params_4:0.5
-                }
+                    longitude: -75.16,
+                    latitude: 39.95,
+                    keywords: 'Restaurants,Chinese'
+                },
+                lastKeywords:[]
+            },
+          // /**加**/
+            topk: {
+              labelPosition:"right",
+              location:"",
+              layerLoaded: 0,
+              query:{
+                longitude_topk: -3.483,
+                latitude_topk: 52.983,
+                keywords_topk: 'birthday,temp',
+                k_topk: 3
+              }
             },
             kdv: {
                 dataFileName: "./cases.csv",
@@ -115,6 +132,29 @@ new Vue({
             }else if(state === 'KSTC_UPDATE'){
                 this.switchStatus = "KSTC"
                 await kstc.loadKSTC(this);
+            }
+            else if (state === 'BSTD_UPDATE') {
+                this.switchStatus = 'spatial_skylines';
+                let longitude = this.spatial_skylines.query.longitude;
+                let latitude = this.spatial_skylines.query.latitude;
+                let keywords = this.spatial_skylines.query.keywords;
+                await bstd.loadBSTD2(this, longitude, latitude, keywords);
+            }
+            else if(state === 'topK') {
+              this.switchStatus = 'topK'
+              var lon = this.topk.query.longitude_topk;
+              var la = this.topk.query.latitude_topk;
+              await topk.LoadtopK(this,lon,la);
+            }
+            else if(state === 'topK_UPDATE') {
+              this.switchStatus = 'topK'
+              var lon = this.topk.query.longitude_topk;
+              var la = this.topk.query.latitude_topk;
+              var key = this.topk.query.keywords_topk;
+              var k = this.topk.query.k_topk;
+              //await topk.LoadtopK(this, lon, la);
+              await topk.PostTopK(this, lon, la, key, k);
+              //await topk.LoadtopK(this,lon,la);
             }
             else{
                 this.switchStatus = state;
@@ -193,6 +233,34 @@ new Vue({
             });
         },
 
+        loadBSTD() {
+            this.currentAlgorithm = "spatial_skylines";
+            this.switchStatus = "spatial_skylines";
+            this.paramsSwitch("spatial_skylines");
+            let longitude = this.spatial_skylines.query.longitude;
+            let latitude = this.spatial_skylines.query.latitude;
+            let keywords = this.spatial_skylines.query.keywords;
+            bstd.LoadBSTD(this, longitude, latitude, keywords);
+        },
+
+        loadBSTD2() {
+            this.currentAlgorithm = "spatial_skylines";
+            this.switchStatus = "spatial_skylines";
+            this.paramsSwitch("spatial_skylines");
+            let longitude = this.spatial_skylines.query.longitude;
+            let latitude = this.spatial_skylines.query.latitude;
+            bstd.LoadBSTD2(this, longitude, latitude);
+        },
+
+        loadTopK(){
+          this.currentAlgorithm = "topK";
+          this.paramsSwitch('topK');
+          this.switchStatus = "topK"
+          var lon = this.topk.query.longitude_topk;
+          var la = this.topk.query.latitude_topk;
+          topk.LoadtopK(this, lon, la);
+
+        },
         loadTest(){
             test.testTree(this);
         }
@@ -201,7 +269,10 @@ new Vue({
 
     //挂载
     mounted() {
-        console.log("mounted")
+        if(this.env === "szu_server"){
+            this.baseUrl = "http://172.31.238.174:8080";
+        }
+        console.log("mounted, baseUrl: ", this.baseUrl);
         this.loadDSPGS('StockholmSweden', 13)
     },
 })
