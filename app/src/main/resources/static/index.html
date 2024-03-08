@@ -179,11 +179,12 @@
 
         </div>
 
-        <div class="params" v-if="switchStatus === 'spatial_skylines'">
+        <div v-loading.lock="spatial_skylines.loading"
+             class="params" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
             <h3 class="params_header">BSTD</h3>
-            <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
+            <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
                 <div class="param_adjuster" style="width: 200px">
-                    <span class="item_label">lng</span>
+                    <span class="item_label">longitude</span>
                     <div class="adjuster"
                          @click="spatial_skylines.query.longitude = paramAdjust(spatial_skylines.query.longitude,false,179,-180,0.1,2)"
                          style="margin-left: 5px;">
@@ -197,7 +198,7 @@
                 </div>
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
-                    <span class="item_label">lat</span>
+                    <span class="item_label">latitude</span>
                     <div class="adjuster"
                          @click="spatial_skylines.query.latitude = paramAdjust(spatial_skylines.query.latitude,false,90,-90,0.1,2)"
                          style="margin-left: 5px;">
@@ -282,7 +283,7 @@
                     </el-submenu>
                     <el-submenu index="1-3">
                         <template slot="title">Textually spatial skylines</template>
-                        <el-menu-item index="1-3-1"  @click="loadBSTD2()">Basic Algorithm for STD</el-menu-item>
+                        <el-menu-item index="1-3-1"  @click="loadBSTD()">Basic Algorithm for STD</el-menu-item>
                     </el-submenu>
 
                     <el-submenu index="1-4">

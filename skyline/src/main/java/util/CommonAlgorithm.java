@@ -4,13 +4,6 @@ import cn.hutool.cache.CacheUtil;
 import cn.hutool.cache.impl.LFUCache;
 import entity.Coordinate;
 
-/**
- * CommonAlgorithm
- *
- * @author Whitence
- * @version 1.0
- * @date 2023/10/1 10:25
- */
 public class CommonAlgorithm {
 
     public static Double calculateDistance(Coordinate a, Coordinate b) {
@@ -22,6 +15,10 @@ public class CommonAlgorithm {
      * 地球半径,单位 km
      */
     private static final double EARTH_RADIUS = 6378137;
+
+    private static final double Equator_Circumference = 2 * Math.PI * EARTH_RADIUS;
+
+    private static final double Latitude_Difference = Equator_Circumference / 360;
 
     /**
      * 根据经纬度，计算两点间的距离
@@ -53,5 +50,27 @@ public class CommonAlgorithm {
         s = s * EARTH_RADIUS;
 //        return Math.round(s * 10000) / 10000;
         return Math.round(s * 1e4) / 1e4;
+    }
+
+    // 获取MBR右上角经纬度
+    public static Coordinate getRUCoordinate(Coordinate coordinate, double radius) {
+        double latitudeRU = coordinate.getLatitude() + radius / Latitude_Difference;
+
+        double radiansLatitudeRU = Math.toRadians(latitudeRU);
+        double longitudeDiff = Latitude_Difference * Math.cos(radiansLatitudeRU);
+        double longitudeRU = coordinate.getLongitude() + radius / longitudeDiff;
+
+        return Coordinate.create(longitudeRU, latitudeRU);
+    }
+
+    // 获取MBR左下角经纬度
+    public static Coordinate getLLCoordinate(Coordinate coordinate, double radius) {
+        double latitudeLL = coordinate.getLatitude() - radius / Latitude_Difference;
+
+        double radiansLatitudeLL = Math.toRadians(latitudeLL);
+        double longitudeDiff = Latitude_Difference * Math.cos(radiansLatitudeLL);
+        double longitudeLL = coordinate.getLongitude() - radius / longitudeDiff;
+
+        return Coordinate.create(longitudeLL, latitudeLL);
     }
 }
