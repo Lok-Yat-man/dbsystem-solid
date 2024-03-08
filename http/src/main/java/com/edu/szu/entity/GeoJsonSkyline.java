@@ -3,20 +3,19 @@ package com.edu.szu.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class GeoJson {
+public class GeoJsonSkyline {
     private String type = "FeatureCollection";
-    private List<Feature> features;
+    private List<GeoJsonSkyline.Feature> features;
 
-    public GeoJson() {
+    public GeoJsonSkyline() {
         features = new ArrayList<>();
     }
 
-    public List<Feature> getFeatures() {
+    public List<GeoJsonSkyline.Feature> getFeatures() {
         return features;
     }
 
-    public void setFeatures(List<Feature> features) {
+    public void setFeatures(List<GeoJsonSkyline.Feature> features) {
         this.features = features;
     }
 
@@ -30,10 +29,10 @@ public class GeoJson {
 
     public static class Feature {
         private String type = "Feature";
-        private Geometry geometry;
-        private Properties properties;
+        private GeoJsonSkyline.Geometry geometry;
+        private GeoJsonSkyline.Properties properties;
 
-        public Feature(Geometry geometry, Properties properties) {
+        public Feature(GeoJsonSkyline.Geometry geometry, GeoJsonSkyline.Properties properties) {
             this.geometry = geometry;
             this.properties = properties;
         }
@@ -46,19 +45,19 @@ public class GeoJson {
             this.type = type;
         }
 
-        public Geometry getGeometry() {
+        public GeoJsonSkyline.Geometry getGeometry() {
             return geometry;
         }
 
-        public void setGeometry(Geometry geometry) {
+        public void setGeometry(GeoJsonSkyline.Geometry geometry) {
             this.geometry = geometry;
         }
 
-        public Properties getProperties() {
+        public GeoJsonSkyline.Properties getProperties() {
             return properties;
         }
 
-        public void setProperties(Properties properties) {
+        public void setProperties(GeoJsonSkyline.Properties properties) {
             this.properties = properties;
         }
     }
@@ -92,30 +91,22 @@ public class GeoJson {
 
 
     public static class Properties {
-        private String clusterId;
+        private String skylineId;
         private String name;
         private List<String> labels;
 
-        public Properties(String clusterId, String name, List<String> labels) {
-            this.clusterId = clusterId;
+        public Properties(String skylineId, String name, List<String> labels) {
+            this.skylineId = skylineId;
             this.name = name;
             this.labels = labels;
         }
 
-        public String getClusterId() {
-            return clusterId;
+        public String getSkylineId() {
+            return skylineId;
         }
 
-        public void setClusterId(String clusterId) {
-            this.clusterId = clusterId;
-        }
-
-        public List<String> getLabels() {
-            return labels;
-        }
-
-        public void setLabels(List<String> labels) {
-            this.labels = labels;
+        public void setSkylineId(String skylineId) {
+            this.skylineId = skylineId;
         }
 
         public String getName() {
@@ -124,6 +115,14 @@ public class GeoJson {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+        public List<String> getLabels() {
+            return labels;
+        }
+
+        public void setLabels(List<String> labels) {
+            this.labels = labels;
         }
     }
 }

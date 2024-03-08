@@ -159,6 +159,19 @@
     background-size: contain;
 }
 
+.keywords_input{
+    width: 200px;
+    height: 35px;
+    padding: 0;
+    background-color: rgba(255,255,255,0.0);
+    border: 1px solid #4d4d4e;
+    text-align: center;
+    font-size: 13px;
+    font-weight: normal;
+    color: #00FFFF;
+    line-height: 10px;
+}
+
 /*减号*/
 .icon-minus{
     /*width: 10px;*/

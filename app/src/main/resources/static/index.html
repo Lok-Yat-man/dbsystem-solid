@@ -180,18 +180,41 @@
         </div>
 
         <div class="params" v-if="switchStatus === 'spatial_skylines'">
-            <h3 class="params_header">spatial_skylines</h3>
+            <h3 class="params_header">BSTD</h3>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="130px" :model="spatial_skylines">
                 <div class="param_adjuster" style="width: 200px">
-                    <span class="item_label">params_1</span>
-                    <div class="adjuster" @click="spatial_skylines.query.params_1 = paramAdjust(spatial_skylines.query.params_1,false,1.0,0,0.1,2)" style="margin-left: 5px;">
+                    <span class="item_label">lng</span>
+                    <div class="adjuster"
+                         @click="spatial_skylines.query.longitude = paramAdjust(spatial_skylines.query.longitude,false,179,-180,0.1,2)"
+                         style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
-                    <input class="param_input" type="text" v-model="spatial_skylines.query.params_1">
-                    <div class="adjuster" @click="spatial_skylines.query.params_1 = paramAdjust(spatial_skylines.query.params_1,true,1.0,0,0.1,2)">
+                    <input class="param_input" type="text" v-model="spatial_skylines.query.longitude">
+                    <div class="adjuster"
+                         @click="spatial_skylines.query.longitude = paramAdjust(spatial_skylines.query.longitude,true,179,-180,0.1,2)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">lat</span>
+                    <div class="adjuster"
+                         @click="spatial_skylines.query.latitude = paramAdjust(spatial_skylines.query.latitude,false,90,-90,0.1,2)"
+                         style="margin-left: 5px;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" type="text" v-model="spatial_skylines.query.latitude">
+                    <div class="adjuster"
+                         @click="spatial_skylines.query.latitude = paramAdjust(spatial_skylines.query.latitude,true,90,-90,0.1,2)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjuster" style="width: 150px">
+                    <span class="item_label">keywords</span>
+                    <input class="keywords_input" type="text" v-model="spatial_skylines.query.keywords">
+                </div>
+                <br><br>
                 <div class="params_confirm">
                     <div class="confirm_button" @click="paramsSwitch('spatial_skylines_UPDATE')">
                         <span class="confirm_label">confirm</span>
@@ -259,7 +282,7 @@
                     </el-submenu>
                     <el-submenu index="1-3">
                         <template slot="title">Textually spatial skylines</template>
-                        <el-menu-item index="1-3-1"  @click="paramsSwitch('spatial_skylines')">1-3-1</el-menu-item>
+                        <el-menu-item index="1-3-1"  @click="loadBSTD2()">Basic Algorithm for STD</el-menu-item>
                     </el-submenu>
 
                     <el-submenu index="1-4">

@@ -25,6 +25,36 @@ public class Query implements Serializable {
         return new Query(location, keywords);
     }
 
+    public static QueryBuilder builder(){
+        return new QueryBuilder();
+    }
+
+    public static class QueryBuilder{
+
+        private Query query;
+
+        public QueryBuilder(){
+            query=new Query();
+        }
+        public QueryBuilder(Query query){
+            this.query=query;
+        }
+
+        public QueryBuilder location(Coordinate coordinate){
+            query.setLocation(coordinate);
+            return this;
+        }
+
+        public QueryBuilder keyword(List<String> kwds){
+            query.setKeywords(kwds);
+            return this;
+        }
+
+        public Query build(){
+            return query;
+        }
+    }
+
     @Override
     public String toString() {
         return "Query{" +

@@ -13,11 +13,13 @@ public class InvFileTest {
         IRelevantObjectService relevantObjectService = new DefaultRelevantObjectServiceImpl();
         InvertedIndex defaultLeafInvertedIndex = new DefaultLeafInvertedIndex(relevantObjectService);
         List<String> strings = new LinkedList<>();
-        strings.add("Balloons");
+        //strings.add("Balloons");
         strings.add("Surf");
 
         //System.out.println(defaultLeafInvertedIndex.getValues("Balloons"));
-        System.out.println(defaultLeafInvertedIndex.getValues(strings));
+        List values = defaultLeafInvertedIndex.getValues(strings);
+        System.out.println(values);
+        System.out.println(values.size());
         //System.out.println(relevantObjectService.getWeightsById("GldIUU-hF_Oq_zN4BE9EAg"));
         //System.out.println(defaultLeafInvertedIndex.getValues(strings));
 

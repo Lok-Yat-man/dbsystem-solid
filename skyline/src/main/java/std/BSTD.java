@@ -21,6 +21,7 @@ import service.DefaultRelevantObjectServiceImpl;
 import service.IRelevantObjectService;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Double.min;
 import static java.lang.Double.max;
@@ -30,13 +31,15 @@ public class BSTD {
 
     private IRTree irTree;
 
+    private IRelevantObjectService relevantObjectService;
+
     private InvertedIndex<RelevantObject> invertedIndex;
 
     private final static Double smoothingFactor = 0.02;
 
     public BSTD() {
 
-        IRelevantObjectService relevantObjectService = new DefaultRelevantObjectServiceImpl();
+        relevantObjectService = new DefaultRelevantObjectServiceImpl();
 
         invertedIndex = new DefaultLeafInvertedIndex(relevantObjectService);
 
@@ -44,12 +47,13 @@ public class BSTD {
 
     }
 
-    public BSTD(IRTree irTree, InvertedIndex<RelevantObject> invertedIndex) {
+    public BSTD(IRTree irTree, IRelevantObjectService relevantObjectService, InvertedIndex<RelevantObject> invertedIndex) {
         this.irTree = irTree;
+        this.relevantObjectService = relevantObjectService;
         this.invertedIndex = invertedIndex;
     }
 
-    public List<Entry<String, Geometry>> bstd(List<Query> queries) {
+    public List<RelevantObject> bstd(List<Query> queries) {
         // S=∅; B=U
         List<Entry<String, Geometry>> S = new LinkedList<>();
         Optional<? extends Node<String, Geometry>> rootOptional = irTree.getRTree().root();
@@ -118,7 +122,7 @@ public class BSTD {
                             //System.out.println(B);
                         }
 
-                        System.out.println("countCore" + (++countCore));
+                        //System.out.println("countCore" + (++countCore));
 
                     }
                 }
@@ -134,9 +138,14 @@ public class BSTD {
                 }
             }
         }
-        System.out.println(B);
+        //System.out.println(B);
 
-        return S;
+        List<RelevantObject> relevantObjects = S.stream()
+                .map(Entry::value)
+                .flatMap(value -> relevantObjectService.getByIds(List.of(value)).stream())
+                .collect(Collectors.toList());
+
+        return relevantObjects;
     }
 
     public Rectangle getIntersectMBR(Rectangle r1, Rectangle r2) {
