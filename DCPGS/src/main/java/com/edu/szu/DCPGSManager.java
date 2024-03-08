@@ -61,10 +61,16 @@ public class DCPGSManager {
         for (CheckIn checkIn : checkIns) {
             rTree = rTree.add(checkIn.getName(),checkIn);
         }
+        long timeEnd1 = System.currentTimeMillis();
+        log.info("RTree build finished, using time: {} s", (timeEnd1 - timeStart) / 1000.0);
         DCPGS<CheckIn> dbscan = new DCPGS<>(checkIns,5, calculator, pool, params);
         var clusters = dbscan.performClustering(rTree);
+        long timeEnd2 = System.currentTimeMillis();
+        log.info("DCPGS finished, using time: {} s", (timeEnd2 - timeEnd1) / 1000.0);
         //排序
         clusters.sort((list1,list2)->Integer.compare(list2.size(),list1.size()));
+        long timeEnd3 = System.currentTimeMillis();
+        log.info("DCPGS sort finished, using time: {} s", (timeEnd3 - timeEnd2) / 1000.0);
         //输出结果到文件
         CheckInJson checkInJson = CheckInReader.parseJson(clusters);
         CheckInReader.outPutCheckIn(clusters, resourcePath + filePath);

@@ -58,6 +58,7 @@ public class CheckInReader {
     }
 
     public static List<CheckIn> getCheckInFromFile(String... filePaths) {
+        Set<Long> userSet = new HashSet<>();
         locationMap = new HashMap<>();
         Set<CheckIn> ans = new HashSet<>();
         for (String filePath : filePaths) {
@@ -70,6 +71,7 @@ public class CheckInReader {
                     if (checkIn == null) {
                         continue;
                     }
+                    userSet.add(checkIn.getUserId());
                     locationMap.computeIfAbsent(checkIn.getLocationId(), key -> new HashSet<>());
                     locationMap.get(checkIn.getLocationId()).add(checkIn.getUserId());
                     ans.add(checkIn);
@@ -77,7 +79,7 @@ public class CheckInReader {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            log.info("reading work of file:( {} ) finished",filePath);
+            log.info("reading work of file:( {} ) finished, location size:{}, user size:{}",filePath,locationMap.size(),userSet.size());
         }
         return new ArrayList<>(ans);
     }
