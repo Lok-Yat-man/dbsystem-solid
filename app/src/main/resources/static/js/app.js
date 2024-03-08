@@ -14,7 +14,11 @@ new Vue({
     data(){
         return {
             baseUrl: "http://localhost:8080",
-            mapStyle: "mapbox://styles/mapbox/dark-v11",
+            mapStyle: "./js/mapstyle/style.json",
+            // mapStyle: "mapbox://styles/mapbox/basic-v9",
+            // mapStyle: "mapbox://styles/mapbox/dark-v9",
+            // mapStyle: "mapbox://styles/mapbox/navigation-guidance-night-v2",
+            // mapStyle: "mapbox://styles/mapbox/navigation-preview-night-v2",
             // mapStyle: "mapbox://styles/mapbox/traffic-night-v2",
             // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
             map: "",
@@ -276,6 +280,6 @@ new Vue({
             this.baseUrl = "http://172.31.238.174:8080";
         }
         console.log("mounted, baseUrl: ", this.baseUrl);
-        this.loadDSPGS('StockholmSweden', 13)
+        this.loadDSPGS('StockholmSweden', 13);
     },
 })
