@@ -138,8 +138,9 @@ new Vue({
                 await kstc.loadKSTC(this);
             }
             else if (state === 'spatial_skylines_UPDATE') {
-                this.switchStatus = 'spatial_skylines';
-                await bstd.loadBSTD(this);
+                this.currentAlgorithm = "spatial_skylines";
+                this.switchStatus = "spatial_skylines";
+                await bstd.LoadBSTD(this);
             }
             else if(state === 'topK') {
               this.switchStatus = 'topK'
