@@ -93,7 +93,7 @@ async function paintPoints(vueThis, size) {
 // 添加功能：点击Skyline点可以展示详细信息
 function layerPopup(i, vueThis) {
     vueThis.map.on('click', 'layer' + i, function (e) {
-        let coordinates = e.features[0].geometry.coordinates.slice();
+        let coordinates = e.features[0 ].geometry.coordinates.slice();
         let labels = JSON.parse(e.features[0].properties.labels);
         let strings = vueThis.spatial_skylines.lastKeywords;
 
@@ -102,8 +102,8 @@ function layerPopup(i, vueThis) {
             let flag = false;
             let label = labels[j].toLowerCase();
             for (let k = 0; k < strings.length; k++) {
-                var string = strings[k].toLowerCase();
-                if (label === string || label.indexOf(string) >= 0) {
+                let string = strings[k].toLowerCase();
+                if (label === string || (label.indexOf(string) >= 0 && label.endsWith("s"))) {
                     flag = true;
                     break;
                 }

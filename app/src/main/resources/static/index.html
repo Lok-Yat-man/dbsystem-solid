@@ -179,8 +179,8 @@
 
         </div>
 
-        <div v-loading.lock="spatial_skylines.loading"
-             class="params" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
+        <div
+                class="params" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
             <h3 class="params_header">BSTD</h3>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
                 <div class="param_adjuster" style="width: 200px">
@@ -197,11 +197,11 @@
                     </div>
                 </div>
                 <br><br>
-                <div class="param_adjuster" style="width: 150px">
+                <div class="param_adjuster" style="width: 200px">
                     <span class="item_label">latitude</span>
                     <div class="adjuster"
                          @click="spatial_skylines.query.latitude = paramAdjust(spatial_skylines.query.latitude,false,90,-90,0.1,2)"
-                         style="margin-left: 5px;">
+                         style="margin-left: 21.43px;">
                         <div class="icon-minus"></div>
                     </div>
                     <input class="param_input" type="text" v-model="spatial_skylines.query.latitude">
@@ -213,6 +213,7 @@
                 <br><br>
                 <div class="param_adjuster" style="width: 150px">
                     <span class="item_label">keywords</span>
+                    <br><br>
                     <input class="keywords_input" type="text" v-model="spatial_skylines.query.keywords">
                 </div>
                 <br><br>
