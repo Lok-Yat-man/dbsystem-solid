@@ -379,134 +379,134 @@ public class topkMain {
     //在已排序的Sp的结点中计算Lp
     //在对根节点使用BFS的过程中判断访问的顶点是否包含未消去的关键字，逐个消除关键字直到每个关键字
     //未使用剪枝规则2
-    for(int zt=0;zt<graph.Sp.size();zt++) {
-      PlusBFS(graph.Sp.get(zt).item1,graph,points);
-      points[graph.Sp.get(zt).item1].Lp = 0;
-      //System.out.println(graph.Sp.get(zt).item1 + " " + graph.Sp.get(zt).item2);
-      for(int zz=0;zz< inputKeywordAsString.length;zz++) {
-        String kkey = inputKeywordAsString[points[graph.Sp.get(zt).item1].recordK.get(zz).gap1];
-        //System.out.println(kkey + " " + points[graph.Sp.get(zt).item1].recordK.get(zz).gap2 + " " + points[graph.Sp.get(zt).item1].recordK.get(zz).gap3);
-        points[graph.Sp.get(zt).item1].Lp += points[graph.Sp.get(zt).item1].recordK.get(zz).gap3;
-      }
-      points[graph.Sp.get(zt).item1].Fp = points[graph.Sp.get(zt).item1].Lp * graph.Sp.get(zt).item2; //Fp = Lp * Sp;
-
-      Tuple<Integer, Double> tuple = new Tuple<>(graph.Sp.get(zt).item1,points[graph.Sp.get(zt).item1].Fp);
-      graph.FindPoint.add(tuple);
-    }
-    //升序排序
-    Collections.sort(graph.FindPoint, new Comparator<Tuple<Integer, Double>>() {
-      @Override
-      public int compare(Tuple<Integer, Double> o1, Tuple<Integer, Double> o2) {
-        return o1.item2 > o2.item2 ? 1:-1;
-      }
-    });
-    if(testTotal <= Qk) {
-      /**加**/
-      JSONObject jsonObject = new JSONObject();
-      jsonObject.put("id", -1);
-      jsonObject.put("lon", 0);
-      jsonObject.put("la", 0);
-      jsonObject.put("finds", testTotal);
-      jsonArray.add(jsonObject);
-
-      System.out.println("The input k is too large, the actual size of k is: " + testTotal);
-    } else {
-      System.out.println("\nResult of the top-" + Qk + " relevant semantic place retrieval is: \n");
-      for(int i=0;i<Qk;i++) {
-        System.out.println("Point: " + graph.FindPoint.get(i).item1 + "\tLongitude: " + points[graph.FindPoint.get(i).item1].longitude + "\tLatitude: " + points[graph.FindPoint.get(i).item1].latitude);
-
-        /**加**/
-        JSONObject jsonObject = new JSONObject();
-        /**改 把id里面的内容变为对应id的name**/
-        jsonObject.put("id", points[graph.FindPoint.get(i).item1].name);
-        jsonObject.put("lon", points[graph.FindPoint.get(i).item1].longitude);
-        jsonObject.put("la", points[graph.FindPoint.get(i).item1].latitude);
-
-        String []finds = new String[inputKeywordAsString.length];
-        for(int j=0;j<inputKeywordAsString.length;j++) {
-          /**改 把finds的结点变为结点的name**/
-          finds[j] = points[points[graph.FindPoint.get(i).item1].recordK.get(j).gap2].name;
-        }
-
-        jsonObject.put("finds", finds);
-
-        jsonArray.add(jsonObject);
-
-      }
-    }
-
-    // System.out.println(testTotal);
-    //使用剪枝规则2
-//    if(testTotal < Qk) {
+//    for(int zt=0;zt<graph.Sp.size();zt++) {
+//      PlusBFS(graph.Sp.get(zt).item1,graph,points);
+//      points[graph.Sp.get(zt).item1].Lp = 0;
+//      //System.out.println(graph.Sp.get(zt).item1 + " " + graph.Sp.get(zt).item2);
+//      for(int zz=0;zz< inputKeywordAsString.length;zz++) {
+//        String kkey = inputKeywordAsString[points[graph.Sp.get(zt).item1].recordK.get(zz).gap1];
+//        //System.out.println(kkey + " " + points[graph.Sp.get(zt).item1].recordK.get(zz).gap2 + " " + points[graph.Sp.get(zt).item1].recordK.get(zz).gap3);
+//        points[graph.Sp.get(zt).item1].Lp += points[graph.Sp.get(zt).item1].recordK.get(zz).gap3;
+//      }
+//      points[graph.Sp.get(zt).item1].Fp = points[graph.Sp.get(zt).item1].Lp * graph.Sp.get(zt).item2; //Fp = Lp * Sp;
+//
+//      Tuple<Integer, Double> tuple = new Tuple<>(graph.Sp.get(zt).item1,points[graph.Sp.get(zt).item1].Fp);
+//      graph.FindPoint.add(tuple);
+//    }
+//    //升序排序
+//    Collections.sort(graph.FindPoint, new Comparator<Tuple<Integer, Double>>() {
+//      @Override
+//      public int compare(Tuple<Integer, Double> o1, Tuple<Integer, Double> o2) {
+//        return o1.item2 > o2.item2 ? 1:-1;
+//      }
+//    });
+//    if(testTotal <= Qk) {
+//      /**加**/
 //      JSONObject jsonObject = new JSONObject();
 //      jsonObject.put("id", -1);
 //      jsonObject.put("lon", 0);
 //      jsonObject.put("la", 0);
 //      jsonObject.put("finds", testTotal);
 //      jsonArray.add(jsonObject);
-//      /***后台输出结果***/
+//
 //      System.out.println("The input k is too large, the actual size of k is: " + testTotal);
 //    } else {
-//      Vector<Tuple<Integer, Double>> Ks = new Vector<>(); //记录顶点id和Lw(Tp)
-//      for(int i=0;i<Qk;i++) {
-//        Ks.add(new Tuple<>(-1,1000000.0));
-//      }
-//      for(int zt=0;zt<graph.Sp.size();zt++) {
-//
-//        boolean tk = PlusPlusBFS(graph.Sp.get(zt).item1,graph,points,Ks,zt);
-//        if(tk) { //没有被提前剪枝
-//          points[graph.Sp.get(zt).item1].Lp = 0;
-//          for(int zz=0;zz< inputKeywordAsString.length;zz++) {
-//            points[graph.Sp.get(zt).item1].Lp += points[graph.Sp.get(zt).item1].recordK.get(zz).gap3;
-//            //System.out.println(points[graph.Sp.get(zt).item1].recordK.size() + "!!!!");
-//          }
-//          points[graph.Sp.get(zt).item1].Fp = points[graph.Sp.get(zt).item1].Lp * graph.Sp.get(zt).item2; //Fp = Lp * Sp;
-//
-//          Ks.add(new Tuple<>(graph.Sp.get(zt).item1, points[graph.Sp.get(zt).item1].Fp));
-//          Collections.sort(Ks, new Comparator<Tuple<Integer, Double>>() {
-//            @Override
-//            public int compare(Tuple<Integer, Double> o1, Tuple<Integer, Double> o2) {
-//              return o1.item2 > o2.item2 ? 1:-1;
-//            }
-//          }); //加入一个元素后升序排序
-//          Ks.remove(Qk); //再把最大的删除
-//        }
-//      }
-//
-//      System.out.println(testTotal);
-//
-//      //输出结果，并将结果转为json形式传给前端
-//      /***后台输出结果***/
 //      System.out.println("\nResult of the top-" + Qk + " relevant semantic place retrieval is: \n");
-//
 //      for(int i=0;i<Qk;i++) {
-//        //将关键字记录按关键字顺序升序排序
-//        Collections.sort(points[Ks.get(i).item1].recordK, new Comparator<Triple<Integer, Integer, Integer>>() {
-//          @Override
-//          public int compare(Triple<Integer, Integer, Integer> o1, Triple<Integer, Integer, Integer> o2) {
-//            return o1.gap1 > o2.gap1 ? 1:-1;
-//          }
-//        });
+//        System.out.println("Point: " + graph.FindPoint.get(i).item1 + "\tLongitude: " + points[graph.FindPoint.get(i).item1].longitude + "\tLatitude: " + points[graph.FindPoint.get(i).item1].latitude);
 //
-//        /***后台输出结果***/
-//        System.out.println("Point: " + points[Ks.get(i).item1].name + "\tLongitude: " + points[Ks.get(i).item1].longitude + "\tLatitude: " + points[Ks.get(i).item1].latitude);
-//
+//        /**加**/
 //        JSONObject jsonObject = new JSONObject();
 //        /**改 把id里面的内容变为对应id的name**/
-//        jsonObject.put("id", points[Ks.get(i).item1].name);
-//        jsonObject.put("lon", points[Ks.get(i).item1].longitude);
-//        jsonObject.put("la", points[Ks.get(i).item1].latitude);
+//        jsonObject.put("id", points[graph.FindPoint.get(i).item1].name);
+//        jsonObject.put("lon", points[graph.FindPoint.get(i).item1].longitude);
+//        jsonObject.put("la", points[graph.FindPoint.get(i).item1].latitude);
 //
 //        String []finds = new String[inputKeywordAsString.length];
 //        for(int j=0;j<inputKeywordAsString.length;j++) {
 //          /**改 把finds的结点变为结点的name**/
-//          finds[j] = points[ points[Ks.get(i).item1] .recordK.get(j).gap2].name;
+//          finds[j] = points[points[graph.FindPoint.get(i).item1].recordK.get(j).gap2].name;
 //        }
 //
 //        jsonObject.put("finds", finds);
 //
 //        jsonArray.add(jsonObject);
+//
 //      }
+//    }
+
+    // System.out.println(testTotal);
+    //使用剪枝规则2
+    if(testTotal < Qk) {
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.put("id", -1);
+      jsonObject.put("lon", 0);
+      jsonObject.put("la", 0);
+      jsonObject.put("finds", testTotal);
+      jsonArray.add(jsonObject);
+      /***后台输出结果***/
+      System.out.println("The input k is too large, the actual size of k is: " + testTotal);
+    } else {
+      Vector<Tuple<Integer, Double>> Ks = new Vector<>(); //记录顶点id和Lw(Tp)
+      for(int i=0;i<Qk;i++) {
+        Ks.add(new Tuple<>(-1,1000000.0));
+      }
+      for(int zt=0;zt<graph.Sp.size();zt++) {
+
+        boolean tk = PlusPlusBFS(graph.Sp.get(zt).item1,graph,points,Ks,zt);
+        if(tk) { //没有被提前剪枝
+          points[graph.Sp.get(zt).item1].Lp = 0;
+          for(int zz=0;zz< inputKeywordAsString.length;zz++) {
+            points[graph.Sp.get(zt).item1].Lp += points[graph.Sp.get(zt).item1].recordK.get(zz).gap3;
+            //System.out.println(points[graph.Sp.get(zt).item1].recordK.size() + "!!!!");
+          }
+          points[graph.Sp.get(zt).item1].Fp = points[graph.Sp.get(zt).item1].Lp * graph.Sp.get(zt).item2; //Fp = Lp * Sp;
+
+          Ks.add(new Tuple<>(graph.Sp.get(zt).item1, points[graph.Sp.get(zt).item1].Fp));
+          Collections.sort(Ks, new Comparator<Tuple<Integer, Double>>() {
+            @Override
+            public int compare(Tuple<Integer, Double> o1, Tuple<Integer, Double> o2) {
+              return o1.item2 > o2.item2 ? 1:-1;
+            }
+          }); //加入一个元素后升序排序
+          Ks.remove(Qk); //再把最大的删除
+        }
+      }
+
+      System.out.println(testTotal);
+
+      //输出结果，并将结果转为json形式传给前端
+      /***后台输出结果***/
+      System.out.println("\nResult of the top-" + Qk + " relevant semantic place retrieval is: \n");
+
+      for(int i=0;i<Qk;i++) {
+        //将关键字记录按关键字顺序升序排序
+        Collections.sort(points[Ks.get(i).item1].recordK, new Comparator<Triple<Integer, Integer, Integer>>() {
+          @Override
+          public int compare(Triple<Integer, Integer, Integer> o1, Triple<Integer, Integer, Integer> o2) {
+            return o1.gap1 > o2.gap1 ? 1:-1;
+          }
+        });
+
+        /***后台输出结果***/
+        System.out.println("Point: " + points[Ks.get(i).item1].name + "\tLongitude: " + points[Ks.get(i).item1].longitude + "\tLatitude: " + points[Ks.get(i).item1].latitude);
+
+        JSONObject jsonObject = new JSONObject();
+        /**改 把id里面的内容变为对应id的name**/
+        jsonObject.put("id", points[Ks.get(i).item1].name);
+        jsonObject.put("lon", points[Ks.get(i).item1].longitude);
+        jsonObject.put("la", points[Ks.get(i).item1].latitude);
+
+        String []finds = new String[inputKeywordAsString.length];
+        for(int j=0;j<inputKeywordAsString.length;j++) {
+          /**改 把finds的结点变为结点的name**/
+          finds[j] = points[ points[Ks.get(i).item1] .recordK.get(j).gap2].name;
+        }
+
+        jsonObject.put("finds", finds);
+
+        jsonArray.add(jsonObject);
+      }
 
 
       //将检索到的结果写入topk.json文件
@@ -535,8 +535,10 @@ public class topkMain {
 //      } catch (IOException e) {
 //        e.printStackTrace();
 //      }
-//    }
-    //
+
+      //
+   }
+
     System.out.println("finished!");
     return jsonArray;
   }
