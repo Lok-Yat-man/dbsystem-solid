@@ -6,7 +6,7 @@ let targetTrackingCalls2 = 0;
 let targetTrackingCalls3 = 0;
 var previous = null;
 var current = null;
-async function LoadtopK(vueThis, lon, la) {
+async function LoadtopK(vueThis, lon, la, key, k) {
   vueThis.map = new mapboxgl.Map({
     container: 'map', // container id
     style: 'mapbox://styles/mapbox/dark-v11',
@@ -21,10 +21,20 @@ async function LoadtopK(vueThis, lon, la) {
   //     .addTo(vueThis.map);
 
   const sourceID = "trace" + ++targetTrackingCalls;
-  var marker1 = new mapboxgl.Marker({scale: 1})
-    .setLngLat([lon, la])
-    .addTo(vueThis.map)
-  vueThis.map.on('load', () => {
+  const marker1 = new mapboxgl.Marker({scale: 1, draggable: true})
+      .setLngLat([lon, la])
+      .addTo(vueThis.map)
+
+  function onDragEnd() {
+    const lngLat = marker1.getLngLat();
+    console.log("Marker: Lng: " + lngLat.lng + " Lat: " + lngLat.lat);
+    vueThis.topk.query.longitude_topk = lngLat.lng.toFixed(2);
+    vueThis.topk.query.latitude_topk = lngLat.lat.toFixed(2);
+  }
+
+  marker1.on('dragend', onDragEnd);
+
+  vueThis.map.on('load', e => {
     vueThis.map.addSource(sourceID, {
       'type': 'geojson',
       'data': 'data//geojson/uk.json'
@@ -53,7 +63,6 @@ async function LoadtopK(vueThis, lon, la) {
       }
     });
   });
-
 }
 
 async function LoadResult(vueThis, id, lon, la, finds, key) {
@@ -186,7 +195,6 @@ async function PostTopK(vueThis, lon, la, key, k) {
     alert("Please input correct parameters!");
     return;
   }
-
    axios.get('/hello', {
    params: {
      lon_topk: lon,
@@ -196,7 +204,7 @@ async function PostTopK(vueThis, lon, la, key, k) {
    }
   })
     .then(result => {
-      LoadtopK(vueThis, lon, la); //显示查询坐标点和地图
+      LoadtopK(vueThis, lon, la, key, k); //显示查询坐标点和地图
       let array = [];
       for(let i=0;i<result.data.length;i++) {
         let temp = {return_id: result.data[i].id, return_lon: result.data[i].lon, return_la: result.data[i].la, return_finds: result.data[i].finds};

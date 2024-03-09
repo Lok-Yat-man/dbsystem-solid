@@ -142,20 +142,21 @@ new Vue({
                 await bstd.loadBSTD(this);
             }
             else if(state === 'topK') {
-              this.switchStatus = 'topK'
+              this.switchStatus = 'topK';
               var lon = this.topk.query.longitude_topk;
               var la = this.topk.query.latitude_topk;
-              await topk.LoadtopK(this,lon,la);
+              var key = this.topk.query.keywords_topk;
+              var k = this.topk.query.k_topk;
+              await topk.LoadtopK(this,lon,la,key,k);
             }
             else if(state === 'topK_UPDATE') {
-              this.switchStatus = 'topK'
+              this.switchStatus = 'topK';
               var lon = this.topk.query.longitude_topk;
               var la = this.topk.query.latitude_topk;
               var key = this.topk.query.keywords_topk;
               var k = this.topk.query.k_topk;
               //await topk.LoadtopK(this, lon, la);
               await topk.PostTopK(this, lon, la, key, k);
-              //await topk.LoadtopK(this,lon,la);
             }
             else{
                 this.switchStatus = state;
