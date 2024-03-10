@@ -29,6 +29,8 @@ class Point {
   /*记录顶点是否存在*/
   public boolean isNull = true;
   public int id;
+  /**加**/
+  public String name;
   public String city; //uk没有city
   public double longitude;
   public double latitude;
@@ -186,6 +188,22 @@ public class topkMain {
       e.printStackTrace();
     }
 
+    /**加 读取Entity名称到顶点中**/
+    /*uk*/
+    try {
+      BufferedReader readEntity = new BufferedReader(new FileReader("app/src/main/resources/static/data/txt/uk/Entity.txt"));
+      String lineOfEntity;
+      while((lineOfEntity = readEntity.readLine()) != null) {
+        String[] numOfE = lineOfEntity.split(":");
+        int Eid = Integer.parseInt(numOfE[0]);
+        if ( numOfE.length > 1 && points[Eid].isNull == false) {
+          points[Eid].name = numOfE[1];
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
 
     /*uk*/
     //初始化图的数据，并将图中顶点关系中的关键字添加到顶点关键字中
@@ -231,7 +249,8 @@ public class topkMain {
       e.printStackTrace();
     }
 
-    String[] inputKeywordAsString = inputKeyword.split(",");
+    /**关键字之间以空格分隔**/
+    String[] inputKeywordAsString = inputKeyword.split(" ");
     //初始化
     for(int zt=0;zt<total;zt++) {
       points[zt].hasKey = new boolean[inputKeywordAsString.length];
@@ -443,15 +462,17 @@ public class topkMain {
         });
 
         /***后台输出结果***/
-        System.out.println("Point: " + Ks.get(i).item1 + "\tLongitude: " + points[Ks.get(i).item1].longitude + "\tLatitude: " + points[Ks.get(i).item1].latitude);
+        System.out.println("Point: " + points[Ks.get(i).item1].name + "\tLongitude: " + points[Ks.get(i).item1].longitude + "\tLatitude: " + points[Ks.get(i).item1].latitude);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", Ks.get(i).item1);
+        /**改 把id里面的内容变为对应id的name**/
+        jsonObject.put("id", points[Ks.get(i).item1].name);
         jsonObject.put("lon", points[Ks.get(i).item1].longitude);
         jsonObject.put("la", points[Ks.get(i).item1].latitude);
 
-        int []finds = new int[inputKeywordAsString.length];
+        String []finds = new String[inputKeywordAsString.length];
         for(int j=0;j<inputKeywordAsString.length;j++) {
-          finds[j] = points[Ks.get(i).item1].recordK.get(j).gap2;
+          /**改 把finds的结点变为结点的name**/
+          finds[j] = points[points[Ks.get(i).item1].recordK.get(j).gap2].name;
         }
 
         jsonObject.put("finds", finds);

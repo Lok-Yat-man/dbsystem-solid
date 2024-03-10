@@ -72,17 +72,17 @@ new Vue({
                 lastKeywords:[]
             },
             spatial_skylines:{
-                loading: false,
-                timeout: false,
                 labelPosition:"right",
                 location:"",
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    longitude: -75.16,
-                    latitude: 39.95,
-                    keywords: 'Restaurants,Chinese'
+                    longitude: -86.09,
+                    latitude: 39.75,
+                    keywords: 'Center'
                 },
+                loading: false,
+                timeout: false,
                 lastKeywords:[]
             },
           // /**加**/
@@ -93,7 +93,7 @@ new Vue({
               query:{
                 longitude_topk: -3.483,
                 latitude_topk: 52.983,
-                keywords_topk: 'birthday,temp',
+                keywords_topk: 'museum painting david',
                 k_topk: 3
               }
             },
@@ -137,12 +137,10 @@ new Vue({
                 this.switchStatus = "KSTC"
                 await kstc.loadKSTC(this);
             }
-            else if (state === 'BSTD_UPDATE') {
-                this.switchStatus = 'spatial_skylines';
-                let longitude = this.spatial_skylines.query.longitude;
-                let latitude = this.spatial_skylines.query.latitude;
-                let keywords = this.spatial_skylines.query.keywords;
-                await bstd.loadBSTD2(this, longitude, latitude, keywords);
+            else if (state === 'spatial_skylines_UPDATE') {
+                this.currentAlgorithm = "spatial_skylines";
+                this.switchStatus = "spatial_skylines";
+                await bstd.LoadBSTD(this);
             }
             else if(state === 'topK') {
               this.switchStatus = 'topK'
@@ -240,20 +238,7 @@ new Vue({
         loadBSTD() {
             this.currentAlgorithm = "spatial_skylines";
             this.switchStatus = "spatial_skylines";
-            this.paramsSwitch("spatial_skylines");
-            let longitude = this.spatial_skylines.query.longitude;
-            let latitude = this.spatial_skylines.query.latitude;
-            let keywords = this.spatial_skylines.query.keywords;
-            bstd.LoadBSTD(this, longitude, latitude, keywords);
-        },
-
-        loadBSTD2() {
-            this.currentAlgorithm = "spatial_skylines";
-            this.switchStatus = "spatial_skylines";
-            this.paramsSwitch("spatial_skylines");
-            let longitude = this.spatial_skylines.query.longitude;
-            let latitude = this.spatial_skylines.query.latitude;
-            bstd.LoadBSTD2(this, longitude, latitude);
+            bstd.LoadBSTD(this);
         },
 
         loadTopK(){
@@ -262,8 +247,11 @@ new Vue({
           this.switchStatus = "topK"
           var lon = this.topk.query.longitude_topk;
           var la = this.topk.query.latitude_topk;
-          topk.LoadtopK(this, lon, la);
-
+          var key = this.topk.query.keywords_topk;
+          var k = this.topk.query.k_topk;
+         // topk.LoadtopK(this, lon, la);
+          /**页面自动加载首次查询结果**/
+          topk.PostTopK(this, lon, la, key, k);
         },
         loadTest(){
             test.testTree(this);
