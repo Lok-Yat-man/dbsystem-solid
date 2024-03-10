@@ -58,7 +58,8 @@ async function LoadtopK(vueThis, lon, la) {
 
 async function LoadResult(vueThis, id, lon, la, finds, key) {
 
-    let inputKeywordAsString = key.split(",");
+    /**关键字之间以空格分隔**/
+    let inputKeywordAsString = key.split(" ");
     let array = [];
     let point_key= [];
     //遍历所有有关键字的点，将点上的关键字聚合起来，不重复显示结点
@@ -88,9 +89,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
     let mhtml;
     if(array.length > 0) {
-      mhtml = '<div class="pointClick_topk_hasKey">' + "id: " + id + '<br>' + "keyword: " + array +'</div>';
+      mhtml = '<div class="pointClick_topk_hasKey">' + "name: " + id + '<br>' + "keyword: " + array +'</div>';
     } else {
-      mhtml = '<div class="pointClick_topk_noKey">' + "id: " + id + '</div>';
+      mhtml = '<div class="pointClick_topk_noKey">' + "name: " + id + '</div>';
     }
 
     let popup = new mapboxgl.Popup({ closeButton: false})
@@ -114,7 +115,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
         y = -1.0 * Math.sqrt(0.003 * 0.003 - x * x).toFixed(10);
       const x1 = lon + x;
       const y1 = la + y;
-      let mhtml1 = '<div class="pointClick_topk_hasKey">' + "id: " + point_key.at(i).s_id + '<br>' + "keyword: " + point_key.at(i).s_key +'</div>';
+      let mhtml1 = '<div class="pointClick_topk_hasKey">' + "name: " + point_key.at(i).s_id + '<br>' + "keyword: " + point_key.at(i).s_key +'</div>';
       let popup1 = new mapboxgl.Popup({ closeButton: false})
         .setHTML(mhtml1)
       const marker2 = new mapboxgl.Marker({ scale: 0.5, type: 'circle', color: '#fbb03b'})
