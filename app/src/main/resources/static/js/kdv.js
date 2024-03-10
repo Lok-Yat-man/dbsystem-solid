@@ -24,13 +24,13 @@ function loadHeatMap(vueThis){
             });
     });
     vueThis.map.on('zoomend', function() {
+        vueThis.map.removeLayer('trees-heat');
         getBounds(vueThis);
         let request = compute(vueThis.kdv);
         axios.post(vueThis.baseUrl + "/kdv/geojson", request)
             .then(function (response) {
                 console.log(response.data);
                 // 添加 GeoJSON 数据源
-                vueThis.map.removeLayer('trees-heat');
                 vueThis.map.removeSource('points-source');
                 vueThis.map.addSource('points-source', {
                     type: 'geojson',
