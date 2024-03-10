@@ -99,7 +99,7 @@ new Vue({
             },
             kdv: {
                 dataFileName: "./cases.csv",
-                kdv_type: 1,
+                kdv_type: 3,
                 num_threads: 1,
                 x_L: 113.8482,
                 x_U: 114.4473,
