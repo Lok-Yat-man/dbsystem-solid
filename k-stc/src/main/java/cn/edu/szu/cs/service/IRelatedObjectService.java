@@ -1,7 +1,5 @@
 package cn.edu.szu.cs.service;
 
-import cn.edu.szu.cs.entity.RelatedObject;
-
 import java.util.List;
 
 /**
@@ -10,15 +8,33 @@ import java.util.List;
  * @date 2023/11/1 22:06
  * @version 1.0
  */
-public interface IRelatedObjectService {
+public interface IRelatedObjectService<T> {
 
-    RelatedObject getById(String id);
+    /**
+     * 通过id获取对象
+     * @param id
+     * @return
+     */
+    T getById(String id);
 
+    /**
+     * 通过ids获取对象
+     * @param ids
+     * @return
+     */
+    List<T> getByIds(List<String> ids);
 
-    List<RelatedObject> getByIds(List<String> ids);
-
+    /**
+     * 通过id获取标签
+     * @param id
+     * @return
+     */
     List<String> getLabelsById(String id);
 
-    List<RelatedObject> getAll();
+    /**
+     * 获取所有对象
+     * @return
+     */
+    List<T> getAll();
 
 }

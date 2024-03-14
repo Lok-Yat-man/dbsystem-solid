@@ -1,7 +1,6 @@
 package cn.edu.szu.cs.service;
 
-import cn.edu.szu.cs.entity.DefaultRelatedObject;
-import cn.edu.szu.cs.entity.RelatedObject;
+import cn.edu.szu.cs.entity.SimpleRelatedObject;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.LineHandler;
 import cn.hutool.core.io.resource.ClassPathResource;
@@ -18,11 +17,11 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @date 2023/11/2 19:13
  */
-public class DefaultRelatedObjectServiceImpl implements IRelatedObjectService<DefaultRelatedObject> {
+public class SimpleRelatedObjectServiceImpl implements IRelatedObjectService<SimpleRelatedObject> {
 
-    private final Map<String, DefaultRelatedObject> objs = new HashMap<>();
+    private final Map<String, SimpleRelatedObject> objs = new HashMap<>();
 
-    public DefaultRelatedObjectServiceImpl() {
+    public SimpleRelatedObjectServiceImpl() {
         InputStream inputStream = new ClassPathResource("objs.txt").getStream();
 
         IoUtil.readLines(
@@ -30,27 +29,21 @@ public class DefaultRelatedObjectServiceImpl implements IRelatedObjectService<De
                 new LineHandler() {
                     @Override
                     public void handle(String line) {
-                        DefaultRelatedObject defaultRelatedObject = JSON.parseObject(line, DefaultRelatedObject.class);
-                        objs.put(defaultRelatedObject.getObjectId(), defaultRelatedObject);
+                        SimpleRelatedObject simpleRelatedObject = JSON.parseObject(line, SimpleRelatedObject.class);
+                        objs.put(simpleRelatedObject.getObjectId(), simpleRelatedObject);
                     }
                 }
         );
-
-
     }
 
     @Override
-    public DefaultRelatedObject getById(String id) {
+    public SimpleRelatedObject getById(String id) {
         return objs.get(id);
     }
 
     @Override
-    public List<DefaultRelatedObject> getByIds(List<String> ids) {
-        return ids.stream()
-                .filter(Objects::nonNull)
-                .map(objs::get)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    public List<SimpleRelatedObject> getByIds(List<String> ids) {
+        return ids.stream().filter(Objects::nonNull).map(objs::get).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Override
@@ -61,7 +54,7 @@ public class DefaultRelatedObjectServiceImpl implements IRelatedObjectService<De
     }
 
     @Override
-    public List<DefaultRelatedObject> getAll() {
+    public List<SimpleRelatedObject> getAll() {
         return new ArrayList<>(objs.values());
     }
 

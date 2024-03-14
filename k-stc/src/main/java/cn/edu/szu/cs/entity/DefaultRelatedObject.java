@@ -3,9 +3,7 @@ package cn.edu.szu.cs.entity;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class DefaultRelatedObject implements Serializable, RelatedObject {
@@ -24,7 +22,14 @@ public class DefaultRelatedObject implements Serializable, RelatedObject {
     public DefaultRelatedObject() {
     }
 
-    public DefaultRelatedObject(String objectId, double[] coordinate, String name, List<String> labels, Map<String, Double> weights) {
+    public DefaultRelatedObject(String objectId, double[] coordinate, String name, List<String> labels) {
+        this.objectId = objectId;
+        this.coordinate = coordinate;
+        this.name = name;
+        this.labels = labels;
+    }
+
+    private DefaultRelatedObject(String objectId, double[] coordinate, String name, List<String> labels, Map<String, Double> weights) {
         this.objectId = objectId;
         this.coordinate = coordinate;
         this.name = name;
@@ -58,8 +63,13 @@ public class DefaultRelatedObject implements Serializable, RelatedObject {
     }
 
     @Override
-    public Double setWeight(String label) {
-        return null;
+    public Double getWeight(List<String> labels) {
+        return labels.stream().mapToDouble(weights::get).filter(Objects::nonNull).sum();
+    }
+
+    @Override
+    public void setWeight(String label, Double weight) {
+        weights.put(label,weight);
     }
 
     @Override
@@ -67,4 +77,16 @@ public class DefaultRelatedObject implements Serializable, RelatedObject {
         return new DefaultRelatedObject(objectId,coordinate,name,labels,weights);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DefaultRelatedObject that = (DefaultRelatedObject) o;
+        return objectId.equals(that.objectId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectId);
+    }
 }

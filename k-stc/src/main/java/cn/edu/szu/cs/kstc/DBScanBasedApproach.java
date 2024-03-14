@@ -1,10 +1,10 @@
 package cn.edu.szu.cs.kstc;
 
 import cn.edu.szu.cs.config.KSTCConfig;
+import cn.edu.szu.cs.ds.irtree.IRTree;
 import cn.edu.szu.cs.entity.KSTCQuery;
 import cn.edu.szu.cs.entity.KSTCResult;
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.irtree.IRTree;
 import cn.edu.szu.cs.ivtidx.InvertedIndex;
 import cn.edu.szu.cs.strategy.CacheStrategy;
 import cn.edu.szu.cs.util.CommonUtil;
@@ -82,12 +82,14 @@ public class DBScanBasedApproach<T extends RelatedObject> implements TopKSpatial
         // sList
         Set<T> noises = new HashSet<>();
         // sort objs ascent by distance
-        SortedSet<T> sList = invertedIndex.getSList(
+        SortedMap<T, Boolean> sList = invertedIndex.getSList(
                 query.getKeywords(),
                 query.getCoordinate(),
                 query.getMaxDistance(),
                 Comparator.comparingDouble(a -> CommonUtil.calculateDistance(query.getCoordinate(), a.getCoordinate()))
         );
+        // sort objs descent by weight
+        SortedMap<T, Boolean> tList = invertedIndex.getTList(query.getKeywords());
 
         List<Set<T>> rList = new ArrayList<>(query.getK());
 
@@ -96,7 +98,7 @@ public class DBScanBasedApproach<T extends RelatedObject> implements TopKSpatial
 
         while (!sList.isEmpty() && rList.size() < query.getK() && bound < t) {
             // get the nearest obj
-            T obj = sList.;
+            T obj = sList.first();
             Set<T> cluster = getCluster(obj, query, sList, noises);
             if (!cluster.isEmpty()) {
                 rList.add(cluster);
@@ -120,7 +122,8 @@ public class DBScanBasedApproach<T extends RelatedObject> implements TopKSpatial
 
     private Set<T> getCluster(T p,
                               KSTCQuery q,
-                              SortedSet<T> sList,
+                              SortedMap<T, Boolean> sList,
+                              SortedMap<T, Boolean> tList,
                               Set<T> noises) {
 
         List<T> neighbors = irTree.rangeQuery(q.getKeywords(), p.getCoordinate(), q.getEpsilon());
@@ -134,7 +137,8 @@ public class DBScanBasedApproach<T extends RelatedObject> implements TopKSpatial
         neighbors.remove(p);
         while (!neighbors.isEmpty()) {
             T neighbor = neighbors.remove(0);
-            sList.remove(neighbor);
+            sList.put(neighbor,Boolean.FALSE);
+
             List<T> neighborsTmp = irTree.rangeQuery(q.getKeywords(), neighbor.getCoordinate(), q.getEpsilon());
             if (neighborsTmp.size() >= q.getMinPts()) {
                 for (T obj : neighborsTmp) {

@@ -7,8 +7,6 @@ import java.util.List;
  */
 public interface WeightCalculationStrategy<T> {
 
-    Double calculate(T obj);
-
-    Double calculate(List<T> objs);
+    void calculate(List<T> objects);
 
 }

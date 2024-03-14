@@ -1,20 +1,13 @@
 package cn.edu.szu.cs.ivtidx;
 
 
+import cn.edu.szu.cs.entity.DefaultRelatedObject;
 import cn.edu.szu.cs.service.IRelatedObjectService;
 import cn.edu.szu.cs.entity.RelatedObject;
-import cn.edu.szu.cs.util.CommonUtil;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.resource.ClassPathResource;
-import cn.hutool.core.lang.Tuple;
-import com.alibaba.fastjson.JSONObject;
 import lombok.NonNull;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 /**
  * DefaultLeafInvertedIndex
@@ -23,18 +16,20 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @date 2023/10/17 21:26
  */
-public class DefaultInvertedIndex implements InvertedIndex<RelatedObject> {
+public class DefaultInvertedIndex implements InvertedIndex<DefaultRelatedObject> {
 
-    private Map<String, Set<String>> map;
+    private final Map<String, Set<String>> map = new HashMap<>();
 
-    private IRelatedObjectService relatedObjectService;
+    private final IRelatedObjectService<DefaultRelatedObject> relatedObjectService;
 
-
-    public DefaultInvertedIndex(@NonNull IRelatedObjectService relatedObjectService) {
+    public DefaultInvertedIndex(@NonNull IRelatedObjectService<DefaultRelatedObject> relatedObjectService) {
         this.relatedObjectService = relatedObjectService;
-        map = new ConcurrentHashMap<>();
-        List<RelatedObject> relatedObjects = relatedObjectService.getAll();
 
+        List<DefaultRelatedObject> relatedObjects = relatedObjectService.getAll();
+
+        if (CollUtil.isEmpty(relatedObjects)) {
+            throw new IllegalArgumentException("relatedObjects is empty");
+        }
 
         for (RelatedObject relatedObject : relatedObjects) {
             List<String> labels = relatedObject.getLabels();
@@ -45,35 +40,28 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject> {
                 }
             }
         }
-
-        for (RelatedObject relatedObject : relatedObjects) {
-
-            List<String> labels = relatedObject.getLabels();
-            Map<String,Double> labelCnt = new HashMap<>(labels.size());
-            for (String label : labels) {
-                labelCnt.put(label,labelCnt.getOrDefault(label,0.0)+1);
-
-
-
-            }
-
-
-
-        }
-
     }
 
     @Override
-    public synchronized SortedSet<RelatedObject> getSList(
+    public synchronized SortedMap<DefaultRelatedObject, Boolean> getSList(
             @NonNull List<String> keywords,
             double[] coordinate,
             double maxDistance,
-            @NonNull Comparator<RelatedObject> comparator) {
-        SortedSet<RelatedObject> relatedObjects = new TreeSet<>(comparator);
-        if (CollUtil.isEmpty(keywords) || coordinate == null || coordinate.length != 2 || maxDistance <= 0) {
+            @NonNull Comparator<DefaultRelatedObject> comparator) {
+
+        SortedMap<DefaultRelatedObject, Boolean> relatedObjects = new TreeMap<>(comparator);
+        if (CollUtil.isEmpty(keywords) || coordinate == null || coordinate.length > 2 || maxDistance <= 0) {
             return relatedObjects;
         }
 
+        getObjIds(keywords).stream()
+                .map(relatedObjectService::getById)
+                .filter(Objects::nonNull)
+                .forEach(obj -> relatedObjects.put(obj, Boolean.TRUE));
+        return relatedObjects;
+    }
+
+    private Set<String> getObjIds(List<String> keywords) {
         Set<String> objIds = null;
         for (int i = 0; i < keywords.size(); i++) {
             Set<String> set = map.get(keywords.get(i));
@@ -90,28 +78,22 @@ public class DefaultInvertedIndex implements InvertedIndex<RelatedObject> {
             }
             objIds.retainAll(set);
         }
-
-        if (CollUtil.isEmpty(objIds)) {
-            return relatedObjects;
-        }
-
-        relatedObjects.addAll(
-                objIds.stream()
-                        .filter(Objects::nonNull)
-                        .map(relatedObjectService::getById)
-                        .filter(Objects::nonNull)
-                        .filter(relatedObject -> CommonUtil.calculateDistance(relatedObject.getCoordinate(), coordinate) < maxDistance)
-                        .collect(Collectors.toList())
-        );
-        return relatedObjects;
+        return objIds;
     }
 
     @Override
-    public SortedSet<RelatedObject> getTList(List<String> keywords) {
-
-
-
-        return null;
+    public SortedMap<DefaultRelatedObject, Boolean> getTList(List<String> keywords) {
+        SortedMap<DefaultRelatedObject, Boolean> relatedObjects = new TreeMap<>(new Comparator<DefaultRelatedObject>() {
+            @Override
+            public int compare(DefaultRelatedObject o1, DefaultRelatedObject o2) {
+                return o2.getWeight(keywords).compareTo(o1.getWeight(keywords));
+            }
+        });
+        getObjIds(keywords).stream()
+                .map(relatedObjectService::getById)
+                .filter(Objects::nonNull)
+                .forEach(obj -> relatedObjects.put(obj, Boolean.TRUE));
+        return relatedObjects;
     }
 
     @Override

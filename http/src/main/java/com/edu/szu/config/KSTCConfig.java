@@ -1,5 +1,6 @@
 package com.edu.szu.config;
 
+import cn.edu.szu.cs.entity.DefaultRelatedObject;
 import cn.edu.szu.cs.entity.RelatedObject;
 import cn.edu.szu.cs.ds.irtree.IRTree;
 import cn.edu.szu.cs.ds.irtree.SimpleIRTree;
@@ -67,41 +68,41 @@ public class KSTCConfig {
      * @return
      */
     @Bean
-    public InvertedIndex<RelatedObject> invertedIndex(IRelatedObjectService relatedObjectService){
+    public InvertedIndex<DefaultRelatedObject> invertedIndex(IRelatedObjectService relatedObjectService){
         return new DefaultInvertedIndex(relatedObjectService);
     }
-
-    /**
-     * kstc alg
-     * @return
-     */
-    @Bean("kstc")
-    public KSTC<RelatedObject> kstc(IRTree<RelatedObject> irTree, InvertedIndex<RelatedObject> invertedIndex){
-        return new SimpleKSTC<>(irTree,invertedIndex);
-    }
-
-    /**
-     * kstc alg
-     * @return
-     */
-    @Bean("kstc2")
-    public KSTC<RelatedObject> kstc2(IRelatedObjectService relatedObjectService){
-        return new SimpleKSTC2<>(relatedObjectService);
-    }
-
-
-    /**
-     * kstc alg
-     * @return
-     */
-    @Bean("kstc3")
-    public KSTC<RelatedObject> kstc3(IRelatedObjectService relatedObjectService){
-        return new SimpleKSTC3<>(relatedObjectService);
-    }
-
-    @Bean
-    public KstcService kstcService(@Qualifier("kstc2") @Autowired KSTC<RelatedObject> kstc){
-        return new KstcServiceImpl(kstc);
-    }
+    //
+    ///**
+    // * kstc alg
+    // * @return
+    // */
+    //@Bean("kstc")
+    //public KSTC<RelatedObject> kstc(IRTree<RelatedObject> irTree, InvertedIndex<RelatedObject> invertedIndex){
+    //    return new SimpleKSTC<>(irTree,invertedIndex);
+    //}
+    //
+    ///**
+    // * kstc alg
+    // * @return
+    // */
+    //@Bean("kstc2")
+    //public KSTC<RelatedObject> kstc2(IRelatedObjectService relatedObjectService){
+    //    return new SimpleKSTC2<>(relatedObjectService);
+    //}
+    //
+    //
+    ///**
+    // * kstc alg
+    // * @return
+    // */
+    //@Bean("kstc3")
+    //public KSTC<RelatedObject> kstc3(IRelatedObjectService relatedObjectService){
+    //    return new SimpleKSTC3<>(relatedObjectService);
+    //}
+    //
+    //@Bean
+    //public KstcService kstcService(@Qualifier("kstc2") @Autowired KSTC<RelatedObject> kstc){
+    //    return new KstcServiceImpl(kstc);
+    //}
 
 }

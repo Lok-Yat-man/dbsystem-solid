@@ -74,6 +74,15 @@ public class SimpleRelatedObject implements Serializable, RelatedObject {
     }
 
     @Override
+    public Double getWeight(List<String> labels) {
+        return 0.0;
+    }
+    @Override
+    public void setWeight(String label, Double weight) {
+
+    }
+
+    @Override
     public RelatedObject clone() {
         return new SimpleRelatedObject(objectId, coordinate, name, labels);
     }

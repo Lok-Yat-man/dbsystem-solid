@@ -22,8 +22,15 @@ public interface RelatedObject {
 
    Double getWeight(String label);
 
-   Double setWeight(String label);
+   Double getWeight(List<String> labels);
+
+   void setWeight(String label,Double weight);
 
    RelatedObject clone();
 
+   @Override
+   int hashCode();
+
+   @Override
+   boolean equals(Object obj);
 }

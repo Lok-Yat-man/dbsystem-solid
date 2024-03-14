@@ -1,6 +1,7 @@
 package cn.edu.szu.cs.entity;
 
-import cn.edu.szu.cs.util.CommonAlgorithm;
+
+import cn.edu.szu.cs.util.CommonUtil;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Point;
