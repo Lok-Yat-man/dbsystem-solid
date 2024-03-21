@@ -66,7 +66,7 @@ public class BSTD {
 
         double lon = queries.get(0).getLocation().getLongitude();
         double lat = queries.get(0).getLocation().getLatitude();
-        Rectangle B = Geometries.rectangle(lon - 0.5, lat - 0.5, lon + 0.5, lat + 0.5);
+        Rectangle B = Geometries.rectangle(lon - 0.5, lat - 0.05, lon + 0.5, lat + 0.05);
 
         // MinHeap H=∅
         // Add root of IRTree to H, ∑(qi∈Q)〖st(qi,p)〗
@@ -225,19 +225,19 @@ public class BSTD {
             double w = w(query, (NonLeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 10;
+            return dist / w;
         } else if (e instanceof LeafDefault) {
             double w = w(query, (LeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 10;
+            return dist / w;
         } else if (e instanceof EntryDefault) {
             double w = w(query, (EntryDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 10;
+            return dist / w;
         }
-        return dist / 10;
+        return dist;
     }
 
     public double w(Query query, NonLeafDefault<String, Geometry> node) {
@@ -258,7 +258,7 @@ public class BSTD {
                 weight *= smoothingFactor;
             }
         }
-        weight = Math.pow(weight, 1.0 / query.getKeywords().size());
+        weight = Math.pow(weight, 1.0  / query.getKeywords().size());
         return weight;
     }
 

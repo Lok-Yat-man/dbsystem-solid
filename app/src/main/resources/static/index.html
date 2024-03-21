@@ -179,7 +179,7 @@
 
         </div>
 
-        <div
+        <div v-loading.lock="spatial_skylines.loading"
                 class="params" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
             <h3 class="params_header">BSTD</h3>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
