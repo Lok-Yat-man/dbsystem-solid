@@ -37,7 +37,7 @@ public class BSTD {
 
     private InvertedIndex<RelevantObject> invertedIndex;
 
-    private final static Double smoothingFactor = 0.02;
+    private final static Double smoothingFactor = 0.03;
 
     public BSTD() {
 
@@ -225,19 +225,19 @@ public class BSTD {
             double w = w(query, (NonLeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w;
+            return dist / w / 5;
         } else if (e instanceof LeafDefault) {
             double w = w(query, (LeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w;
+            return dist / w / 5;
         } else if (e instanceof EntryDefault) {
             double w = w(query, (EntryDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w;
+            return dist / w / 5;
         }
-        return dist;
+        return dist / 5;
     }
 
     public double w(Query query, NonLeafDefault<String, Geometry> node) {
