@@ -26,22 +26,20 @@ public class BSTDTest {
         // x1 = -120.09514 y1 = 27.555126
         // x2 = -73.200455 y2 = 53.679195
 
-/*
         Query query1 = Query.create(
                 Coordinate.create(
-                        -74.16256713867188,
-                        39.94322204589844
+                        -86.12,
+                        39.76
                 ),
-                Arrays.asList("Restaurants")
+                Arrays.asList("Rooms","Bes")
                 //Arrays.asList("Water")
         );
-*/
         Query query2 = Query.create(
                 Coordinate.create(
                         -86.09,
                         39.75
                 ),
-                Arrays.asList("Car")
+                Arrays.asList("Fast","Breakfast")
         );
 
         //queries.add(query1);
@@ -66,8 +64,8 @@ public class BSTDTest {
 }
 
  /*
- Philadelphia       -72.10 39.56
- Tampa              -82.47 27.97
+ Philadelphia       -75.16 39.95
+ Tampa              -82.45 27.95
  Indianapolis       -86.09 39.75
  St.Louis           -90.22 38.63
  Nashville          -86.79 36.16

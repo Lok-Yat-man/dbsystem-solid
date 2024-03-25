@@ -7,9 +7,10 @@ async function LoadBSTD(vueThis) {
     let longitude = vueThis.spatial_skylines.query.longitude;
     let latitude = vueThis.spatial_skylines.query.latitude;
 
-    let objectData = await loadData(vueThis);
-
+    vueThis.spatial_skylines.query.keywords = vueThis.spatial_skylines.query.keywords.replace(/\s/g,"");
     vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
+
+    let objectData = await loadData(vueThis);
 
     paintMap(vueThis, longitude, latitude);
 
@@ -44,7 +45,7 @@ function paintMap(vueThis, longitude, latitude) {
         container: 'map', // container id
         style: vueThis.mapStyle,
         center: [longitude, latitude],
-        zoom: 10 // 放大级别
+        zoom: 13 // 放大级别
     });
 }
 
@@ -74,24 +75,25 @@ async function paintPoints(vueThis, size) {
         });
 
         for (let i = 0; i < size; ++i) {
+            let color = utils.getColor(i, size);
             vueThis.map.addLayer({
                 id: 'layer' + i,
                 type: 'circle',
                 source: 'points-source',
                 filter: ['==', 'skylineId', "" + i],
                 paint: {
-                    'circle-radius': 5,
-                    'circle-color': utils.getColor(i, size),
+                    'circle-radius': 5.0,
+                    'circle-color': color,
                     'circle-opacity': 0.7,
                 },
             });
-            layerPopup(i, vueThis);
+            layerPopup(i, vueThis, color);
         }
     });
 }
 
 // 添加功能：点击Skyline点可以展示详细信息
-function layerPopup(i, vueThis) {
+function layerPopup(i, vueThis, color) {
     vueThis.map.on('click', 'layer' + i, function (e) {
         let coordinates = e.features[0 ].geometry.coordinates.slice();
         let labels = JSON.parse(e.features[0].properties.labels);
@@ -123,10 +125,41 @@ function layerPopup(i, vueThis) {
         ).setLngLat(coordinates)
             .addTo(vueThis.map);
     });
+
+    // vueThis.map.on('mouseenter', 'layer' + i, () => {
+    //     vueThis.map.getCanvas().style.cursor = 'pointer';
+    // });
+    // vueThis.map.on('mouseleave', 'layer' + i, () => {
+    //     vueThis.map.getCanvas().style.cursor = '';
+    // });
     vueThis.map.on('mouseenter', 'layer' + i, () => {
+        vueThis.map.removeLayer('layer' + i);
+        vueThis.map.addLayer({
+            id: 'layer' + i,
+            type: 'circle',
+            source: 'points-source',
+            filter: ['==', 'skylineId', "" + i],
+            paint: {
+                'circle-radius': 8.0,
+                'circle-color': color,
+                'circle-opacity': 0.7,
+            },
+        });
         vueThis.map.getCanvas().style.cursor = 'pointer';
     });
     vueThis.map.on('mouseleave', 'layer' + i, () => {
+        vueThis.map.removeLayer('layer' + i);
+        vueThis.map.addLayer({
+            id: 'layer' + i,
+            type: 'circle',
+            source: 'points-source',
+            filter: ['==', 'skylineId', "" + i],
+            paint: {
+                'circle-radius': 5.0,
+                'circle-color': color,
+                'circle-opacity': 0.7,
+            },
+        });
         vueThis.map.getCanvas().style.cursor = '';
     });
 }
