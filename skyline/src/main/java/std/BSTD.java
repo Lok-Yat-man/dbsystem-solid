@@ -19,11 +19,9 @@ import ivtidx.InvertedIndex;
 import lombok.Getter;
 import service.DefaultRelevantObjectServiceImpl;
 import service.IRelevantObjectService;
-import util.CommonAlgorithm;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.Double.min;
 import static java.lang.Double.max;
@@ -63,10 +61,7 @@ public class BSTD {
             throw new RuntimeException("RTree not exists!");
         }
         Node<String, Geometry> rootNode = rootOptional.get();
-
-        double lon = queries.get(0).getLocation().getLongitude();
-        double lat = queries.get(0).getLocation().getLatitude();
-        Rectangle B = Geometries.rectangle(lon - 0.5, lat - 0.5, lon + 0.5, lat + 0.5);
+        Rectangle B = Geometries.rectangle(-180d, 0d, 179d, 90d);
 
         // MinHeap H=∅
         // Add root of IRTree to H, ∑(qi∈Q)〖st(qi,p)〗
@@ -80,23 +75,26 @@ public class BSTD {
         });
         minHeap.add(rootNode);
 
+        int countEmpty = 0, countCore = 0, countNon = 0;
+
         while (!minHeap.isEmpty()) {
             Node<String, Geometry> e = minHeap.poll();
-            if (e.geometry().intersects(B)) {
+
+            if (e.geometry().mbr().intersects(B)) {
                 // e is a leaf node
                 if (e instanceof LeafDefault) {
+
+                    //System.out.println(e.getClass().getName());
+
                     if (S.isEmpty()) {
                         // Add e to S
                         // B = B ∩ Ru(e)
                         List<Entry<String, Geometry>> entries = ((LeafDefault<String, Geometry>) e).entries();
                         for (Query query : queries) {
                             for (Entry<String, Geometry> entry : entries) {
-                                boolean dominant = isDominant(entry, B, queries);
-                                if (!dominant) {
+                                List<String> weightKey = invertedIndex.getValue(entry.value()).getWeightKey();
+                                if (!Collections.disjoint(weightKey, query.getKeywords()))
                                     S.add(entry);
-                                    Rectangle Rue = generateSkylinesMBR(S, queries);
-                                    B = getIntersectMBR(B, Rue);
-                                }
                             }
                         }
                         if (S.isEmpty()) {
@@ -104,6 +102,8 @@ public class BSTD {
                         }
                         Rectangle Rue = generateSkylinesMBR(S, queries);
                         B = getIntersectMBR(B, Rue);
+
+                        //System.out.println("countEmpty" + (++countEmpty));
 
                     } else {
                         // for each p ∈ S
@@ -115,23 +115,30 @@ public class BSTD {
                                 continue;
                             }
                             S.add(ee);
-                            Rectangle Ruee = generateUncertaintyMBR(ee, queries);
-                            B = getIntersectMBR(B, Ruee);
+                            Rectangle Rue = generateUncertaintyMBR(ee, queries);
+                            B = getIntersectMBR(B, Rue);
                             uncertainty = generateSkylinesMBR(S, queries);
+
+                            //System.out.println(B);
                         }
+
+                        //System.out.println("countCore" + (++countCore));
+
                     }
                 }
                 // e is a non-leaf node
                 else if (e instanceof NonLeafDefault) {
 
                     for (Node<String, Geometry> ee : ((NonLeafDefault<String, Geometry>) e).children()) {
-                        if (ee.geometry().intersects(B)) {
+                        if (ee.geometry().mbr().intersects(B)) {
                             minHeap.add(ee);
                         }
                     }
+                    //System.out.println("countNon" + (++countNon));
                 }
             }
         }
+        //System.out.println(B);
 
         List<RelevantObject> relevantObjects = S.stream()
                 .map(Entry::value)
@@ -140,7 +147,6 @@ public class BSTD {
 
         return relevantObjects;
     }
-
 
     public Rectangle getIntersectMBR(Rectangle r1, Rectangle r2) {
         return Geometries.rectangle(max(r1.x1(), r2.x1()), max(r1.y1(), r2.y1()),
@@ -153,6 +159,8 @@ public class BSTD {
         Rectangle MBR = Geometries.rectangle(x, y, x, y);
 
         for (Query query : queries) {
+            double qx = query.getLocation().getLongitude();
+            double qy = query.getLocation().getLatitude();
             double radius = 0;
             if (e instanceof NonLeafDefault) {
                 double st = st((NonLeafDefault<String, Geometry>) e, query);
@@ -170,16 +178,7 @@ public class BSTD {
                     return Geometries.rectangle(-180d, 0d, 179d, 90d);
                 radius = st;
             }
-
-            Coordinate llCoordinate = CommonAlgorithm.getLLCoordinate(query.getLocation(), radius);
-            Coordinate ruCoordinate = CommonAlgorithm.getRUCoordinate(query.getLocation(), radius);
-            try {
-                MBR = MBR.add(Geometries.rectangle(
-                        llCoordinate.getLongitude(), llCoordinate.getLatitude(),
-                        ruCoordinate.getLongitude(), ruCoordinate.getLatitude()));
-            } catch (IllegalArgumentException ex) {
-                ex.printStackTrace();
-            }
+            MBR = MBR.add(Geometries.rectangle(qx - radius, qy - radius, qx + radius, qy + radius));
         }
         return MBR;
     }
@@ -217,27 +216,25 @@ public class BSTD {
         double logE = e.geometry().mbr().x1();
         double latE = e.geometry().mbr().y1();
 
-        Coordinate coordinateQ = Coordinate.create(logQ, latQ);
-        Coordinate coordinateE = Coordinate.create(logE, latE);
-        double dist = CommonAlgorithm.calculateDistance(coordinateE, coordinateQ);
-//        double dist = Math.sqrt(GeometryUtil.distanceSquared(logQ, latQ, logE, latE));
+        //double dist = CommonAlgorithm.calculateDistance(coordinateE, coordinateQ);
+        double dist = Math.sqrt(GeometryUtil.distanceSquared(logQ, latQ, logE, latE));
         if (e instanceof NonLeafDefault) {
             double w = w(query, (NonLeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 10;
+            return dist / w;
         } else if (e instanceof LeafDefault) {
             double w = w(query, (LeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 10;
+            return dist / w;
         } else if (e instanceof EntryDefault) {
             double w = w(query, (EntryDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 10;
+            return dist / w;
         }
-        return dist / 10;
+        return dist;
     }
 
     public double w(Query query, NonLeafDefault<String, Geometry> node) {

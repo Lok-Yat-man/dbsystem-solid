@@ -211,8 +211,7 @@ public class topkMain {
     graph.pointNum = total;
     graph.pointIsNull = new boolean[graph.pointNum];
     graph.tag = new int[graph.pointNum];
-    /**把5000改为1000**/
-    graph.neighbors = new int[graph.pointNum][1000];
+    graph.neighbors = new int[graph.pointNum][5000];
     graph.inDegree = new int[graph.pointNum];
     graph.isRoot = new boolean[graph.pointNum];
     for(int zt=0;zt<graph.pointNum;zt++) {
@@ -401,37 +400,11 @@ public class topkMain {
 //      }
 //    });
 //    if(testTotal <= Qk) {
-//      /**加**/
-//      JSONObject jsonObject = new JSONObject();
-//      jsonObject.put("id", -1);
-//      jsonObject.put("lon", 0);
-//      jsonObject.put("la", 0);
-//      jsonObject.put("finds", testTotal);
-//      jsonArray.add(jsonObject);
-//
 //      System.out.println("The input k is too large, the actual size of k is: " + testTotal);
 //    } else {
 //      System.out.println("\nResult of the top-" + Qk + " relevant semantic place retrieval is: \n");
 //      for(int i=0;i<Qk;i++) {
 //        System.out.println("Point: " + graph.FindPoint.get(i).item1 + "\tLongitude: " + points[graph.FindPoint.get(i).item1].longitude + "\tLatitude: " + points[graph.FindPoint.get(i).item1].latitude);
-//
-//        /**加**/
-//        JSONObject jsonObject = new JSONObject();
-//        /**改 把id里面的内容变为对应id的name**/
-//        jsonObject.put("id", points[graph.FindPoint.get(i).item1].name);
-//        jsonObject.put("lon", points[graph.FindPoint.get(i).item1].longitude);
-//        jsonObject.put("la", points[graph.FindPoint.get(i).item1].latitude);
-//
-//        String []finds = new String[inputKeywordAsString.length];
-//        for(int j=0;j<inputKeywordAsString.length;j++) {
-//          /**改 把finds的结点变为结点的name**/
-//          finds[j] = points[points[graph.FindPoint.get(i).item1].recordK.get(j).gap2].name;
-//        }
-//
-//        jsonObject.put("finds", finds);
-//
-//        jsonArray.add(jsonObject);
-//
 //      }
 //    }
 
@@ -490,7 +463,6 @@ public class topkMain {
 
         /***后台输出结果***/
         System.out.println("Point: " + points[Ks.get(i).item1].name + "\tLongitude: " + points[Ks.get(i).item1].longitude + "\tLatitude: " + points[Ks.get(i).item1].latitude);
-
         JSONObject jsonObject = new JSONObject();
         /**改 把id里面的内容变为对应id的name**/
         jsonObject.put("id", points[Ks.get(i).item1].name);
@@ -500,7 +472,7 @@ public class topkMain {
         String []finds = new String[inputKeywordAsString.length];
         for(int j=0;j<inputKeywordAsString.length;j++) {
           /**改 把finds的结点变为结点的name**/
-          finds[j] = points[ points[Ks.get(i).item1] .recordK.get(j).gap2].name;
+          finds[j] = points[points[Ks.get(i).item1].recordK.get(j).gap2].name;
         }
 
         jsonObject.put("finds", finds);
@@ -535,10 +507,8 @@ public class topkMain {
 //      } catch (IOException e) {
 //        e.printStackTrace();
 //      }
-
-      //
-   }
-
+    }
+    //
     System.out.println("finished!");
     return jsonArray;
   }
