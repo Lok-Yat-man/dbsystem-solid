@@ -14,9 +14,10 @@ new Vue({
     data(){
         return {
             baseUrl: "http://localhost:8080",
-            mapStyle: "./js/mapstyle/style.json",
+            // mapStyle: "./js/mapstyle/style.json",
+            mapStyle: "./js/mapstyle/dark-purple.json",
             // mapStyle: "mapbox://styles/mapbox/basic-v9",
-            // mapStyle: "mapbox://styles/mapbox/dark-v9",
+            // mapStyle: "mapbox://styles/mapbox/dark-v11",
             // mapStyle: "mapbox://styles/mapbox/navigation-guidance-night-v2",
             // mapStyle: "mapbox://styles/mapbox/navigation-preview-night-v2",
             // mapStyle: "mapbox://styles/mapbox/traffic-night-v2",
