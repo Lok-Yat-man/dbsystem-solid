@@ -211,7 +211,7 @@ public class topkMain {
     graph.pointNum = total;
     graph.pointIsNull = new boolean[graph.pointNum];
     graph.tag = new int[graph.pointNum];
-    graph.neighbors = new int[graph.pointNum][5000];
+    graph.neighbors = new int[graph.pointNum][1000];
     graph.inDegree = new int[graph.pointNum];
     graph.isRoot = new boolean[graph.pointNum];
     for(int zt=0;zt<graph.pointNum;zt++) {
