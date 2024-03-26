@@ -9,9 +9,9 @@ var current = null;
 async function LoadtopK(vueThis, lon, la, key, k) {
   vueThis.map = new mapboxgl.Map({
     container: 'map', // container id
-    style: 'mapbox://styles/mapbox/dark-v11',
+    style: vueThis.mapStyle,
     center: [lon, la],
-    zoom: 8
+    zoom: 5
   });
   // const marker1 = new mapboxgl.Marker({ scale: 0.5}) /**使用draggable可以拖动顶点**/
   //     .setLngLat([12.554729, 55.70651])
@@ -57,7 +57,7 @@ async function LoadtopK(vueThis, lon, la, key, k) {
           '#223b53',
           '4',
           '#e55e5e',
-          '#032885'
+          '#be6fe3'
         ],
         'circle-opacity': 0.7,
       }
