@@ -252,7 +252,7 @@ new Vue({
           var k = this.topk.query.k_topk;
          // topk.LoadtopK(this, lon, la);
           /**页面自动加载首次查询结果**/
-          topk.PostTopK(this, lon, la, key, k);
+          topk.StarLoadtopK(this, lon, la, key, k);
         },
         loadTest(){
             test.testTree(this);

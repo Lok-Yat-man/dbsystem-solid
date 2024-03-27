@@ -482,7 +482,7 @@ public class topkMain {
 
 
       //将检索到的结果写入topk.json文件
-//      File js1 = new  File("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/geojson/topk.json");
+//      File js1 = new  File("app/src/main/resources/static/data/geojson/topk.json");
 //      try {
 //        if (!js1.exists()) {
 //          js1.createNewFile();
@@ -492,7 +492,7 @@ public class topkMain {
 //        writeMap.write("{\"type\": \"FeatureCollection\", \"features\": [\n");
 //        writeMap.flush();
 //        for(int i=0;i<Qk;i++) {
-//          String temp = "{\"type\": \"Feature\", \"properties\": {\"id\": \"" + Ks.get(i).item1 + "\"}, \"geometry\": {\"type\": \"Point\", \"coordinates\": [" + points[Ks.get(i).item1].longitude + ", " + points[Ks.get(i).item1].latitude + "]}}";
+//          String temp = "{\"type\": \"Feature\", \"properties\": {\"id\": \"" + points[Ks.get(i).item1].name + "\"}, \"geometry\": {\"type\": \"Point\", \"coordinates\": [" + points[Ks.get(i).item1].longitude + ", " + points[Ks.get(i).item1].latitude + "]}}";
 //          if(i != Qk -1) {
 //            temp += ",\n";
 //          } else {
