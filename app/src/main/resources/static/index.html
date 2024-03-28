@@ -249,6 +249,31 @@
 
         </el-form>
       </div>
+
+        <div class="params" v-if="switchStatus === 'topK_yago'">
+        <h3 style="color: rgb(196, 98, 102); margin-left: 20px" >top_k params: </h3>
+        <el-form :label-position="topk_yago.labelPosition" label-width=" 100px" :model="topk_yago" >
+          <el-form-item label="Longitude" >
+            <input v-model="topk_yago.query.longitude_yago_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px" ></input>
+          </el-form-item>
+          <el-form-item label="Latitude">
+            <input v-model="topk_yago.query.latitude_yago_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          </el-form-item>
+          <el-form-item label="Keywords">
+            <input v-model="topk_yago.query.keywords_yago_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          </el-form-item>
+          <el-form-item label="K">
+            <input v-model="topk_yago.query.k_yago_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          </el-form-item>
+
+          <div class="params_confirm">
+            <div class="confirm_button" @click="paramsSwitch('topK_yago_UPDATE')" >
+              <span class="confirm_label">confirm</span>
+            </div>
+          </div>
+
+        </el-form>
+      </div>
     </div>
 
     <img src="./img/sidebar/btn-fold.png" alt="switch" @click="sideBarSwitch('sideBar','sideBarSwitch','sideIn','sideOut','switchIn','switchOut', null)" id="sideBarSwitch" class="switchOut" style="cursor: pointer">
@@ -291,6 +316,7 @@
                     <el-submenu index="1-4">
                         <template slot="title">Top-k Relevant Retrieval</template>
                         <el-menu-item index="1-4-1"  @click="loadTopK()">uk</el-menu-item>
+                         <el-menu-item index="1-4-2"  @click="loadTopK_yago()">yago</el-menu-item>
                     </el-submenu>
                 </el-submenu>
                 <el-submenu index="2">

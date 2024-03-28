@@ -3,6 +3,7 @@ import kdv from "./kdv.js";
 import kstc from "./kstc.js";
 import test from "./test.js";
 import topk from "./topk.js";
+import topk_yago from "./topk_yago.js";
 import bstd from "./bstd.js";
 // import { Loading } from './environment/elementUI'
 
@@ -98,6 +99,17 @@ new Vue({
                 k_topk: 3
               }
             },
+            topk_yago: {
+              labelPosition:"right",
+              location:"",
+              layerLoaded: 0,
+              query:{
+                longitude_yago_topk: -3.483,
+                latitude_yago_topk: 52.983,
+                keywords_yago_topk: 'museum painting david',
+                k_yago_topk: 3
+              }
+            },
             kdv: {
                 dataFileName: "./cases.csv",
                 kdv_type: 3,
@@ -158,6 +170,21 @@ new Vue({
               //await topk.LoadtopK(this, lon, la);
               await topk.PostTopK(this, lon, la, key, k);
               //await topk.LoadtopK(this,lon,la);
+            }
+            else if(state === 'topK_yago') {
+              this.switchStatus = 'topK_yago'
+              var lon = this.topk_yago.query.longitude_yago_topk;
+              var la = this.topk_yago.query.latitude_yago_topk;
+              await topk_yago.LoadtopK_yago(this,lon,la);
+            }
+            else if(state === 'topK_yago_UPDATE') {
+              this.switchStatus = 'topK_yago'
+              var lon = this.topk_yago.query.longitude_yago_topk;
+              var la = this.topk_yago.query.latitude_yago_topk;
+              var key = this.topk_yago.query.keywords_yago_topk;
+              var k = this.topk_yago.query.k_yago_topk;
+              //await topk_yago.PostTopK(this, lon, la, key, k);
+
             }
             else{
                 this.switchStatus = state;
@@ -254,6 +281,18 @@ new Vue({
           /**页面自动加载首次查询结果**/
           topk.StarLoadtopK(this, lon, la, key, k);
         },
+
+        loadTopK_yago() {
+          this.currentAlgorithm = "topK_yago";
+          this.paramsSwitch('topK_yago');
+          this.switchStatus = "topK_yago"
+          var lon = this.topk.query.longitude_topk;
+          var la = this.topk.query.latitude_topk;
+          var key = this.topk.query.keywords_topk;
+          var k = this.topk.query.k_topk;
+          topk_yago.StarLoadtopK_yago(this, lon, la, key, k);
+        },
+
         loadTest(){
             test.testTree(this);
         }
