@@ -24,8 +24,9 @@ async function LoadtopK(vueThis, lon, la, key, k) {
   //     .addTo(vueThis.map);
 
   const sourceID = "trace" + ++targetTrackingCalls;
-
-  const marker1 = new mapboxgl.Marker({scale: 1, draggable: true})
+  const el = document.createElement('div');
+  el.id = 'top_k_marker';
+  const marker1 = new mapboxgl.Marker(el,{scale: 1, draggable: true, backgroundImage: "img//point/point_blue1.png"})
       .setLngLat([lon, la])
       .addTo(vueThis.map)
 
@@ -237,9 +238,11 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
       mhtml = '<div class="pointClick_topk_noKey">' + "name: " + id + '</div>';
     }
 
+    const el1 = document.createElement('div');
+    el1.id = 'top_k_marker1';
     let popup = new mapboxgl.Popup({ closeButton: false})
       .setHTML(mhtml)
-    const marker1 = new mapboxgl.Marker({ scale: 0.8, color: '#e55e5e'})
+    const marker1 = new mapboxgl.Marker(el1, { scale: 0.8})
       .setLngLat([lon, la])
       .setPopup(popup)
       .addTo(vueThis.map)
@@ -261,7 +264,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
       let mhtml1 = '<div class="pointClick_topk_hasKey">' + "name: " + point_key.at(i).s_id + '<br>' + "keyword: " + point_key.at(i).s_key +'</div>';
       let popup1 = new mapboxgl.Popup({ closeButton: false})
         .setHTML(mhtml1)
-      const marker2 = new mapboxgl.Marker({ scale: 0.5, type: 'circle', color: '#fbb03b'})
+      const el2 = document.createElement('div');
+      el2.id = 'top_k_marker2';
+      const marker2 = new mapboxgl.Marker(el2, { scale: 0.5, type: 'circle'})
         .setLngLat([x1, y1])
         .setPopup(popup1)
         .addTo(vueThis.map)
@@ -292,9 +297,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
           type: "line",
           source: sourceD.at(i),
           paint: {
-          "line-width": 3, // 线条宽度
-           "line-opacity": 1, // 线条透明度
-            "line-color": '#fbb03b', // 线条颜色
+          "line-width": 1, // 线条宽度
+           "line-opacity": 0.5, // 线条透明度
+            "line-color": '#00FDFF', // 线条颜色
         }
       });
 
