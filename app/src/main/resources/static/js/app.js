@@ -104,8 +104,8 @@ new Vue({
               location:"",
               layerLoaded: 0,
               query:{
-                longitude_yago_topk: -3.483,
-                latitude_yago_topk: 52.983,
+                longitude_yago_topk: 20.05,
+                latitude_yago_topk: 52.35,
                 keywords_yago_topk: 'museum painting david',
                 k_yago_topk: 3
               }
@@ -183,8 +183,7 @@ new Vue({
               var la = this.topk_yago.query.latitude_yago_topk;
               var key = this.topk_yago.query.keywords_yago_topk;
               var k = this.topk_yago.query.k_yago_topk;
-              //await topk_yago.PostTopK(this, lon, la, key, k);
-
+              await topk_yago.PostTopK_yago(this, lon, la, key, k);
             }
             else{
                 this.switchStatus = state;
