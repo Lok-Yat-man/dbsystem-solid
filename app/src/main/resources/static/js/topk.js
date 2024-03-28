@@ -29,8 +29,6 @@ async function LoadtopK(vueThis, lon, la, key, k) {
       .setLngLat([lon, la])
       .addTo(vueThis.map)
 
-
-
   function onDragEnd() {
     const lngLat = marker1.getLngLat();
     console.log("Marker: Lng: " + lngLat.lng + " Lat: " + lngLat.lat);
@@ -64,6 +62,7 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
   const sourceSK = "traceSK" + ++targetTrackingCalls4;
   const sourceP = "traceP" + ++targetTrackingCalls5;
   const sourceL = "traceL" + ++targetTrackingCalls6;
+  /***添加文字描述到每个点上面***/
   vueThis.map.on('load', () => {
     vueThis.map.loadImage(
       'img//point/point_red.png',
@@ -88,6 +87,19 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
       }
     )
 
+    //显示根节点的信息
+    vueThis.map.on('click', sourceS, (e) => {
+      const description = e.features[0].properties.description;
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      // }
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(vueThis.map)
+    })
+
     vueThis.map.loadImage(
       'img//point/point_orange1.png',
       (error, image1) => {
@@ -110,7 +122,19 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
         });
       }
     )
-        //把显示文字添加上去
+
+    //显示叶子节点的信息
+    vueThis.map.on('click', sourceP, (e) => {
+      const description = e.features[0].properties.description;
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      // }
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(vueThis.map)
+    })
 
     //画线
     vueThis.map.addSource(sourceL, {
