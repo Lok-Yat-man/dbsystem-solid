@@ -226,19 +226,19 @@
         </div>
 
         <div class="params" v-if="switchStatus === 'topK'">
-        <h3 style="color: rgb(196, 98, 102); margin-left: 20px" >top_k params: </h3>
+        <h3 class="params_header" >Top_k params </h3>
         <el-form :label-position="topk.labelPosition" label-width=" 100px" :model="topk" >
-          <el-form-item label="Longitude" >
-            <input v-model="topk.query.longitude_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px" ></input>
+          <el-form-item class="item_label" label="Longitude">
+            <input v-model="topk.query.longitude_topk" class="param_input" type="text"></input>
           </el-form-item>
-          <el-form-item label="Latitude">
-            <input v-model="topk.query.latitude_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          <el-form-item class="item_label" label="Latitude">
+            <input v-model="topk.query.latitude_topk"  class="param_input" type="text"></input>
           </el-form-item>
-          <el-form-item label="Keywords">
-            <input v-model="topk.query.keywords_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          <el-form-item class="item_label" label="Keywords" >
+            <input v-model="topk.query.keywords_topk" class="param1_input" type="text" ></input>
           </el-form-item>
-          <el-form-item label="K">
-            <input v-model="topk.query.k_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
+          <el-form-item class="item_label" label="K">
+            <input v-model="topk.query.k_topk"  class="param_input" type="text"></input>
           </el-form-item>
 
           <div class="params_confirm">
@@ -251,7 +251,7 @@
       </div>
 
         <div class="params" v-if="switchStatus === 'topK_yago'">
-        <h3 style="color: rgb(196, 98, 102); margin-left: 20px" >top_k params: </h3>
+        <h3 class="params_header" >top_k params: </h3>
         <el-form :label-position="topk_yago.labelPosition" label-width=" 100px" :model="topk_yago" >
           <el-form-item label="Longitude" >
             <input v-model="topk_yago.query.longitude_yago_topk" style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px" ></input>

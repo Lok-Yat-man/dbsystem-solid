@@ -159,6 +159,24 @@
     background-size: contain;
 }
 
+.param1_input{
+  /*width: 35px;*/
+  width: 180px;
+  /*height: 18px;*/
+  height: 27px;
+  padding: 0;
+  background-color: rgba(255,255,255,0.0);
+  border: 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  color: #00FFFF;
+  line-height: 15px;
+  background-image: url(../img/params/bg_popupNumberLarge.png);
+  background-size: contain;
+
+}
+
 .keywords_input{
     width: 280px;
     height: 35px;
