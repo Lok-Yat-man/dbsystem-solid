@@ -1,5 +1,5 @@
 {"type": "FeatureCollection", "features": [
-{"type": "Feature", "properties": {"id": "Ruthin_Craft_Centre", "description": "<div class=\"pointClick_topk_hasKey\">Name: Ruthin_Craft_Centre<br>Keyword: painting </div>"}, "geometry": {"type": "Point", "coordinates": [-3.3095230000000004, 53.117003000000004]}},
+{"type": "Feature", "properties": {"id": "Ruthin_Craft_Centre", "description": "<div class=\"pointClick_topk_hasKey\">Name: Ruthin_Craft_Centre<br>Keyword: painting</div>"}, "geometry": {"type": "Point", "coordinates": [-3.3095230000000004, 53.117003000000004]}},
 {"type": "Feature", "properties": {"id": "Battle_of_Maserfield", "description": "<div class=\"pointClick_topk_hasKey\">Name: Battle_of_Maserfield<br>Keyword: painting </div>"}, "geometry": {"type": "Point", "coordinates": [-3.054, 52.86]}},
 {"type": "Feature", "properties": {"id": "Wrexham_Cathedral", "description": "<div class=\"pointClick_topk_hasKey\">Name: Wrexham_Cathedral</div>"}, "geometry": {"type": "Point", "coordinates": [-2.9986, 53.0474]}}
 ]}

@@ -249,16 +249,16 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
 
     //绘制除根节点外其他带关键字的顶点，悬浮在根节点附近，沿圆分布
-    let x = -0.0015;
-    let y = 0.0;
+    let x = -0.15; //-0.0015
+    let y = 0.0;  //0.0
     let turn = true;
     let sourceD = [];
     let sourceDK = [];
     for(let i=0;i<point_key.length;i++) {
       if(turn === true)
-        y = 1.0 * Math.sqrt(0.003 * 0.003 - x * x).toFixed(10);
+        y = 1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10); //0.003，10
       else
-        y = -1.0 * Math.sqrt(0.003 * 0.003 - x * x).toFixed(10);
+        y = -1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10);
       const x1 = lon + x;
       const y1 = la + y;
       let mhtml1 = '<div class="pointClick_topk_hasKey">' + "name: " + point_key.at(i).s_id + '<br>' + "keyword: " + point_key.at(i).s_key +'</div>';
@@ -307,18 +307,18 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
       //修改xy值
       if(turn === true)
-        x += 0.0008;
+        x += 0.32;//0.0008
       else
-        x -= 0.0008;
-      if(x >= 0.003)
+        x -= 0.32; //0.0008
+      if(x >= 0.2) // 0.003
       {
-        x -= 0.003;
+        x -= 0.2; //0.003
         if(turn === true)
           turn = false;
         else
           turn = true;
-      } else if(x <= -0.003) {
-        x += 0.003;
+      } else if(x <= -0.2) { //-0.003
+        x += 0.2; //0.003
         if(turn === true)
           turn = false;
         else
