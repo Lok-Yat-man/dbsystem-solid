@@ -1,0 +1,8 @@
+{"type": "FeatureCollection", "features": [
+{"type": "Feature", "properties": {"id": "Museum", "description": "<div class=\"pointClick_topk_hasKey\">Name: Museum<br>Keyword: museum </div>"}, "geometry": {"type": "Point", "coordinates": [-3.609, 53.317]}},
+{"type": "Feature", "properties": {"id": "Wales", "description": "<div class=\"pointClick_topk_hasKey\">Name: Wales<br>Keyword: david </div>"}, "geometry": {"type": "Point", "coordinates": [-3.009, 53.317]}},
+{"type": "Feature", "properties": {"id": "United_Kingdom", "description": "<div class=\"pointClick_topk_hasKey\">Name: United_Kingdom<br>Keyword: museum </div>"}, "geometry": {"type": "Point", "coordinates": [-3.354, 52.66]}},
+{"type": "Feature", "properties": {"id": "Greater_London", "description": "<div class=\"pointClick_topk_hasKey\">Name: Greater_London<br>Keyword: david </div>"}, "geometry": {"type": "Point", "coordinates": [-2.754, 52.66]}},
+{"type": "Feature", "properties": {"id": "Wales", "description": "<div class=\"pointClick_topk_hasKey\">Name: Wales<br>Keyword: museum, david </div>"}, "geometry": {"type": "Point", "coordinates": [-2.6986, 53.1974]}},
+{"type": "Feature", "properties": {"id": "Music", "description": "<div class=\"pointClick_topk_hasKey\">Name: Music<br>Keyword: painting </div>"}, "geometry": {"type": "Point", "coordinates": [-2.6986, 52.8974]}}
+]}

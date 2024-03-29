@@ -4,6 +4,9 @@ let targetTrackingCalls = 0;
 let targetTrackingCalls1 = 0;
 let targetTrackingCalls2 = 0;
 let targetTrackingCalls3 = 0;
+let targetTrackingCalls4 = 0;
+let targetTrackingCalls5 = 0;
+let targetTrackingCalls6 = 0;
 var previous = null;
 var current = null;
 async function LoadtopK(vueThis, lon, la, key, k) {
@@ -11,7 +14,7 @@ async function LoadtopK(vueThis, lon, la, key, k) {
     container: 'map', // container id
     style: vueThis.mapStyle,
     center: [lon, la],
-    zoom: 5
+    zoom: 8
   });
   // const marker1 = new mapboxgl.Marker({ scale: 0.5}) /**使用draggable可以拖动顶点**/
   //     .setLngLat([12.554729, 55.70651])
@@ -21,7 +24,9 @@ async function LoadtopK(vueThis, lon, la, key, k) {
   //     .addTo(vueThis.map);
 
   const sourceID = "trace" + ++targetTrackingCalls;
-  const marker1 = new mapboxgl.Marker({scale: 1, draggable: true})
+  const el = document.createElement('div');
+  el.id = 'top_k_marker';
+  const marker1 = new mapboxgl.Marker(el,{scale: 1, draggable: true, backgroundImage: "img//point/point_blue1.png"})
       .setLngLat([lon, la])
       .addTo(vueThis.map)
 
@@ -45,24 +50,154 @@ async function LoadtopK(vueThis, lon, la, key, k) {
       'source': sourceID,
       'paint': {
         'circle-radius': 2.5,
-
-        'circle-color': [
-          'match',
-          ['get', 'id'],
-          '1',
-          '#032885',
-          '2',
-          '#fbb03b',
-          '3',
-          '#223b53',
-          '4',
-          '#e55e5e',
-          '#be6fe3'
-        ],
+        'circle-color': '#be6fe3',
         'circle-opacity': 0.7,
       }
     });
   });
+}
+
+//初始加载
+async function StarLoadtopK(vueThis, lon, la, key, k) {
+  const sourceS = "traceS" + ++targetTrackingCalls3;
+  const sourceSK = "traceSK" + ++targetTrackingCalls4;
+  const sourceP = "traceP" + ++targetTrackingCalls5;
+  const sourceL = "traceL" + ++targetTrackingCalls6;
+  /***添加文字描述到每个点上面***/
+  vueThis.map.on('load', () => {
+    vueThis.map.loadImage(
+      'img//point/point_red.png',
+      (error, image) => {
+        if (error) throw error;
+        vueThis.map.addImage('custom-marker', image);
+        //根节点
+        vueThis.map.addSource(sourceS, {
+          'type': 'geojson',
+          'data': 'data//geojson/topk.json'
+        });
+
+        //画根节点
+        vueThis.map.addLayer({
+          'id': sourceS,
+          'type': 'symbol',
+          'source': sourceS,
+          'layout': {
+            'icon-image': 'custom-marker'
+          }
+        });
+      }
+    )
+
+    //显示根节点的信息
+    vueThis.map.on('click', sourceS, (e) => {
+      const description = e.features[0].properties.description;
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      // }
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(vueThis.map)
+    })
+
+    vueThis.map.loadImage(
+      'img//point/point_orange1.png',
+      (error, image1) => {
+        if (error) throw error;
+        vueThis.map.addImage('custom-marker1', image1);
+        //叶子节点
+        vueThis.map.addSource(sourceP, {
+          'type': 'geojson',
+          'data': 'data//geojson/topk1.json'
+        });
+
+        //画叶子节点
+        vueThis.map.addLayer({
+          'id': sourceP,
+          'type': 'symbol',
+          'source': sourceP,
+          'layout': {
+            'icon-image': 'custom-marker1'
+          }
+        });
+      }
+    )
+
+    //显示叶子节点的信息
+    vueThis.map.on('click', sourceP, (e) => {
+      const description = e.features[0].properties.description;
+      const coordinates = e.features[0].geometry.coordinates.slice();
+      // while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+      //   coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+      // }
+      new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(vueThis.map)
+    })
+
+    //画线
+    vueThis.map.addSource(sourceL, {
+      type: 'geojson',
+      data: {
+        type: "FeatureCollection",
+        features: [
+          { type: "Feature",
+            geometry: {
+            type: 'LineString',
+            coordinates: [[-3.3095230000000004, 53.117003000000004], [-3.609, 53.317]]
+            }
+          },
+          { type: "Feature",
+            geometry: {
+              type: 'LineString',
+              coordinates: [[-3.3095230000000004, 53.117003000000004], [-3.009, 53.317]]
+            }
+          },
+          { type: "Feature",
+            geometry: {
+              type: 'LineString',
+              coordinates: [[-3.054, 52.86], [-3.354, 52.66]]
+            }
+          },
+          { type: "Feature",
+            geometry: {
+              type: 'LineString',
+              coordinates: [[-3.054, 52.86], [-2.754, 52.66]]
+            }
+          },
+          { type: "Feature",
+            geometry: {
+              type: 'LineString',
+              coordinates: [[-2.9986, 53.0474], [-2.6986, 53.1974]]
+            }
+          },
+          { type: "Feature",
+            geometry: {
+              type: 'LineString',
+              coordinates: [[-2.9986, 53.0474], [-2.6986, 52.8974]]
+            }
+          }
+        ]
+      }
+    })
+    //画线
+    vueThis.map.addLayer({
+      'id': sourceL,
+      'type': 'line',
+      'source': sourceL,
+      'paint': {
+        "line-color": '#00FDFF', // 线条颜色
+        "line-width": 1, // 线条宽度
+        "line-opacity": 0.5, // 线条透明度
+      }
+
+      });
+
+
+
+  })
 }
 
 async function LoadResult(vueThis, id, lon, la, finds, key) {
@@ -103,31 +238,35 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
       mhtml = '<div class="pointClick_topk_noKey">' + "name: " + id + '</div>';
     }
 
+    const el1 = document.createElement('div');
+    el1.id = 'top_k_marker1';
     let popup = new mapboxgl.Popup({ closeButton: false})
       .setHTML(mhtml)
-    const marker1 = new mapboxgl.Marker({ scale: 0.8, color: '#e55e5e'}) /**使用draggable可以拖动顶点**/
+    const marker1 = new mapboxgl.Marker(el1, { scale: 0.8})
       .setLngLat([lon, la])
       .setPopup(popup)
       .addTo(vueThis.map)
 
 
     //绘制除根节点外其他带关键字的顶点，悬浮在根节点附近，沿圆分布
-    let x = -0.0015;
-    let y = 0.0;
+    let x = -0.15; //-0.0015
+    let y = 0.0;  //0.0
     let turn = true;
     let sourceD = [];
     let sourceDK = [];
     for(let i=0;i<point_key.length;i++) {
       if(turn === true)
-        y = 1.0 * Math.sqrt(0.003 * 0.003 - x * x).toFixed(10);
+        y = 1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10); //0.003，10
       else
-        y = -1.0 * Math.sqrt(0.003 * 0.003 - x * x).toFixed(10);
+        y = -1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10);
       const x1 = lon + x;
       const y1 = la + y;
       let mhtml1 = '<div class="pointClick_topk_hasKey">' + "name: " + point_key.at(i).s_id + '<br>' + "keyword: " + point_key.at(i).s_key +'</div>';
       let popup1 = new mapboxgl.Popup({ closeButton: false})
         .setHTML(mhtml1)
-      const marker2 = new mapboxgl.Marker({ scale: 0.5, type: 'circle', color: '#fbb03b'})
+      const el2 = document.createElement('div');
+      el2.id = 'top_k_marker2';
+      const marker2 = new mapboxgl.Marker(el2, { scale: 0.5, type: 'circle'})
         .setLngLat([x1, y1])
         .setPopup(popup1)
         .addTo(vueThis.map)
@@ -158,9 +297,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
           type: "line",
           source: sourceD.at(i),
           paint: {
-          "line-width": 3, // 线条宽度
-           "line-opacity": 1, // 线条透明度
-            "line-color": '#fbb03b', // 线条颜色
+          "line-width": 1, // 线条宽度
+           "line-opacity": 0.5, // 线条透明度
+            "line-color": '#00FDFF', // 线条颜色
         }
       });
 
@@ -168,18 +307,18 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
       //修改xy值
       if(turn === true)
-        x += 0.0008;
+        x += 0.32;//0.0008
       else
-        x -= 0.0008;
-      if(x >= 0.003)
+        x -= 0.32; //0.0008
+      if(x >= 0.2) // 0.003
       {
-        x -= 0.003;
+        x -= 0.2; //0.003
         if(turn === true)
           turn = false;
         else
           turn = true;
-      } else if(x <= -0.003) {
-        x += 0.003;
+      } else if(x <= -0.2) { //-0.003
+        x += 0.2; //0.003
         if(turn === true)
           turn = false;
         else
@@ -225,5 +364,6 @@ async function PostTopK(vueThis, lon, la, key, k) {
 
 export default {
     LoadtopK,
+    StarLoadtopK,
     PostTopK
 }

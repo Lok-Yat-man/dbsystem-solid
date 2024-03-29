@@ -95,8 +95,8 @@ public class topkMain {
     File file1 = new File("app/src/main/resources/static/data/txt/uk/eid2keyword.txt");
     /*读取顶点的经纬度信息*/
     File file2 = new File("app/src/main/resources/static/data/txt/uk/eid2coor.txt");
-    Point[] points = new Point[1000000];
-    for(int k=0;k<1000000;k++) {
+    Point[] points = new Point[34000];
+    for(int k=0;k<34000;k++) {
       points[k] = new Point();
     }
     int total = 34000; //记录点的id最大值
@@ -211,7 +211,7 @@ public class topkMain {
     graph.pointNum = total;
     graph.pointIsNull = new boolean[graph.pointNum];
     graph.tag = new int[graph.pointNum];
-    graph.neighbors = new int[graph.pointNum][1000];
+    graph.neighbors = new int[graph.pointNum][3000];
     graph.inDegree = new int[graph.pointNum];
     graph.isRoot = new boolean[graph.pointNum];
     for(int zt=0;zt<graph.pointNum;zt++) {
@@ -482,7 +482,7 @@ public class topkMain {
 
 
       //将检索到的结果写入topk.json文件
-//      File js1 = new  File("/Users/heguohui/Desktop/spring-boot-tutorial/src/main/resources/static/data/geojson/topk.json");
+//      File js1 = new  File("app/src/main/resources/static/data/geojson/topk.json");
 //      try {
 //        if (!js1.exists()) {
 //          js1.createNewFile();
@@ -492,7 +492,7 @@ public class topkMain {
 //        writeMap.write("{\"type\": \"FeatureCollection\", \"features\": [\n");
 //        writeMap.flush();
 //        for(int i=0;i<Qk;i++) {
-//          String temp = "{\"type\": \"Feature\", \"properties\": {\"id\": \"" + Ks.get(i).item1 + "\"}, \"geometry\": {\"type\": \"Point\", \"coordinates\": [" + points[Ks.get(i).item1].longitude + ", " + points[Ks.get(i).item1].latitude + "]}}";
+//          String temp = "{\"type\": \"Feature\", \"properties\": {\"id\": \"" + points[Ks.get(i).item1].name + "\"}, \"geometry\": {\"type\": \"Point\", \"coordinates\": [" + points[Ks.get(i).item1].longitude + ", " + points[Ks.get(i).item1].latitude + "]}}";
 //          if(i != Qk -1) {
 //            temp += ",\n";
 //          } else {

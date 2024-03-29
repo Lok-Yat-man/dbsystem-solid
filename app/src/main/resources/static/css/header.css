@@ -73,3 +73,25 @@
     letter-spacing: 1px;
     white-space: nowrap;
 }
+
+#top_k_marker {
+  background-image: url(../img/point/point_blue1.png);
+  width: 32px;
+  height: 32px;
+}
+
+#top_k_marker1 {
+  background-image: url(../img/point/point_red.png);
+  width: 32px;
+  height: 32px;
+}
+
+#top_k_marker2 {
+  background-image: url(../img/point/point_orange1.png);
+  width: 32px;
+  height: 32px;
+}
+
+
+
+
