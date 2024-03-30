@@ -1,0 +1,47 @@
+.popup-window{
+    background-image: url("../img/popup/bg-bubble.png");
+    background-color: rgba(243, 244, 246, 0);
+    width: 201px;
+    height: 170px;
+}
+
+.popup-title{
+    font-weight: bold;
+    font-size: 15px;
+    position: relative;
+    top: 30px;
+    left: 12px;
+    color: rgba(0, 255, 255, 1);
+}
+
+.popup-message{
+    font-weight: bold;
+    position: relative;
+    color: rgba(0, 255, 255, 1);
+    top: 30px;
+    left: 12px;
+}
+
+.popup-img{
+    position: relative;
+    left: 5px;
+}
+
+.mapboxgl-popup-content{
+    width: 201px;
+    height: 170px;
+    background-color: rgba(243, 244, 246, 0);
+    padding: 0;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+    align-self: center;
+    border-bottom: none;
+    border-top-color: rgba(250, 229, 229, 0.25);
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+    align-self: center;
+    border-bottom-color: rgba(250, 229, 229, 0.25);
+    border-top: none;
+}
