@@ -75,19 +75,19 @@
 }
 
 #top_k_marker {
-  background-image: url(../img/point/point_blue1.png);
+  background-image: url(../img/point/point_3.png);
   width: 32px;
   height: 32px;
 }
 
 #top_k_marker1 {
-  background-image: url(../img/point/point_red.png);
+  background-image: url(../img/point/point_2.png);
   width: 32px;
   height: 32px;
 }
 
 #top_k_marker2 {
-  background-image: url(../img/point/point_orange1.png);
+  background-image: url(../img/point/point_4.png);
   width: 32px;
   height: 32px;
 }

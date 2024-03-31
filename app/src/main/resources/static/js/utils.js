@@ -1,14 +1,10 @@
 //获取对应颜色的地图标记 还没调好不好看
-function getCustomMark(lon, lat, color){
+function getCustomMark(lon, lat, index){
+    let i = index % 12 + 1;
     //自定义样式
-    let customMarker = document.createElement('div');
-    customMarker.className = 'marker'; // 自定义CSS类名
-    customMarker.style.width = '0.3%'; // 设置标记的宽度
-    customMarker.style.height = '0.3%'; // 设置标记的高度
-    customMarker.style.borderRadius = '5px'; // 设置标记的高度
-    customMarker.style.backgroundColor = color; // 设置标记的背景颜色
-    // customMarker.style.backgroundImage = './point.png';
-    customMarker.style.backgroundSize = '100%';
+    let customMarker = document.createElement('img');
+    customMarker.className = 'marker-new'; // 自定义CSS类名
+    customMarker.src = './img/point/point_'+ i +'.png'; // 设置标记的图片
 
     let marker = new mapboxgl.Marker(customMarker)
         .setLngLat([lon, lat]); // 设置标记的经纬度
@@ -47,6 +43,26 @@ function getColor(clusterId,size){
     return colorScale(clusterId)
 }
 
+let colors = [
+    '#AA9915',
+    '#B52020',
+    '#106FB3',
+    '#B06B17',
+    '#B2377C',
+    '#19AAB1',
+    '#AA5015',
+    '#B937BB',
+    '#0B8F4C',
+    '#6A45DC',
+    '#7C960E',
+    '#205AEB'
+];
+
+function getNewColor(clusterId){
+    let index = clusterId % 12;
+    return colors[index];
+}
+
 //message可以是html
 function getPopUp(message, needCloseButton){
     //添加气泡弹窗
@@ -77,4 +93,5 @@ export default {
     getColor,
     getPopUp,
     getNewPopUp,
+    getNewColor,
 }

@@ -24,7 +24,7 @@
     <div class="paramsIn" id="params">
         <div class="params"  v-if="switchStatus === 'DCPGS'" style="height: 400px; ">
 
-            <h3 class="params_header">DCPGS</h3>
+            <h3 class="params_header">{{DCPGS.location}}</h3>
 
             <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS" v-loading="mapLoading">
                 <div class="param_adjuster" style="width: 100%;display: inline-block">

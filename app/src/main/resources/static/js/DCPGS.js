@@ -15,7 +15,8 @@ function getPathFromLocation(location, env, baseUrl, dataset) {
 }
 
 function addLayer(i,vueThis){
-    let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+    // let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+    let color = utils.getNewColor(i);
     vueThis.map.addLayer({
         id: 'layer' + i,
         type: 'circle',
@@ -24,14 +25,15 @@ function addLayer(i,vueThis){
         paint: {
             'circle-radius': 3.5,
             'circle-color': color,
-            'circle-opacity': 0.7,
+            'circle-opacity': 0.5,
         },
     });
     layerPopup(i, vueThis);
 }
 
 function layerPopup(i, vueThis){
-    let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+    // let color = utils.getColor(i, vueThis.DCPGS.maxClusterNums);
+    let color = utils.getNewColor(i);
     vueThis.map.on('click', 'layer' + i, function (e) {
         let coordinates = e.features[0].geometry.coordinates.slice();
         let clusterId = e.features[0].properties.clusterId;
@@ -64,7 +66,7 @@ function layerPopup(i, vueThis){
             paint: {
                 'circle-radius': 3.5,
                 'circle-color': color,
-                'circle-opacity': 0.7,
+                'circle-opacity': 0.5,
             },
         });
         vueThis.map.getCanvas().style.cursor = '';
@@ -157,7 +159,8 @@ function loadMarkers(vueThis) {
         let color = utils.getColor(clusterId, vueThis.DCPGS.maxClusterNums);
         let locations = vueThis.DCPGS.clusters[i].checkIns;
         let checkIn = locations[0];
-        let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
+        // let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
+        let marker = utils.getCustomMark(checkIn.longitude, checkIn.latitude, i);
         marker.setPopup(utils.getNewPopUp("clustering index","cluster " + (i+1), false,));
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
