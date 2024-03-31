@@ -129,7 +129,7 @@
 }
 
 .param_adjuster{
-    width: 155px;
+    width: 160px;
     height: 23px;
     margin-left: 5px;
     display: inline-block;
@@ -143,18 +143,19 @@
 }
 
 .param_input{
+    font-family: DIN Next LT Pro, ui-serif;
     /*width: 35px;*/
-    width: 52.5px;
+    width: 42px;
     /*height: 18px;*/
-    height: 27px;
+    height: 22px;
     padding: 0;
     background-color: rgba(255,255,255,0.0);
     border: 0;
     text-align: center;
     font-size: 15px;
-    font-weight: bold;
+    /*font-weight: bold;*/
     color: #00FFFF;
-    line-height: 15px;
+    line-height: 22px;
     background-image: url(../img/params/bg_popupNumber.png);
     background-size: contain;
 }
@@ -193,10 +194,8 @@
 
 /*减号*/
 .icon-minus{
-    /*width: 10px;*/
-    width: 15px;
-    /*height: 2px;*/
-    height: 3px;
+    width: 10px;
+    height: 2px;
     line-height: 23px;
     display: inline-flex;
     margin-bottom: 3px;
@@ -205,8 +204,8 @@
 
 /*加号*/
 .icon-plus{
-    width: 15px;
-    height: 15px;
+    width: 10px;
+    height: 10px;
     line-height: 23px;
     display: inline-flex;
     margin-bottom: -2px;
