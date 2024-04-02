@@ -5,6 +5,20 @@
     height: 170px;
 }
 
+.popup-window-topk-haskey{
+  background-image: url("../img/popup/bg-bubble.png");
+  background-color: rgba(243, 244, 246, 0);
+  width: 221px;
+  height: 130px;
+}
+
+.popup-window-topk-nokey{
+  background-image: url("../img/popup/bg-bubble.png");
+  background-color: rgba(243, 244, 246, 0);
+  width: 221px;
+  height: 85px;
+}
+
 .popup-title{
     font-weight: bold;
     font-size: 15px;

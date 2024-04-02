@@ -66,7 +66,7 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
   /***添加文字描述到每个点上面***/
   vueThis.map.on('load', () => {
     vueThis.map.loadImage(
-      'img//point/point_red.png',
+      'img//point/point_2.png',
       (error, image) => {
         if (error) throw error;
         vueThis.map.addImage('custom-marker', image);
@@ -102,7 +102,7 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
     })
 
     vueThis.map.loadImage(
-      'img//point/point_orange1.png',
+      'img//point/point_7.png',
       (error, image1) => {
         if (error) throw error;
         vueThis.map.addImage('custom-marker1', image1);
@@ -233,9 +233,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
     let mhtml;
     if(array.length > 0) {
-      mhtml = '<div class="pointClick_topk_hasKey">' + "name: " + id + '<br>' + "keyword: " + array +'</div>';
+      mhtml = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + "Name: " + id + '</div><br><p class=\"popup-message\">' + "Keyword: " + array +'</p></div>';
     } else {
-      mhtml = '<div class="pointClick_topk_noKey">' + "name: " + id + '</div>';
+      mhtml = '<div class="popup-window-topk-nokey"><div class=\"popup-title\">' + "Name: " + id + '</div></div>';
     }
 
     const el1 = document.createElement('div');
@@ -261,7 +261,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
         y = -1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10);
       const x1 = lon + x;
       const y1 = la + y;
-      let mhtml1 = '<div class="pointClick_topk_hasKey">' + "name: " + point_key.at(i).s_id + '<br>' + "keyword: " + point_key.at(i).s_key +'</div>';
+      let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + "Name: " + point_key.at(i).s_id + '</div><br><p class=\"popup-message\">' + "Keyword: " + point_key.at(i).s_key +'</p></div>';
       let popup1 = new mapboxgl.Popup({ closeButton: false})
         .setHTML(mhtml1)
       const el2 = document.createElement('div');
