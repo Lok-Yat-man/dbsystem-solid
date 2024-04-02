@@ -294,15 +294,15 @@
                         <span>Clustering</span>
                     </template>
                     <el-submenu index="1-1">
-                        <template slot="title">Geo-social network</template>
-                        <el-menu-item index="1-1-1" @click="loadDSPGS('StockholmSweden', 13)" >Stockholm Sweden</el-menu-item>
-                        <el-menu-item index="1-1-2" @click="loadDSPGS('MalmoSweden', 13)" >Malmo Sweden</el-menu-item>
-                        <el-menu-item index="1-1-3" @click="loadDSPGS('GothenburgSweden', 13)" >Gothenburg Sweden</el-menu-item>
-                        <el-menu-item index="1-1-4" @click="loadDSPGS('AustinUS', 13)" >Austin US</el-menu-item>
-                        <el-menu-item index="1-1-5" @click="loadDSPGS('LondonUK', 13)" >London UK</el-menu-item>
-                        <el-menu-item index="1-1-6" @click="loadDSPGS('NewcastleUponTyneUk', 13.5)" >Newcastle Upon Tyne UK</el-menu-item>
-                        <el-menu-item index="1-1-7" @click="loadDSPGS('OsloNorway', 13)" >Oslo Norway</el-menu-item>
-                        <el-menu-item index="1-1-8" @click="loadDSPGS('ZurichSwitzerland', 13)" >Zurich Switzerland</el-menu-item>
+                        <template slot="title">Geo-social place clustering</template>
+                        <el-menu-item index="1-1-1" @click="loadDSPGS('StockholmSweden', 13)" >Stockholm, Sweden</el-menu-item>
+                        <el-menu-item index="1-1-2" @click="loadDSPGS('MalmoSweden', 13)" >Malmo, Sweden</el-menu-item>
+                        <el-menu-item index="1-1-3" @click="loadDSPGS('GothenburgSweden', 13)" >Gothenburg, Sweden</el-menu-item>
+                        <el-menu-item index="1-1-4" @click="loadDSPGS('AustinUS', 13)" >Austin, US</el-menu-item>
+                        <el-menu-item index="1-1-5" @click="loadDSPGS('LondonUK', 13)" >London, UK</el-menu-item>
+                        <el-menu-item index="1-1-6" @click="loadDSPGS('NewcastleUponTyneUk', 13.5)" >Newcastle Upon Tyne, UK</el-menu-item>
+                        <el-menu-item index="1-1-7" @click="loadDSPGS('OsloNorway', 13)" >Oslo, Norway</el-menu-item>
+                        <el-menu-item index="1-1-8" @click="loadDSPGS('ZurichSwitzerland', 13)" >Zurich, Switzerland</el-menu-item>
                     </el-submenu>
                     <el-submenu index="1-2">
                         <template slot="title">Spatial textual clustering</template>
@@ -311,14 +311,21 @@
                     </el-submenu>
                     <el-submenu index="1-3">
                         <template slot="title">Textually spatial skylines</template>
-                        <el-menu-item index="1-3-1"  @click="loadBSTD()">Basic Algorithm for STD</el-menu-item>
+                        <el-menu-item index="1-3-1"  @click="loadBSTD()">yelp_academic</el-menu-item>
                     </el-submenu>
 
                     <el-submenu index="1-4">
-                        <template slot="title">Top-k Relevant Retrieval</template>
+                        <template slot="title">Semantic place on KG</template>
                         <el-menu-item index="1-4-1"  @click="loadTopK()">uk</el-menu-item>
 <!--                         <el-menu-item index="1-4-2"  @click="loadTopK_yago()">yago</el-menu-item>-->
                     </el-submenu>
+
+                    <el-submenu index="1-5">
+                        <template slot="title">Dense spatial subtensors</template>
+                        <el-menu-item index="1-5-1"  @click="loadPA('Brightkite_Euro_sorted',5)">Brightkite_Euro_sorted</el-menu-item>
+                        <!--<el-menu-item index="1-5-2"  @click="loadPA('Gowalla_NA_sorted',6.5)">Gowalla_NA_sorted</el-menu-item>-->
+                    </el-submenu>
+
                 </el-submenu>
                 <el-submenu index="2">
                     <template slot="title">

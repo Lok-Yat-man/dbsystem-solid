@@ -5,6 +5,7 @@ import test from "./test.js";
 import topk from "./topk.js";
 import topk_yago from "./topk_yago.js";
 import bstd from "./bstd.js";
+import pa from "./PA.js";
 // import { Loading } from './environment/elementUI'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
@@ -47,6 +48,17 @@ new Vue({
                     tau: 0.7
                 }
             },
+             pa:{
+                  loading: false,
+                  dataset: "Brightkite_Euro_sorted",
+                  labelPosition: "right",
+                  location: "",
+                  clusters: "",
+                  clusterNums: 0,
+                  layerLoaded: 0,
+                  markers: [],
+                  maxClusterNums: 10
+              },
             sideBar: {
                 switchIcon: "el-icon-arrow-right"
             },
@@ -295,6 +307,13 @@ new Vue({
 
         loadTest(){
             test.testTree(this);
+        },
+
+        loadPA(dataset,zoom){
+            if(dataset==""){
+                dataset=this.pa.dataset;
+            }
+            pa.loadPA(dataset,this,zoom);
         }
 
     },

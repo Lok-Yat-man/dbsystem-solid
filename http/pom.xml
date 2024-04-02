@@ -33,6 +33,13 @@
             <artifactId>kdv</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.edu.szu</groupId>
+            <artifactId>PA</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.edu.szu</groupId>
             <artifactId>skyline</artifactId>

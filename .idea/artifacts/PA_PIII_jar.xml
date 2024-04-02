@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PA_PIII:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PA_PIII_jar</output-path>
+    <root id="archive" name="PA_PIII.jar">
+      <element id="module-output" name="PA" />
+    </root>
+  </artifact>
+</component>

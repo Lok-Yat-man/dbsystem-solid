@@ -21,6 +21,7 @@
         <module>http</module>
         <module>kdv</module>
         <module>skyline</module>
+        <module>PA</module>
     </modules>
 
     <properties>
