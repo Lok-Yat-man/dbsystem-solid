@@ -1,7 +1,6 @@
 package com.edu.szu.service.impl;
 
-import cn.edu.szu.cs.entity.RelatedObject;
-import com.edu.szu.entity.GeoJson;
+
 import com.edu.szu.entity.GeoJsonSkyline;
 import com.edu.szu.entity.ObjectPoint;
 import com.edu.szu.service.BstdService;
@@ -12,8 +11,6 @@ import std.BSTD;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BstdServiceImpl implements BstdService {
 
@@ -43,6 +40,7 @@ public class BstdServiceImpl implements BstdService {
         return res;
     }
 
+    @Override
     public GeoJsonSkyline loadGeoJsonSkyline(Query query) {
         List<Query> queries = new LinkedList<>();
         queries.add(query);

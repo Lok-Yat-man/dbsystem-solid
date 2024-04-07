@@ -1,6 +1,6 @@
 package com.edu.szu.service;
 
-import cn.edu.szu.cs.entity.Query;
+import cn.edu.szu.cs.entity.KstcQuery;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 
@@ -9,7 +9,7 @@ import java.util.List;
 public interface KstcService {
 
 
-    GeoJson loadGeoJson(Query query);
+    GeoJson loadGeoJson(KstcQuery query);
 
-    List<Marker> loadMarkers(Query query);
+    List<Marker> loadMarkers(KstcQuery query);
 }

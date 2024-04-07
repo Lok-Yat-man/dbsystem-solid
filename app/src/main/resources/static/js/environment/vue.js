@@ -6235,7 +6235,7 @@
     /**
      * Query an element selector if it's not an element already.
      */
-    function query(el) {
+    function KSTCQuery(el) {
         if (typeof el === 'string') {
             var selected = document.querySelector(el);
             if (!selected) {
@@ -9262,7 +9262,7 @@
     Vue.prototype.__patch__ = inBrowser ? patch : noop;
     // public mount method
     Vue.prototype.$mount = function (el, hydrating) {
-        el = el && inBrowser ? query(el) : undefined;
+        el = el && inBrowser ? KSTCQuery(el) : undefined;
         return mountComponent(this, el, hydrating);
     };
     // devtools global hook
@@ -11762,12 +11762,12 @@
         : false;
 
     var idToTemplate = cached(function (id) {
-        var el = query(id);
+        var el = KSTCQuery(id);
         return el && el.innerHTML;
     });
     var mount = Vue.prototype.$mount;
     Vue.prototype.$mount = function (el, hydrating) {
-        el = el && query(el);
+        el = el && KSTCQuery(el);
         /* istanbul ignore if */
         if (el === document.body || el === document.documentElement) {
             warn$2("Do not mount Vue to <html> or <body> - mount to normal elements instead.");
