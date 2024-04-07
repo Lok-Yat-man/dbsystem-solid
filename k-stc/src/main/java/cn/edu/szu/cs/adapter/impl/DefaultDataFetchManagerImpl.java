@@ -2,7 +2,6 @@ package cn.edu.szu.cs.adapter.impl;
 
 import cn.edu.szu.cs.adapter.DataFetchAction;
 import cn.edu.szu.cs.adapter.DataFetchManager;
-import cn.edu.szu.cs.common.Cacheable;
 import cn.edu.szu.cs.entity.BaseDataFetchActionParams;
 import cn.edu.szu.cs.entity.DataFetchTask;
 import cn.edu.szu.cs.util.ThreadPoolExecutorHolder;
@@ -78,23 +77,7 @@ public class DefaultDataFetchManagerImpl implements DataFetchManager {
             throw new RuntimeException("DataFetchAction checkParams failed: " + command + " " + paramStr);
         }
 
-        if(dataFetchAction instanceof Cacheable){
-            Cacheable cacheable = (Cacheable) dataFetchAction;
-            String cacheKey = cacheable.getCacheKey(dataFetchActionParams);
-            if(paramsActionIdMap.containsKey(cacheKey)){
-                return paramsActionIdMap.get(cacheKey);
-            }
-        }
-
         synchronized (DefaultDataFetchManagerImpl.class) {
-            // double check
-            if(dataFetchAction instanceof Cacheable){
-                Cacheable cacheable = (Cacheable) dataFetchAction;
-                String cacheKey = cacheable.getCacheKey(dataFetchActionParams);
-                if(paramsActionIdMap.containsKey(cacheKey)){
-                    return paramsActionIdMap.get(cacheKey);
-                }
-            }
 
             String actionId = IdUtil.objectId();
 
@@ -104,12 +87,6 @@ public class DefaultDataFetchManagerImpl implements DataFetchManager {
 
             Tuple tuple = new Tuple(dataFetchAction.getCommand(), future);
             taskMapCache.put(actionId, tuple);
-
-            if(dataFetchAction instanceof Cacheable){
-                Cacheable cacheable = (Cacheable) dataFetchAction;
-                String cacheKey = cacheable.getCacheKey(dataFetchActionParams);
-                paramsActionIdMap.put(command+":"+cacheKey, actionId);
-            }
 
             return actionId;
         }

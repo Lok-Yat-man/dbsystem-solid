@@ -2,7 +2,6 @@ package cn.edu.szu.cs.adapter.impl;
 
 import cn.edu.szu.cs.adapter.DataFetchAction;
 import cn.edu.szu.cs.adapter.KstcDataFetchManager;
-import cn.edu.szu.cs.common.Cacheable;
 import cn.edu.szu.cs.common.DataFetchCommandConstant;
 import cn.edu.szu.cs.entity.DataFetchTask;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
@@ -17,7 +16,6 @@ import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
 import rx.observables.BlockingObservable;
 
-import java.text.MessageFormat;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -28,7 +26,7 @@ import java.util.Queue;
  * @version 1.0
  */
 @SuppressWarnings("all")
-public class RTreeRangeQueryDataFetchAction implements DataFetchAction<KstcQuery, Queue>, Cacheable<KstcQuery> {
+public class RTreeRangeQueryDataFetchAction implements DataFetchAction<KstcQuery, Queue>{
 
 
     private Log log = LogFactory.get();
@@ -93,8 +91,4 @@ public class RTreeRangeQueryDataFetchAction implements DataFetchAction<KstcQuery
         return queue;
     }
 
-    @Override
-    public String getCacheKey(KstcQuery params) {
-        return MessageFormat.format(CACHE_KEY_PREFIX, params.getKeywords(), params.getCoordinate(), params.getEpsilon());
-    }
 }

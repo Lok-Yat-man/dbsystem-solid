@@ -157,10 +157,6 @@ public class SimpleDbScanBasedApproach extends AbstractDbScanBasedApproach<DbSca
         }
         Queue<DbScanRelevantObject> queue = (Queue<DbScanRelevantObject>) task.getData();
 
-        // 生成RTree的范围查询任务 TODO--
-        // Generate RTree range query tasks
-
-
         return queue;
     }
 

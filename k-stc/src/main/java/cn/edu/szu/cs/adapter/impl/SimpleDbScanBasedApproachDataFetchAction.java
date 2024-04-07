@@ -1,18 +1,20 @@
 package cn.edu.szu.cs.adapter.impl;
 
 import cn.edu.szu.cs.adapter.DataFetchAction;
-import cn.edu.szu.cs.common.Cacheable;
 import cn.edu.szu.cs.common.DataFetchCommandConstant;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
 import cn.edu.szu.cs.entity.KstcQuery;
 import cn.edu.szu.cs.kstc.dbscan.AbstractDbScanBasedApproach;
 import cn.edu.szu.cs.kstc.dbscan.SimpleDbScanBasedApproach;
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Set;
 
 /**
  *  SimpleDbScanBasedApproachDataFetchAction
@@ -21,11 +23,12 @@ import java.util.List;
  * @version 1.0
  */
 @SuppressWarnings("all")
-public class SimpleDbScanBasedApproachDataFetchAction implements DataFetchAction<KstcQuery, List>, Cacheable<KstcQuery> {
+public class SimpleDbScanBasedApproachDataFetchAction implements DataFetchAction<KstcQuery, List> {
 
     private Log log = LogFactory.get();
 
     private static final String CACHE_KEY_PREFIX = "SIMPLE_DBSCAN_BASED_APPROACH:{0}";
+    private LRUCache<String,List> cache = CacheUtil.newLRUCache(128, 3600 * 1000L);
 
     private AbstractDbScanBasedApproach<DbScanRelevantObject> dbScanBasedApproach;
 
@@ -52,11 +55,17 @@ public class SimpleDbScanBasedApproachDataFetchAction implements DataFetchAction
 
     @Override
     public List fetchData(KstcQuery params) {
-        return dbScanBasedApproach.kstcSearch(params);
+
+        String cacheKey = MessageFormat.format(CACHE_KEY_PREFIX, JSON.toJSONString(params));
+        if(cache.containsKey(cacheKey)){
+            return cache.get(cacheKey);
+        }
+
+        List<Set<DbScanRelevantObject>> sets = dbScanBasedApproach.kstcSearch(params);
+
+        cache.put(cacheKey, sets);
+
+        return sets;
     }
 
-    @Override
-    public String getCacheKey(KstcQuery params) {
-        return MessageFormat.format(CACHE_KEY_PREFIX, JSON.toJSONString(params));
-    }
 }

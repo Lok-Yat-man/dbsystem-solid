@@ -6,10 +6,10 @@ import com.edu.szu.entity.Marker;
 
 import java.util.List;
 
-public interface KstcService<T> {
+public interface KstcService {
 
 
-    GeoJson loadGeoJson(KstcQuery KSTCQuery);
+    GeoJson loadGeoJson(KstcQuery query);
 
-    List<Marker> loadMarkers(KstcQuery KSTCQuery);
+    List<Marker> loadMarkers(KstcQuery query);
 }

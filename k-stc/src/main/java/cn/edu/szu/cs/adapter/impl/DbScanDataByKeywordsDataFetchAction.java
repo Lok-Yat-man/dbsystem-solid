@@ -1,7 +1,6 @@
 package cn.edu.szu.cs.adapter.impl;
 
 import cn.edu.szu.cs.adapter.DataFetchAction;
-import cn.edu.szu.cs.common.Cacheable;
 import cn.edu.szu.cs.common.DataFetchCommandConstant;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
 import cn.edu.szu.cs.entity.KstcQuery;
@@ -14,11 +13,10 @@ import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 @SuppressWarnings("all")
-public class DbScanDataByKeywordsDataFetchAction implements DataFetchAction<KstcQuery, List>, Cacheable<KstcQuery> {
+public class DbScanDataByKeywordsDataFetchAction implements DataFetchAction<KstcQuery, List> {
 
     private IRelevantObjectDataLoader<DbScanRelevantObject> relevantObjectDataLoader = null;
 
@@ -70,8 +68,4 @@ public class DbScanDataByKeywordsDataFetchAction implements DataFetchAction<Kstc
         return relevantObjectDataLoader.getObjectsByKeywords(params.getKeywords());
     }
 
-    @Override
-    public String getCacheKey(KstcQuery params) {
-        return MessageFormat.format(CACHE_KEY_PREFIX, params.getKeywords().toString());
-    }
 }
