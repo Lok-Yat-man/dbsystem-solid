@@ -7,7 +7,12 @@ import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.Point;
 import com.github.davidmoten.rtree.geometry.Rectangle;
 
-
+/**
+ *  GeoPointDouble
+ * @author Whitence
+ * @date 2024/4/5 20:03
+ * @version 1.0
+ */
 public final class GeoPointDouble implements Point {
 
     private final double x;

@@ -1,6 +1,6 @@
 package com.edu.szu.config;
 
-import cn.edu.szu.cs.service.IRelatedObjectService;
+import cn.edu.szu.cs.infrastructure.IRelevantObjectDataLoader;
 import cn.hutool.core.io.resource.ClassPathResource;
 import com.edu.szu.service.BstdService;
 import com.edu.szu.service.impl.BstdServiceImpl;
@@ -49,7 +49,7 @@ public class BSTDConfig {
      * @return IR-tree
      */
     @Bean
-    public IRTree irTreeBSTD(IRelatedObjectService relatedObjectService) {
+    public IRTree irTreeBSTD(IRelevantObjectDataLoader relatedObjectService) {
         return new IRTree(relevantObjectService());
     }
 

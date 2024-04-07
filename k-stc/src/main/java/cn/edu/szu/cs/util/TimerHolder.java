@@ -1,9 +1,17 @@
 package cn.edu.szu.cs.util;
 
 import cn.hutool.core.date.TimeInterval;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 
+/**
+ *  TimerHolder
+ * @author Whitence
+ * @date 2024/3/16 14:52
+ * @version 1.0
+ */
 public class TimerHolder {
-
+    private static final Log logger = LogFactory.get();
     private static final InheritableThreadLocal<TimeInterval> inheritableThreadLocal = new InheritableThreadLocal<>();
 
     /**

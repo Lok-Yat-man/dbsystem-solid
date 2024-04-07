@@ -1,19 +1,15 @@
 package com.edu.szu.service.impl;
 
-import cn.edu.szu.cs.entity.RelatedObject;
-import com.edu.szu.entity.GeoJson;
+import cn.edu.szu.cs.entity.RelevantObject;
 import com.edu.szu.entity.GeoJsonSkyline;
 import com.edu.szu.entity.ObjectPoint;
 import com.edu.szu.service.BstdService;
 import entity.Coordinate;
 import entity.Query;
-import entity.RelevantObject;
 import std.BSTD;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class BstdServiceImpl implements BstdService {
 

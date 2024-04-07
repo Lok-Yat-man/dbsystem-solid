@@ -1,0 +1,4 @@
+cn.edu.szu.cs.adapter.impl.SimpleDbScanBasedApproachDataFetchAction
+cn.edu.szu.cs.adapter.impl.RTreeDataFetchAction
+cn.edu.szu.cs.adapter.impl.DbScanDataByKeywordsDataFetchAction
+cn.edu.szu.cs.adapter.impl.RTreeRangeQueryDataFetchAction

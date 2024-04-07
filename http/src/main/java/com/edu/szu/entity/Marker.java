@@ -1,6 +1,5 @@
 package com.edu.szu.entity;
 
-import cn.edu.szu.cs.entity.Coordinate;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

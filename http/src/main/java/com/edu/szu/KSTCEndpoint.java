@@ -1,7 +1,6 @@
 package com.edu.szu;
 
-import cn.edu.szu.cs.entity.Coordinate;
-import cn.edu.szu.cs.entity.KSTCQuery;
+import cn.edu.szu.cs.entity.KstcQuery;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
@@ -33,7 +32,7 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
             ){
-        KSTCQuery kstcQuery = cn.edu.szu.cs.entity.KSTCQuery.builder()
+        KstcQuery kstcQuery = KstcQuery.builder()
                 .keywords(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
                 )
@@ -60,7 +59,7 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
     ){
-        KSTCQuery kstcQuery = cn.edu.szu.cs.entity.KSTCQuery.builder()
+        KstcQuery kstcQuery = KstcQuery.builder()
                 .keywords(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
                 )

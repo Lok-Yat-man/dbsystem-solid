@@ -1,9 +1,5 @@
 package cn.edu.szu.cs.util;
 
-import cn.edu.szu.cs.entity.Coordinate;
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.LFUCache;
-
 /**
  *  CommonAlgorithm
  * @author Whitence

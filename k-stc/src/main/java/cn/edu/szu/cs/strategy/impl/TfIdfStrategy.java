@@ -1,12 +1,12 @@
 package cn.edu.szu.cs.strategy.impl;
 
-import cn.edu.szu.cs.entity.RelatedObject;
+import cn.edu.szu.cs.entity.DbScanRelevantObject;
 import cn.edu.szu.cs.strategy.WeightCalculationStrategy;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
+
 import java.util.*;
-import java.util.List;
 
 /**
  * Using TF-IDF algorithm to calculate document vector
@@ -16,7 +16,7 @@ import java.util.List;
  * @date 2024/3/7 23:42
  */
 
-public class TfIdfStrategy<T extends RelatedObject> implements WeightCalculationStrategy<T> {
+public class TfIdfStrategy<T extends DbScanRelevantObject> implements WeightCalculationStrategy<T> {
 
     private static final Log log = LogFactory.get();
 
@@ -78,6 +78,15 @@ public class TfIdfStrategy<T extends RelatedObject> implements WeightCalculation
                 double idfVal = idf.getOrDefault(label, 0.0);
                 object.setWeight(label, tfVal * idfVal);
             });
+
+            // normalize
+            double sum = 0.0;
+            for (String label : object.getLabels()) {
+                sum += object.getWeight(label);
+            }
+            for (String label : object.getLabels()) {
+                object.setWeight(label, object.getWeight(label) / sum);
+            }
 
         }
 

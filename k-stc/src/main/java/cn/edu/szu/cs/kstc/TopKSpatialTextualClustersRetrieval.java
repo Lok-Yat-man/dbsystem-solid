@@ -1,14 +1,21 @@
 package cn.edu.szu.cs.kstc;
 
-import cn.edu.szu.cs.entity.Coordinate;
-import cn.edu.szu.cs.entity.KSTCQuery;
-import cn.edu.szu.cs.entity.KSTCResult;
+import cn.edu.szu.cs.entity.KstcQuery;
 
 import java.util.List;
 import java.util.Set;
 
+/**
+ * TopKSpatialTextualClustersRetrieval
+ * @param <T>
+ */
 public interface TopKSpatialTextualClustersRetrieval<T> {
 
-    KSTCResult<T> kstcSearch(KSTCQuery query);
+    /**
+     * kstcSearch
+     * @param query
+     * @return
+     */
+    List<Set<T>> kstcSearch(KstcQuery query);
 
 }
