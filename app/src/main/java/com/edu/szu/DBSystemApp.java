@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Import;
         KSTCConfig.class,
         KDVConfig.class,
         BSTDConfig.class,
-        PAConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,

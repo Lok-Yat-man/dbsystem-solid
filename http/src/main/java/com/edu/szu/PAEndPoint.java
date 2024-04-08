@@ -3,13 +3,9 @@ package com.edu.szu;
 import com.edu.szu.entity.PAGeoJson;
 import com.edu.szu.entity.PAJson;
 import com.edu.szu.entity.CheckInJson;
-import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j;
-import org.checkerframework.checker.units.qual.C;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.*;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -20,7 +16,6 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @RestController
 @RequestMapping("/data/pa")
-@Component
 public class PAEndPoint {
     private final ConvergeManager manager =new ConvergeManager();
 
