@@ -20,11 +20,11 @@ public class TestMain {
 
         KstcQuery query = new KstcQuery();
         query.setKeywords(Arrays.asList("food"));
-        query.setK(1);
-        query.setEpsilon(1000);
-        query.setMinPts(5);
+        query.setK(10);
+        query.setEpsilon(100);
+        query.setMinPts(10);
         query.setMaxDistance(Double.MAX_VALUE);
-        query.setCoordinate(new double[]{-82.73298645019531,27.766590118408203});
+        query.setCoordinate(new double[]{-75.16,39.95});
         query.setCommand(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH);
 
         String actionId = KstcDataFetchManager.generateTask(

@@ -40,7 +40,6 @@ public class RTreeRangeQueryDataFetchAction implements DataFetchAction<KstcQuery
 
     @Override
     public KstcQuery parseParams(String paramsStr) {
-        log.info("RTreeRangeQueryDataFetchAction parseParams:{}",paramsStr);
         return JSON.parseObject(paramsStr, KstcQuery.class);
     }
 

@@ -118,7 +118,6 @@ public class DefaultDataFetchManagerImpl implements DataFetchManager {
             logger.error("Task get failed.", e);
             return DataFetchTask.fail(actionId, command, e.getMessage());
         }
-        logger.info("Task get success.");
         return DataFetchTask.success(actionId, command, value);
     }
 

@@ -44,7 +44,7 @@ public class SimpleDbScanBasedApproachDataFetchAction implements DataFetchAction
 
     @Override
     public KstcQuery parseParams(String paramsStr) {
-        log.info("SimpleDbScanBasedApproachDataFetchAction parseParams:{}",paramsStr);
+
         return JSON.parseObject(paramsStr, KstcQuery.class);
     }
 

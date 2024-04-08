@@ -39,7 +39,6 @@ public class RTreeDataFetchAction implements DataFetchAction<KstcQuery, RTree> {
 
     @Override
     public KstcQuery parseParams(String paramsStr) {
-        log.info("RTreeDataFetchAction.parseParams: paramsStr = {}", paramsStr);
         return JSON.parseObject(paramsStr, KstcQuery.class);
     }
 
@@ -66,7 +65,6 @@ public class RTreeDataFetchAction implements DataFetchAction<KstcQuery, RTree> {
 
         String cacheKey = MessageFormat.format(CACHE_KEY_PREFIX, params.getKeywords().toString());
         if(rTreeLRUCache.containsKey(cacheKey)){
-            log.info("RTreeDataFetchAction.fetchData: hit cache. cacheKey = {}", cacheKey);
             return rTreeLRUCache.get(cacheKey);
         }
 
@@ -74,8 +72,6 @@ public class RTreeDataFetchAction implements DataFetchAction<KstcQuery, RTree> {
                 DataFetchCommandConstant.LOAD_DBSCAN_DATA_BY_KEYWORDS,
                 JSON.toJSONString(params)
         );
-
-        log.info("RTreeDataFetchAction.fetchData: actionId = {}", actionId);
 
         DataFetchTask task = KstcDataFetchManager.getTask(actionId);
 

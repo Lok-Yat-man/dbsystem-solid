@@ -4,6 +4,7 @@ import cn.edu.szu.cs.entity.RelevantObject;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.LineHandler;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
@@ -142,8 +143,9 @@ public class RelevantObjectDataLoaderImpl<T extends RelevantObject> implements I
         }
 
         return keywords.stream()
-                .filter(Objects::nonNull)
+                .filter(StrUtil::isNotBlank)
                 .map(labelObjectIdMap::get)
+                .filter(Objects::nonNull)
                 .flatMap(Set::stream)
                 .map(objs::get)
                 .filter(Objects::nonNull)

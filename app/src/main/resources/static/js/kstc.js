@@ -47,9 +47,9 @@ async function paintPoints(vueThis,size){
                 source: 'points-source',
                 filter: ['==', 'clusterId', "" + i],
                 paint: {
-                    'circle-radius': 5,
-                    'circle-color': utils.getColor(i, size),
-                    'circle-opacity': 0.7,
+                    'circle-radius': 3.5,
+                    'circle-color': utils.getNewColor(i),
+                    'circle-opacity': 0.5,
                 },
             });
             layerPopup(i,vueThis);
@@ -59,6 +59,7 @@ async function paintPoints(vueThis,size){
 }
 
 function layerPopup(i, vueThis){
+    let color = utils.getNewColor(i);
     vueThis.map.on('click', 'layer' + i, function (e) {
         let coordinates = e.features[0].geometry.coordinates.slice();
         let labels = JSON.parse(e.features[0].properties.labels);
@@ -76,25 +77,48 @@ function layerPopup(i, vueThis){
                 }
             }
             if(flag){
-                str+="<div><strong><font size='2' color='red'>"+labels[j]+"</font></strong></div>";
+                str+='<p class="popup-message" >'+labels[j]+'</p>';
             }else{
-                str+="<div><font size='2' color='black'>"+labels[j]+"</font></div>";
+                str+='<p class="popup-message">'+labels[j]+'</p>';
             }
         }
 
-        utils.getPopUp(
-            "<div><font size='2' color='black'>"+e.features[0].properties.name+"</font></div>"
-            +"<hr/>"
-            +str,
-            false
+        utils.getNewPopUp(
+            "<strong>"+e.features[0].properties.name+"</strong>",
+            str
         ).
         setLngLat(coordinates)
             .addTo(vueThis.map);
     });
+
     vueThis.map.on('mouseenter', 'layer' + i, () => {
+        vueThis.map.removeLayer('layer' + i);
+        vueThis.map.addLayer({
+            id: 'layer' + i,
+            type: 'circle',
+            source: 'points-source',
+            filter: ['==', 'clusterId', "" + i],
+            paint: {
+                'circle-radius': 5.0,
+                'circle-color': color,
+                'circle-opacity': 0.7,
+            },
+        });
         vueThis.map.getCanvas().style.cursor = 'pointer';
     });
     vueThis.map.on('mouseleave', 'layer' + i, () => {
+        vueThis.map.removeLayer('layer' + i);
+        vueThis.map.addLayer({
+            id: 'layer' + i,
+            type: 'circle',
+            source: 'points-source',
+            filter: ['==', 'clusterId', "" + i],
+            paint: {
+                'circle-radius': 3.5,
+                'circle-color': color,
+                'circle-opacity': 0.5,
+            },
+        });
         vueThis.map.getCanvas().style.cursor = '';
     });
 }
@@ -125,13 +149,13 @@ async function loadMarkers(vueThis){
     for (let i = 0; i < res.data.length; i++) {
         let mrk = res.data[i];
         let color = utils.getColor(i,res.data.length);
-        let marker = utils.getDefaultMark(mrk.coordinate.longitude, mrk.coordinate.latitude, color);
+        let marker = utils.getCustomMark(mrk.coordinate.longitude, mrk.coordinate.latitude, i);
 
         marker.setPopup(
-            utils.getPopUp(
+            utils.getNewPopUp(
                 "<strong>clusterId "+mrk.clusterId+"</strong>" +
                 "<p>pointNum: "+mrk.pointNum+"</p>" +
-                "<p>description: "+mrk.description+"</p>")
+                "<p>description: "+mrk.description+"</p>","",false)
         );
         markers.push(marker);
     }

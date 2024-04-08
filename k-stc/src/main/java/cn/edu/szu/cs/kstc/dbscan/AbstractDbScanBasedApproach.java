@@ -7,7 +7,6 @@ import cn.edu.szu.cs.kstc.TopKSpatialTextualClustersRetrieval;
 import cn.hutool.core.lang.Assert;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import java.util.*;
 
@@ -203,7 +202,7 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
         }
 
         Set<T> result = new HashSet<>(neighbors);
-        removeObject(p, sList, tList, context);
+        neighbors.forEach(nei -> removeObject(nei, sList, tList, context));
         neighbors.remove(p);
 
         while (!neighbors.isEmpty()) {
@@ -223,7 +222,7 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
                     } else if (!result.contains(obj)) {
                         result.add(obj);
                         neighbors.add(obj);
-                        removeObject(p, sList, tList, context);
+                        removeObject(obj, sList, tList, context);
                     }
                 }
             }

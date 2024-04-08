@@ -6,7 +6,10 @@ import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,13 +43,15 @@ public class KSTCEndpoint {
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
-                .maxDistance(maxDist)
+                .maxDistance(maxDist<=0?Double.MAX_VALUE:maxDist)
                 .build();
 
         log.info("markers: "+ kstcQuery.toString());
-        return kstcService.loadMarkers(
+        List<Marker> markers = kstcService.loadMarkers(
                 kstcQuery
         );
+        log.info("markers: "+ markers.size());
+        return markers;
     }
 
     @GetMapping("/geojson")
@@ -67,11 +72,14 @@ public class KSTCEndpoint {
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
-                .maxDistance(maxDist)
+                .maxDistance(maxDist<=0?Double.MAX_VALUE:maxDist)
                 .build();
         log.info("geoJson: "+ kstcQuery.toString());
-        return kstcService.loadGeoJson(
+
+        GeoJson geoJson = kstcService.loadGeoJson(
                 kstcQuery
         );
+        log.info("geoJson: "+ geoJson.getFeatures().size());
+        return geoJson;
     }
 }

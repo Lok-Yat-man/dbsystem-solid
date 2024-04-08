@@ -11,26 +11,46 @@ import com.edu.szu.entity.Coordinate;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 @Service
+@Log4j2
 public class KstcServiceImpl implements KstcService {
 
 
+    public KstcServiceImpl() {
+
+        KstcQuery query = KstcQuery.builder()
+                .keywords(
+                        Collections.singletonList("food")
+                )
+                .coordinate(new double[]{-75.16, 39.95})
+                .k(1)
+                .epsilon(100)
+                .minPts(10)
+                .maxDistance(Double.MAX_VALUE)
+                .build();
+
+        KstcDataFetchManager.generateTask(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH, JSON.toJSONString(query));
+    }
 
     private GeoJson doLoadGeoJson(KstcQuery query) {
 
         String actionId = KstcDataFetchManager.generateTask(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH, JSON.toJSONString(query));
         DataFetchTask task = KstcDataFetchManager.getTask(actionId);
-
+        if (!task.isSuccess()) {
+            throw new RuntimeException("Task failed: " + task.getMsg());
+        }
         List<Set<DbScanRelevantObject>> list = (List<Set<DbScanRelevantObject>>) task.getData();
-
+        log.info("query:{}, list.size:{} ",JSON.toJSONString(query), list.size());
         GeoJson geoJson = new GeoJson();
         for (int i = 0; i < list.size(); i++) {
             Set<DbScanRelevantObject> relatedObjects = list.get(i);
@@ -59,8 +79,11 @@ public class KstcServiceImpl implements KstcService {
 
         String actionId = KstcDataFetchManager.generateTask(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH, JSON.toJSONString(query));
         DataFetchTask task = KstcDataFetchManager.getTask(actionId);
-
+        if (!task.isSuccess()) {
+            throw new RuntimeException("Task failed: " + task.getMsg());
+        }
         List<Set<DbScanRelevantObject>> list = (List<Set<DbScanRelevantObject>>) task.getData();
+        log.info("query:{}, list.size:{} ",JSON.toJSONString(query), list.size());
         List<Marker> res = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
             int size = list.get(i).size();
