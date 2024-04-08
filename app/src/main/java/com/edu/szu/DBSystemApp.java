@@ -7,12 +7,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
 
-@Import({git
+@Import({
         // config
         DCPGSConfig.class,
         KSTCConfig.class,
         KDVConfig.class,
         BSTDConfig.class,
+        PAConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,
