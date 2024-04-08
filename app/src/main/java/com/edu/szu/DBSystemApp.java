@@ -2,11 +2,8 @@ package com.edu.szu;
 
 import cn.edu.szu.cs.entity.Coordinate;
 import cn.edu.szu.cs.entity.GeoPointDouble;
-import com.edu.szu.config.BSTDConfig;
-import com.edu.szu.config.DCPGSConfig;
+import com.edu.szu.config.*;
 
-import com.edu.szu.config.KDVConfig;
-import com.edu.szu.config.KSTCConfig;
 import com.github.davidmoten.rtree.Entries;
 import com.github.davidmoten.rtree.Entry;
 import com.github.davidmoten.rtree.RTree;
@@ -26,6 +23,7 @@ import java.util.stream.Collectors;
         KSTCConfig.class,
         KDVConfig.class,
         BSTDConfig.class,
+        PAConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,

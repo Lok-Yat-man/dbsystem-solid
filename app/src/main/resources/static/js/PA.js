@@ -83,28 +83,28 @@ async function loadPA(dataset,vueThis, zoom) {
     vueThis.pa.loading = true;
     vueThis.mapLoading = true;
     //get result
-    if(env!=="local"){
+    //if(env!=="local"){
       await axios({
           method: "post",
-          url: vueThis.baseUrl + "/data/pa/" + dataset+".txt/run/"+dataset
+          url: vueThis.baseUrl + "/data/pa/" + dataset+".txt/runpa"
       }).then((response) => {
           const runningStatus = response.data;
           console.log("PA running status: " + runningStatus);
       });
-    }
+    //}
     //get GeoJson
-    if(env!=="local"){
+    /*if(env!=="local"){
       await axios({
           method: "Post",
-          url: vueThis.baseUrl + "/data/pa/" +dataset+".json"
+          url: vueThis.baseUrl + "/data/pa/geojson/" +dataset+".json"
       }).then((response) => {
           const runningResult = response.data;
           console.log("GeoJson Address: " + runningResult);
       });
-    }
-    vueThis.pa.maxClusterNums = await getClusters(dataset, zoom, vueThis);
-    loadPoints(vueThis, path[1], zoom);
-    loadMarkers(vueThis);
+    }*/
+    //vueThis.pa.maxClusterNums = await getClusters(dataset, zoom, vueThis);
+    //loadPoints(vueThis, path[1], zoom);
+    //loadMarkers(vueThis);
     vueThis.sideBarDisabled = false;
     vueThis.pa.loading = false;
     vueThis.mapLoading = false;
@@ -114,7 +114,7 @@ async function getClusters(dataset, zoom, vueThis) {
     let nums = 0;
     await axios({
         method: "get",
-        url: vueThis.baseUrl + "/data/pa/" +dataset+".json"
+        url: vueThis.baseUrl + "/data/pa/cluster" +dataset+".json"
     }).then(response => {
         const jsonData = response.data;
         console.log("jsonData:"+jsonData);

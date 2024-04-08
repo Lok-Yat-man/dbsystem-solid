@@ -69,8 +69,7 @@ public class Converge {
      * SPACE_PROPORTION
      * @param args ： 0为输入路径，1为输出路径，2为分隔符，3为寻找子张量个数
      */
-    public
-    Converge(String[] args) throws Exception {
+    public Converge(String[] args) throws Exception {
         if(args.length < 4){
             System.err.println("please enter parameters in the following format: ");
             System.err.println("input_path output_path splitStr k(Number of sub-tensor to search) Partition_number Density_proportion Temporal_proportion Spatial_proportion.");
