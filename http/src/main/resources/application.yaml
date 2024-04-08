@@ -1,5 +1,2 @@
 DCPGS:
   resourcePath: DCPGS/src/main/resources/
-
-PA:
-  basePath: app/src/main/resources/static/data/pa/

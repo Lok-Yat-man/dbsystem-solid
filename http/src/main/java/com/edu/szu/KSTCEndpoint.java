@@ -1,13 +1,15 @@
 package com.edu.szu;
 
-import cn.edu.szu.cs.entity.Coordinate;
-import cn.edu.szu.cs.entity.Query;
+import cn.edu.szu.cs.entity.KstcQuery;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,26 +35,23 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
             ){
-        Query query = Query.builder()
-                .keyword(
+        KstcQuery kstcQuery = KstcQuery.builder()
+                .keywords(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
                 )
-                .location(
-                        Coordinate.create(
-                                lon,
-                                lat
-                        )
-                )
+                .coordinate(new double[]{lon, lat})
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
-                .maxDistance(maxDist)
+                .maxDistance(maxDist<=0?Double.MAX_VALUE:maxDist)
                 .build();
 
-        log.info("markers: "+query.toString());
-        return kstcService.loadMarkers(
-                query
+        log.info("markers: "+ kstcQuery.toString());
+        List<Marker> markers = kstcService.loadMarkers(
+                kstcQuery
         );
+        log.info("markers: "+ markers.size());
+        return markers;
     }
 
     @GetMapping("/geojson")
@@ -65,24 +64,22 @@ public class KSTCEndpoint {
             @RequestParam("minPts") Integer minPts,
             @RequestParam("maxDist") Double maxDist
     ){
-        Query query = Query.builder()
-                .keyword(
+        KstcQuery kstcQuery = KstcQuery.builder()
+                .keywords(
                         Arrays.stream(keywords.split(",")).collect(Collectors.toList())
                 )
-                .location(
-                        Coordinate.create(
-                                lon,
-                                lat
-                        )
-                )
+                .coordinate(new double[]{lon, lat})
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
-                .maxDistance(maxDist)
+                .maxDistance(maxDist<=0?Double.MAX_VALUE:maxDist)
                 .build();
-        log.info("geoJson: "+query.toString());
-        return kstcService.loadGeoJson(
-                query
+        log.info("geoJson: "+ kstcQuery.toString());
+
+        GeoJson geoJson = kstcService.loadGeoJson(
+                kstcQuery
         );
+        log.info("geoJson: "+ geoJson.getFeatures().size());
+        return geoJson;
     }
 }

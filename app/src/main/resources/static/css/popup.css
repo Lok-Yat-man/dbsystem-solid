@@ -2,7 +2,21 @@
     background-image: url("../img/popup/bg-bubble.png");
     background-color: rgba(243, 244, 246, 0);
     width: 201px;
-    height: 170px;
+    height: fit-content;
+}
+
+.popup-window-topk-haskey{
+  background-image: url("../img/popup/bg-bubble.png");
+  background-color: rgba(243, 244, 246, 0);
+  width: 221px;
+  height: 130px;
+}
+
+.popup-window-topk-nokey{
+  background-image: url("../img/popup/bg-bubble.png");
+  background-color: rgba(243, 244, 246, 0);
+  width: 221px;
+  height: 85px;
 }
 
 .popup-title{
