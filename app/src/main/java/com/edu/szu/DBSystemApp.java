@@ -1,15 +1,11 @@
 package com.edu.szu;
 
-import com.edu.szu.config.BSTDConfig;
-import com.edu.szu.config.DCPGSConfig;
+import com.edu.szu.config.*;
 
-import com.edu.szu.config.KDVConfig;
-import com.edu.szu.config.KSTCConfig;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
-
 
 @Import({
         // config
@@ -17,6 +13,7 @@ import org.springframework.context.annotation.Import;
         KSTCConfig.class,
         KDVConfig.class,
         BSTDConfig.class,
+        PAConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,
