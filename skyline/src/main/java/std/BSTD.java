@@ -225,19 +225,19 @@ public class BSTD {
             double w = w(query, (NonLeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 5;
+            return dist / w / 10;
         } else if (e instanceof LeafDefault) {
             double w = w(query, (LeafDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 5;
+            return dist / w / 10;
         } else if (e instanceof EntryDefault) {
             double w = w(query, (EntryDefault<String, Geometry>) e);
             if (Double.compare(w, 0) == 0)
                 return Double.MAX_VALUE;
-            return dist / w / 5;
+            return dist / w / 10;
         }
-        return dist / 5;
+        return dist / 10;
     }
 
     public double w(Query query, NonLeafDefault<String, Geometry> node) {
