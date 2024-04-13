@@ -7,14 +7,16 @@ async function LoadBSTD(vueThis) {
     let longitude = vueThis.spatial_skylines.query.longitude;
     let latitude = vueThis.spatial_skylines.query.latitude;
 
-    vueThis.spatial_skylines.query.keywords = vueThis.spatial_skylines.query.keywords.replace(/\s/g,"");
+    vueThis.spatial_skylines.query.keywords = vueThis.spatial_skylines.query.keywords.replace(/\s/g, "");
     vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
 
     let objectData = await loadData(vueThis);
 
     paintMap(vueThis, longitude, latitude);
 
-    paintCurrentLocation(vueThis, longitude, latitude, objectData);
+    vueThis.spatial_skylines.curmarker = paintCurrentLocation(vueThis, longitude, latitude, objectData);
+
+    doubleClickCoordinate(vueThis);
 
     await paintPoints(vueThis, objectData.data.length);
 
@@ -45,20 +47,43 @@ function paintMap(vueThis, longitude, latitude) {
         container: 'map', // container id
         style: vueThis.mapStyle,
         center: [longitude, latitude],
-        zoom: 13 // 放大级别
+        zoom: 17 // 放大级别
     });
 }
 
 // 绘制当前位置标记
 function paintCurrentLocation(vueThis, longitude, latitude, objectData) {
-    let currentLocationMarker = new mapboxgl.Marker({
-        color: '#ff0505',
-        scale: 1.4
-    }).setLngLat([longitude, latitude]);
-    currentLocationMarker.setPopup(utils.getPopUp(
-        "<strong>当前位置</strong>" +
-        "<p>pointNum: " + objectData.data.length + "</p>", false));
+    // let currentLocationMarker = new mapboxgl.Marker({
+    //     color: '#ff0505',
+    //     scale: 1.4
+    // }).setLngLat([longitude, latitude]);
+    let currentLocationMarker = utils.getCustomMark(longitude, latitude, 1);
+
+    currentLocationMarker.setPopup(utils.getNewPopUp(
+        "<strong>当前位置</strong>",
+        "pointNum: " + objectData.data.length,
+        false));
     currentLocationMarker.addTo(vueThis.map);
+    return currentLocationMarker;
+}
+
+function doubleClickCoordinate(vueThis) {
+    vueThis.map.doubleClickZoom.disable();
+    vueThis.map.on('dblclick', (e)=> {
+        if (vueThis.spatial_skylines.curmarker != null) {
+            vueThis.spatial_skylines.curmarker.remove();
+        }
+        vueThis.spatial_skylines.query.longitude = e.lngLat.lng;
+        vueThis.spatial_skylines.query.latitude = e.lngLat.lat;
+        let marker = utils.getCustomMark(e.lngLat.lng, e.lngLat.lat, 1);
+        marker.setPopup(utils.getNewPopUp(
+            "<strong>当前位置</strong>",
+            "",
+            false
+        ));
+        vueThis.spatial_skylines.curmarker = marker;
+        marker.addTo(vueThis.map);
+    });
 }
 
 // 绘制Skyline结果点
@@ -95,7 +120,7 @@ async function paintPoints(vueThis, size) {
 // 添加功能：点击Skyline点可以展示详细信息
 function layerPopup(i, vueThis, color) {
     vueThis.map.on('click', 'layer' + i, function (e) {
-        let coordinates = e.features[0 ].geometry.coordinates.slice();
+        let coordinates = e.features[0].geometry.coordinates.slice();
         let labels = JSON.parse(e.features[0].properties.labels);
         let strings = vueThis.spatial_skylines.lastKeywords;
 
@@ -111,16 +136,15 @@ function layerPopup(i, vueThis, color) {
                 }
             }
             if (flag) {
-                str += "<div><strong><font size='2' color='red'>" + labels[j] + "</font></strong></div>";
+                str += '<div class="popup-message"><font color=\'red\'>' + labels[j] + '</font></div>';
             } else {
-                str += "<div><font size='2' color='black'>" + labels[j] + "</font></div>";
+                str += '<div class="popup-message">' + labels[j] + '</div>';
             }
         }
 
-        utils.getPopUp(
-            "<div><font size='2' color='black'>" + e.features[0].properties.name + "</font></div>"
-            + "<hr/>"
-            + str,
+        utils.getNewPopUp(
+            "<strong>" + e.features[0].properties.name + "</strong>",
+            str,
             false
         ).setLngLat(coordinates)
             .addTo(vueThis.map);
@@ -140,7 +164,7 @@ function layerPopup(i, vueThis, color) {
             source: 'points-source',
             filter: ['==', 'skylineId', "" + i],
             paint: {
-                'circle-radius': 8.0,
+                'circle-radius': 7.5,
                 'circle-color': color,
                 'circle-opacity': 0.7,
             },
