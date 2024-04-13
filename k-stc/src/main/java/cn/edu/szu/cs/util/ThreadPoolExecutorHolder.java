@@ -12,21 +12,37 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  */
 public class ThreadPoolExecutorHolder{
-    public static ThreadPoolExecutor threadPool = null;
+    public static ThreadPoolExecutor cpuIntensiveThreadPool = null;
+    public static ThreadPoolExecutor ioIntensiveThreadPool = null;
+
     static {
         int processors = Runtime.getRuntime().availableProcessors();
-        threadPool=new ThreadPoolExecutor(
+        cpuIntensiveThreadPool=new ThreadPoolExecutor(
                 processors+1,
                 2*processors,
                 60,
                 TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(100),
+                new ArrayBlockingQueue<>(128),
+                new ThreadPoolExecutor.CallerRunsPolicy()
+        );
+
+        ioIntensiveThreadPool=new ThreadPoolExecutor(
+                2*processors,
+                4*processors,
+                60,
+                TimeUnit.SECONDS,
+                new ArrayBlockingQueue<>(128),
                 new ThreadPoolExecutor.CallerRunsPolicy()
         );
 
     }
 
-    public static ThreadPoolExecutor getThreadPool() {
-        return threadPool;
+
+    public static ThreadPoolExecutor getCpuIntensiveThreadPool() {
+        return cpuIntensiveThreadPool;
+    }
+
+    public static ThreadPoolExecutor getIoIntensiveThreadPool() {
+        return ioIntensiveThreadPool;
     }
 }

@@ -1,23 +1,17 @@
 import utils from "./utils.js";
 
 async function loadKSTC(vueThis){
-    vueThis.KSTC.loading=true;
-    vueThis.KSTC.timeout=false;
+    vueThis.mapLoading=false;
     doLoad(
         vueThis,
         vueThis.KSTC.query.location.longitude,
-        vueThis.KSTC.query.location.latitude,
-        10
+        vueThis.KSTC.query.location.latitude
     );
-    // setTimeout(()=>{
-    //
-    //     if(vueThis.KSTC.running){
-    //         vueThis.KSTC.loading=false;
-    //         vueThis.KSTC.timeout=true;
-    //         alert("30 second Time Out! Please try again later or improve the limitation of parameters!")
-    //     }
-    //
-    // },30000)
+    setTimeout(()=>{
+
+        vueThis.mapLoading=false;
+
+    },5000)
 
 }
 
@@ -31,7 +25,8 @@ async function paintPoints(vueThis,size){
         +'&k='+vueThis.KSTC.query.k
         +'&epsilon='+vueThis.KSTC.query.epsilon
         +'&minPts='+vueThis.KSTC.query.minPts
-        +'&maxDist='+vueThis.KSTC.query.maxDist;
+        +'&maxDist='+vueThis.KSTC.query.maxDist
+        +'&command='+vueThis.KSTC.query.command;
 
     vueThis.map.on('load', function () {
 
@@ -47,9 +42,9 @@ async function paintPoints(vueThis,size){
                 source: 'points-source',
                 filter: ['==', 'clusterId', "" + i],
                 paint: {
-                    'circle-radius': 3.5,
+                    'circle-radius': 5,
                     'circle-color': utils.getNewColor(i),
-                    'circle-opacity': 0.5,
+                    'circle-opacity': 1,
                 },
             });
             layerPopup(i,vueThis);
@@ -77,7 +72,7 @@ function layerPopup(i, vueThis){
                 }
             }
             if(flag){
-                str+='<p class="popup-message" >'+labels[j]+'</p>';
+                str+='<p class="popup-message" ><font color="red">'+labels[j]+'</font></p>';
             }else{
                 str+='<p class="popup-message">'+labels[j]+'</p>';
             }
@@ -99,9 +94,9 @@ function layerPopup(i, vueThis){
             source: 'points-source',
             filter: ['==', 'clusterId', "" + i],
             paint: {
-                'circle-radius': 5.0,
+                'circle-radius': 7,
                 'circle-color': color,
-                'circle-opacity': 0.7,
+                'circle-opacity': 0.5,
             },
         });
         vueThis.map.getCanvas().style.cursor = 'pointer';
@@ -114,7 +109,7 @@ function layerPopup(i, vueThis){
             source: 'points-source',
             filter: ['==', 'clusterId', "" + i],
             paint: {
-                'circle-radius': 3.5,
+                'circle-radius': 5,
                 'circle-color': color,
                 'circle-opacity': 0.5,
             },
@@ -171,24 +166,68 @@ async function requestMarkers(url){
     });
 }
 
-async function doLoad(vueThis,lon,lat,zoom){
 
-    let markers = await loadMarkers(vueThis);
+async function requestZoom(url){
+    return axios({
+        method: 'get',
+        url: url
+    });
+}
+async function getZoom(vueThis){
 
-    vueThis.KSTC.lastKeywords=vueThis.KSTC.query.keywords.split(",");
+    // build url
+    var url = vueThis.baseUrl+'/kstc/dataCoordinateRange?'
+        +'keywords='+vueThis.KSTC.query.keywords
+        +'&lon='+vueThis.KSTC.query.location.longitude
+        +'&lat='+vueThis.KSTC.query.location.latitude
+        +'&k='+vueThis.KSTC.query.k
+        +'&epsilon='+vueThis.KSTC.query.epsilon
+        +'&minPts='+vueThis.KSTC.query.minPts
+        +'&maxDist='+vueThis.KSTC.query.maxDist
+        +'&command='+vueThis.KSTC.query.command;
+
+
+    let res = await requestZoom(url);
+    console.log(res);
+    if(res.data.code !== 2000){
+        alert(res.data.message);
+        return {succeed: false};
+    }
+
+    // 2274.5034  14
+    // 165.5796 17
+    // k * 2274.5034 + c = 14
+    // k * 165.5796 + c = 18
+    var k = (18-15)/(165.5796-2274.5034);
+    var c = 14 - k * 2274.5034 + 0.5;
+    var zoom = Math.ceil(k * res.data.data.hypotenuseLength + c);
+    if(zoom < 6){
+        zoom = 6;
+    }
+    console.log("number: "+zoom);
+    return {succeed:true,zoom: zoom ,clusterSize:res.data.data.clusterNumber,lons:res.data.data.midLongitude,lats:res.data.data.midLatitude};
+
+}
+
+async function doLoad(vueThis,lon,lat){
+
+    let zoomData = await getZoom(vueThis);
+    if(!zoomData.succeed){
+        return;
+    }
+
+
+    vueThis.KSTC.lastKeywords=vueThis.KSTC.query.keywords.split(";");
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         style: vueThis.mapStyle,
-        //style: 'mapbox://styles/mapbox/light-v11',
-        // style: 'mapbox://styles/mapbox/streets-v12',
-        //style: 'https://maps.geoapify.com/v1/styles/positron/style.json?apiKey=' + vueThis.API_TOKEN,
-        center: [lon, lat],
-        zoom: zoom
+        center: [zoomData.lons, zoomData.lats],
+        zoom: zoomData.zoom
     });
     vueThis.map.doubleClickZoom.disable();
     console.log("current position: "+lon+","+lat);
     let marker = utils.currentPosition(lon, lat);
-    marker.setPopup(utils.getPopUp("当前位置",false));
+    marker.setPopup(utils.getNewPopUp("当前位置",false));
     marker.addTo(vueThis.map);
     vueThis.KSTC.curMarker=marker;
 
@@ -206,13 +245,25 @@ async function doLoad(vueThis,lon,lat,zoom){
         marker.addTo(vueThis.map);
     });
 
-    await paintPoints(vueThis,markers.length);
+    await paintPoints(vueThis,zoomData.clusterSize);
 
-    await paintMarker(vueThis,markers);
+}
 
-    vueThis.KSTC.loading=false;
+async function searchKeywords(vueThis){
+
+    // build url
+    var url = vueThis.baseUrl+'/kstc/keywords?'
+        +'keywords='+vueThis.KSTC.query.keywords;
+
+    let  res = await axios({
+        method: 'get',
+        url: url
+    });
+    console.log(res.data);
+    return res;
 }
 
 export default {
-    loadKSTC
+    loadKSTC,
+    searchKeywords
 }

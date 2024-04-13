@@ -1,6 +1,8 @@
 package cn.edu.szu.cs.entity;
 
+import cn.edu.szu.cs.kstc.RelevantObject;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
@@ -17,7 +19,7 @@ import java.util.Objects;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public class OpticsRelevantObject implements RelevantObject, Serializable {
+public class OpticsRelevantObject implements RelevantObject, Serializable, Comparable<OpticsRelevantObject> {
 
     @Setter
     private String objectId;
@@ -27,6 +29,14 @@ public class OpticsRelevantObject implements RelevantObject, Serializable {
     private String name;
     @Setter
     private List<String> labels;
+
+    @Setter
+    @Getter
+    private Double reachableDistance = Double.MAX_VALUE;
+
+    @Setter
+    @Getter
+    private Double coreDistance = Double.MAX_VALUE;
 
     @Override
     public String getObjectId() {
@@ -59,5 +69,10 @@ public class OpticsRelevantObject implements RelevantObject, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(objectId);
+    }
+
+    @Override
+    public int compareTo(OpticsRelevantObject o) {
+        return this.objectId.compareTo(o.objectId);
     }
 }

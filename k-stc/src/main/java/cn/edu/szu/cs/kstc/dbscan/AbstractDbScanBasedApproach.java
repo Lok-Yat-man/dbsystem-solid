@@ -4,7 +4,6 @@ import cn.edu.szu.cs.entity.DbScanRelevantObject;
 import cn.edu.szu.cs.entity.KstcQuery;
 import cn.edu.szu.cs.kstc.Context;
 import cn.edu.szu.cs.kstc.TopKSpatialTextualClustersRetrieval;
-import cn.hutool.core.lang.Assert;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -45,25 +44,23 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
      *
      * @param context@return
      */
-    protected abstract SortedSet<T> getSList(Context<T> context);
+    protected abstract SortedSet<T> getRelevantObjects(Context<T> context);
 
     /**
-     * 获取根据关键词查询出所有的对象并按照权重降序排序所得相关对象集合
-     * <p> get the relevant object set obtained by querying all objects according to the keywords and sorting in descending order of weight
-     *
-     * @param context@return
+     * 初始化聚类结果集
+     * <p> initialize the cluster result set
+     * @param context
+     * @return
      */
-    protected abstract SortedSet<T> getTList(Context<T> context);
+    protected abstract List<Set<T>> initClusters(Context<T> context);
 
     /**
      * 从SList和TList中获取下一个对象
      * <p> get the next object from SList and TList
-     *
-     * @param sList
-     * @param tList
+     *  @param sList
      * @param context
      */
-    protected abstract T getNextObject(SortedSet<T> sList, SortedSet<T> tList, Context<T> context);
+    protected abstract T getNextObject(SortedSet<T> sList, Context<T> context);
 
     /**
      * 根据当前位置以及关键词进行范围查询
@@ -84,37 +81,27 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
      */
     protected abstract boolean canSkip(T obj, Context<T> context);
 
-    /**
-     * 计算聚类的分数
-     * <p> compute the cluster's score
-     *
-     * @param cluster
-     * @param context
-     * @return
-     */
-    protected abstract double getScore(Set<T> cluster, Context<T> context);
-
-    /**
-     * 计算当前对象的分数边界
-     * <p> compute the score boundary of the current object
-     *
-     * @param obj
-     * @param context
-     * @return
-     */
-    protected abstract double getBound(T obj, Context<T> context);
 
     /**
      * 从SList和TList中移除对象
      * <p> remove object from SList and TList
-     *
-     * @param obj
+     *  @param obj
      * @param sList
-     * @param tList
      * @param context
      */
-    protected abstract void removeObject(T obj, SortedSet<T> sList, SortedSet<T> tList, Context<T> context);
+    protected abstract void removeObject(T obj, SortedSet<T> sList, Context<T> context);
 
+    /**
+     * 判断是否可以提前结束
+     * <p> determine whether to finish early
+     * @param obj
+     * @param cluster
+     * @param context
+     * @return
+     */
+    protected abstract boolean canFinishAdvanced(T obj,Set<T> cluster,  Context<T> context);
+
+    protected abstract void afterAddToCluster(T obj, Set<T> cluster, Context<T> context);
 
     /**
      * 执行基于DBSCAN的检索方法后置操作
@@ -124,17 +111,6 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
      */
     protected abstract void afterDoDbScanBasedApproach(Context<T> context);
 
-    private void checkoutQuery(KstcQuery query) {
-        Assert.isTrue(query.getCoordinate() != null && query.getCoordinate().length == 2, "Please enter coordinate correctly.");
-        Assert.checkBetween(query.getCoordinate()[0], -180.0, 180.0, "wrong longitude.");
-        Assert.checkBetween(query.getCoordinate()[1], -90.0, 90.0, "wrong latitude.");
-        Assert.checkBetween(query.getK(), 1, 20, "wrong k.");
-        Assert.checkBetween(query.getEpsilon(), 0.0, Double.MAX_VALUE, "wrong epsilon.");
-        Assert.checkBetween(query.getMinPts(), 2, Integer.MAX_VALUE, "wrong minPts.");
-        Assert.checkBetween(query.getMaxDistance(), 0.0, Double.MAX_VALUE, "wrong maxDistance.");
-        Assert.notNull(query.getKeywords(), "keywords is null.");
-        Assert.isFalse(query.getKeywords().isEmpty(), "keywords is empty.");
-    }
 
     /**
      * 执行基于DBSCAN的检索方法
@@ -151,26 +127,24 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
         // init context
         Context<T> context = initContext(query);
         // sort objs ascent by distance
-        SortedSet<T> sList = getSList(context);
-        // sort objs descent by weight
-        SortedSet<T> tList = getTList(context);
+        SortedSet<T> sList = getRelevantObjects(context);
+        // init clusters
+        List<Set<T>> rList = initClusters(context);
 
-        List<Set<T>> rList = new ArrayList<>(query.getK());
-        double bound = 0.0;
-        double t = Double.MAX_VALUE;
+        // noises
         Set<T> noises = new HashSet<>();
+        // can finish early
+        boolean canFinish = false;
+        while (!sList.isEmpty() && rList.size() < query.getK() && !canFinish) {
+            T obj = getNextObject(sList, context);
 
-        do {
-            T obj = getNextObject(sList, tList, context);
-
-            Set<T> cluster = getCluster(obj, sList, tList, noises, context);
+            Set<T> cluster = getCluster(obj, sList, noises, context);
             if (!cluster.isEmpty()) {
                 rList.add(cluster);
-                t = getScore(cluster, context);
-                bound = getBound(obj, context);
+                canFinish = canFinishAdvanced(obj,cluster, context);
             }
 
-        } while (!sList.isEmpty() && rList.size() < query.getK() && bound < t);
+        }
 
         afterDoDbScanBasedApproach(context);
 
@@ -184,25 +158,24 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
      *
      * @param p
      * @param sList
-     * @param tList
      * @param noises
      * @param context
      * @return
      */
-    private Set<T> getCluster(T p, SortedSet<T> sList, SortedSet<T> tList, Set<T> noises, Context<T> context) {
+    private Set<T> getCluster(T p, SortedSet<T> sList, Set<T> noises, Context<T> context) {
 
         KstcQuery q = context.getQuery();
         Queue<T> neighbors = rangeQuery(p, context);
 
         if (neighbors.size() < q.getMinPts()) {
-            removeObject(p, sList, tList, context);
+            removeObject(p, sList, context);
             // mark p as noise
             noises.add(p);
             return Collections.emptySet();
         }
 
         Set<T> result = new HashSet<>(neighbors);
-        neighbors.forEach(nei -> removeObject(nei, sList, tList, context));
+        neighbors.forEach(nei -> removeObject(nei, sList, context));
         neighbors.remove(p);
 
         while (!neighbors.isEmpty()) {
@@ -222,7 +195,8 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
                     } else if (!result.contains(obj)) {
                         result.add(obj);
                         neighbors.add(obj);
-                        removeObject(obj, sList, tList, context);
+                        removeObject(obj, sList, context);
+                        afterAddToCluster(obj, result, context);
                     }
                 }
             }

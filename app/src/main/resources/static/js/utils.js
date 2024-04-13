@@ -24,11 +24,7 @@ function getDefaultMark(lon,lat,color){
 //获取对应颜色的地图标记
 function currentPosition(lon,lat){
     //默认样式
-    let marker = new mapboxgl.Marker({
-        color: '#ff0505',
-        scale: 1.5
-    }).setLngLat([lon,lat]) // 设置点的经纬度
-    return marker;
+    return getCustomMark(lon,lat,1)
 }
 
 //根据集群数量将0xffffff颜色均匀划分后分配

@@ -1,17 +1,25 @@
 package cn.edu.szu.cs.kstc.dbscan;
 
+import cn.edu.szu.cs.adapter.KstcDataFetchManager;
+import cn.edu.szu.cs.constant.DataFetchConstant;
+import cn.edu.szu.cs.entity.DataFetchResult;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
+import cn.edu.szu.cs.entity.GeoPointDouble;
 import cn.edu.szu.cs.entity.KstcQuery;
-import cn.edu.szu.cs.kstc.TopKSpatialTextualClustersRetrieval;
+import cn.edu.szu.cs.kstc.Context;
 import cn.edu.szu.cs.util.CommonUtil;
 import cn.edu.szu.cs.util.TimerHolder;
-import cn.hutool.core.lang.Assert;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
-import lombok.Data;
-import lombok.NonNull;
+import com.alibaba.fastjson.JSON;
+import com.github.davidmoten.rtree.RTree;
+import com.github.davidmoten.rtree.internal.NonLeafDefault;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * DBScanBasedApproach
@@ -20,8 +28,8 @@ import java.util.*;
  * @version 1.0
  * @date 2024/3/16 15:47
  */
-@Data
-public class DbScanBasedApproach<T extends DbScanRelevantObject> implements TopKSpatialTextualClustersRetrieval<T> {
+@SuppressWarnings("all")
+public class DbScanBasedApproach extends AbstractDbScanBasedApproach<DbScanRelevantObject> {
 
     /**
      * logger
@@ -29,87 +37,201 @@ public class DbScanBasedApproach<T extends DbScanRelevantObject> implements TopK
     private static final Log logger = LogFactory.get();
 
 
-    /**
-     * InvertedIndex
-     *
-     * @author Whitence
-     * @version 1.0
-     * @date 2024/4/3 23:58
-     */
-    public interface InvertedIndex<U> {
-        /**
-         * load data by keywords and coordinate and maxDistance and sort by distance ASC
-         *
-         * @param keywords
-         * @param coordinate
-         * @param maxDistance
-         * @return
-         */
-        SortedSet<U> loadDataSortByDistanceAsc(List<String> keywords, double[] coordinate, double maxDistance);
-
-        /**
-         * load data by keywords and sort by weight DESC
-         *
-         * @param keywords
-         * @return
-         */
-        SortedSet<U> loadDataSortByWeightDesc(List<String> keywords);
-
-    }
-
-    /**
-     * IRTree
-     *
-     * @param <U>
-     */
-    public interface IRTree<U> {
-
-        /**
-         * range query
-         *
-         * @param keywords
-         * @param coordinate
-         * @param epsilon
-         * @return
-         */
-        Queue<U> rangeQuery(List<String> keywords, double[] coordinate, double epsilon);
-
-
-        Double getMaxDistance();
-    }
-
-    /**
-     * invertedIndex
-     */
-    private InvertedIndex<T> invertedIndex;
-    /**
-     * irTree
-     */
-    private IRTree<T> irTree;
-
     private double alpha = 0.5;
-    private double maxDistance = 0.0;
 
-    public DbScanBasedApproach(@NonNull InvertedIndex<T> invertedIndex, @NonNull IRTree<T> irTree, double alpha) {
-        this.invertedIndex = invertedIndex;
-        this.irTree = irTree;
-        this.alpha = alpha;
-        this.maxDistance = irTree.getMaxDistance();
+    protected void removeObject(DbScanRelevantObject obj, SortedSet<DbScanRelevantObject> sList, SortedSet<DbScanRelevantObject> tList) {
+        sList.remove(obj);
+        tList.remove(obj);
     }
 
-    /**
-     * compute the cluster's score
-     *
-     * @param cluster
-     * @param query
-     * @return
-     */
-    protected double getScore(Set<T> cluster, KstcQuery query) {
+    protected DbScanRelevantObject getNextObject(int times, SortedSet<DbScanRelevantObject> sList, SortedSet<DbScanRelevantObject> tList) {
+        DbScanRelevantObject obj = null;
+        if (times % 2 == 0) {
+            obj = sList.first();
+        } else {
+            obj = tList.first();
+        }
+        ++times;
+        return obj;
+    }
+
+    private static class DbScanBasedApproachContext extends Context<DbScanRelevantObject>{
+
+        @Getter
+        @Setter
+        private double maxDistance = Double.MAX_VALUE;
+
+        @Getter
+        @Setter
+        private SortedSet<DbScanRelevantObject> tList;
+
+        @Getter
+        @Setter
+        private long times = 0;
+
+        @Getter
+        @Setter
+        private boolean isFirst;
+
+    }
+
+    @Override
+    protected void beforeDoDbScanBasedApproach(KstcQuery query) {
+        TimerHolder.start("DBScanBasedApproach");
+    }
+
+    @Override
+    protected Context<DbScanRelevantObject> initContext(KstcQuery query) {
+
+        DbScanBasedApproachContext context = new DbScanBasedApproachContext();
+        context.setQuery(query);
+
+        DataFetchResult dataFetchResult = KstcDataFetchManager.generateTaskAndGet(
+                DataFetchConstant.INFRASTRUCTURE_LAYER,
+                DataFetchConstant.LOAD_OPTICS_RTREE_DATA_BY_KEYWORDS,
+                JSON.toJSONString(query)
+        );
+
+        if(!dataFetchResult.isSuccess()){
+            throw new RuntimeException("Failed to load data from the database. task: " + JSON.toJSONString(dataFetchResult));
+        }
+
+        RTree<DbScanRelevantObject, GeoPointDouble> rTree = (RTree<DbScanRelevantObject, GeoPointDouble>) dataFetchResult.getData();
+
+        if(rTree.root().isPresent()){
+            NonLeafDefault<DbScanRelevantObject, GeoPointDouble> rootNode = (NonLeafDefault<DbScanRelevantObject, GeoPointDouble>) rTree.root().get();
+            context.setMaxDistance(
+                    CommonUtil.getDistance(rootNode.geometry().mbr().x1(), rootNode.geometry().mbr().y1(),
+                            rootNode.geometry().mbr().x2(), rootNode.geometry().mbr().y2())
+            );
+        }
+
+        return context;
+    }
+
+
+    @Override
+    protected SortedSet<DbScanRelevantObject> getRelevantObjects(Context<DbScanRelevantObject> context) {
+        DbScanBasedApproachContext dbScanBasedApproachContext = (DbScanBasedApproachContext) context;
+        KstcQuery query = dbScanBasedApproachContext.getQuery();
+        // 从数据集中加载数据
+        // Load data from the dataset
+        DataFetchResult task = KstcDataFetchManager.generateTaskAndGet(DataFetchConstant.INFRASTRUCTURE_LAYER,
+                DataFetchConstant.LOAD_DBSCAN_DATA_BY_KEYWORDS,
+                JSON.toJSONString(query));
+
+        if(!task.isSuccess()){
+            throw new RuntimeException("Failed to load data from the database. task: " + JSON.toJSONString(task));
+        }
+
+        // 过滤掉距离大于最大距离的数据
+        // Filter out data with distances greater than the maximum distance
+        List<DbScanRelevantObject> dbScanRelevantObjects = Convert.toList(DbScanRelevantObject.class, task.getData()).stream()
+                .filter(obj-> CommonUtil.calculateDistance(obj.getCoordinate(), query.getCoordinate()) <= query.getMaxDistance())
+                .collect(Collectors.toList());
+
+
+        // 将数据集中的数据按照权重排序
+        // Sort the data in the dataset by weight
+        SortedSet<DbScanRelevantObject> tList = new TreeSet<>(
+                Comparator.comparingDouble(obj->obj.getWeight(query.getKeywords()))
+        );
+        tList.addAll(dbScanRelevantObjects);
+        dbScanBasedApproachContext.setTList(tList);
+
+        // 将数据集中的数据按照距离排序
+        // Sort the data in the dataset by distance
+        SortedSet<DbScanRelevantObject> sList = new TreeSet<>(
+                Comparator.comparingDouble(obj -> CommonUtil.calculateDistance(obj.getCoordinate(), query.getCoordinate())
+        ));
+        sList.addAll(dbScanRelevantObjects);
+        return sList;
+    }
+
+    @Override
+    protected List<Set<DbScanRelevantObject>> initClusters(Context<DbScanRelevantObject> context) {
+        return new ArrayList<>();
+    }
+
+    @Override
+    protected DbScanRelevantObject getNextObject(SortedSet<DbScanRelevantObject> sList, Context<DbScanRelevantObject> context) {
+        DbScanBasedApproachContext dbScanBasedApproachContext = (DbScanBasedApproachContext) context;
+        long times = dbScanBasedApproachContext.getTimes();
+        SortedSet<DbScanRelevantObject> tList = dbScanBasedApproachContext.getTList();
+        DbScanRelevantObject obj = null;
+        if (times % 2 == 0) {
+            obj = sList.first();
+        } else {
+            obj = tList.first();
+        }
+        dbScanBasedApproachContext.setTimes(times + 1);
+        return obj;
+    }
+
+    @Override
+    protected Queue<DbScanRelevantObject> rangeQuery(DbScanRelevantObject p, Context<DbScanRelevantObject> context) {
+        DbScanBasedApproachContext dbScanBasedApproachContext = (DbScanBasedApproachContext) context;
+
+        KstcQuery query = context.getQuery();
+        // 准备查询参数
+        // Prepare query parameters
+        KstcQuery kstcQuery = new KstcQuery();
+        kstcQuery.setCoordinate(p.getCoordinate());
+        kstcQuery.setEpsilon(query.getEpsilon());
+        kstcQuery.setCommand(DataFetchConstant.DBSCAN_RTREE_RANGE_QUERY);
+        kstcQuery.setKeywords(query.getKeywords());
+
+        // 进行范围查询
+        // Perform range query
+        DataFetchResult task = KstcDataFetchManager.generateTaskAndGet(DataFetchConstant.INFRASTRUCTURE_LAYER,
+                DataFetchConstant.DBSCAN_RTREE_RANGE_QUERY,
+                JSON.toJSONString(kstcQuery));
+
+        if(!task.isSuccess()){
+            throw new RuntimeException("Failed to load data from the database.task: " + JSON.toJSONString(task));
+        }
+        Queue<DbScanRelevantObject> queue = (Queue<DbScanRelevantObject>) task.getData();
+
+        // 提前为下一次查询准备数据
+        // Prepare data for the next query in advance
+        if(queue.size() >= query.getMinPts() && dbScanBasedApproachContext.isFirst()){
+            for (DbScanRelevantObject dbScanRelevantObject : queue) {
+                kstcQuery.setCoordinate(dbScanRelevantObject.getCoordinate());
+                KstcDataFetchManager.generateTask(DataFetchConstant.INFRASTRUCTURE_LAYER,
+                        DataFetchConstant.DBSCAN_RTREE_RANGE_QUERY,
+                        JSON.toJSONString(kstcQuery));
+            }
+            dbScanBasedApproachContext.setFirst(false);
+        }
+
+        return queue;
+    }
+
+    @Override
+    protected boolean canSkip(DbScanRelevantObject obj, Context<DbScanRelevantObject> context) {
+        return false;
+    }
+
+    @Override
+    protected void removeObject(DbScanRelevantObject obj, SortedSet<DbScanRelevantObject> sList, Context<DbScanRelevantObject> context) {
+        DbScanBasedApproachContext dbScanBasedApproachContext = (DbScanBasedApproachContext) context;
+        SortedSet<DbScanRelevantObject> tList = dbScanBasedApproachContext.getTList();
+        sList.remove(obj);
+        tList.remove(obj);
+    }
+
+    @Override
+    protected boolean canFinishAdvanced(DbScanRelevantObject obj, Set<DbScanRelevantObject> cluster, Context<DbScanRelevantObject> context) {
+
+        DbScanBasedApproachContext dbScanBasedApproachContext = (DbScanBasedApproachContext) context;
+        // 数据集中最大距离
+        // Maximum distance in the dataset
+        double maxDistance = dbScanBasedApproachContext.getMaxDistance();
+        KstcQuery query = context.getQuery();
 
         double minDistance = 0.0;
         double maxWeight = 0.0;
-
-        for (T t : cluster) {
+        for (DbScanRelevantObject t : cluster) {
 
             double distance = CommonUtil.calculateDistance(t.getCoordinate(), t.getCoordinate());
             if (distance < minDistance) {
@@ -121,162 +243,41 @@ public class DbScanBasedApproach<T extends DbScanRelevantObject> implements TopK
             }
 
         }
+        double tau = alpha * (1 - minDistance / maxDistance) + (1 - maxWeight) * (1 - alpha);
 
-        return alpha * (1 - minDistance / maxDistance) + (1 - maxWeight) * (1 - alpha);
-    }
-
-    protected void removeObject(T obj, SortedSet<T> sList, SortedSet<T> tList) {
-        sList.remove(obj);
-        tList.remove(obj);
-    }
-
-    protected double getBound(T obj, KstcQuery query) {
 
         double distance = CommonUtil.calculateDistance(obj.getCoordinate(), query.getCoordinate());
         double distanceWeight = 1 - distance / maxDistance;
 
         double weight = obj.getWeight(query.getKeywords());
 
-        return alpha * distanceWeight + (1 - weight) * alpha;
+        double bound = alpha * distanceWeight + (1 - weight) * alpha;
+
+        return bound >= tau;
     }
-
-
-    protected T getNextObject(int times, SortedSet<T> sList, SortedSet<T> tList) {
-        T obj = null;
-        if (times % 2 == 0) {
-            obj = sList.first();
-        } else {
-            obj = tList.first();
-        }
-        ++times;
-        return obj;
-    }
-
-    /**
-     * get SList
-     * @param keywords
-     * @param coordinate
-     * @param maxDistance
-     * @return
-     */
-    protected SortedSet<T> getSList(List<String> keywords, double[] coordinate, double maxDistance) {
-        return invertedIndex.loadDataSortByDistanceAsc(keywords, coordinate, maxDistance);
-    }
-
-    protected SortedSet<T> getTList(List<String> keywords) {
-        return invertedIndex.loadDataSortByWeightDesc(keywords);
-    }
-
-    protected Queue<T> rangeQuery(List<String> keywords, double[] coordinate, double epsilon) {
-        return irTree.rangeQuery(keywords, coordinate, epsilon);
-    }
-
-    protected void beforeDoDbScanBasedApproach(KstcQuery query) {
-        Assert.isTrue(query.getCoordinate() != null && query.getCoordinate().length == 2, "Please enter coordinate correctly.");
-        Assert.checkBetween(query.getCoordinate()[0], -180.0, 180.0, "wrong longitude.");
-        Assert.checkBetween(query.getCoordinate()[1], -90.0, 90.0, "wrong latitude.");
-        Assert.checkBetween(query.getK(), 1, 20, "wrong k.");
-        Assert.checkBetween(query.getEpsilon(), 1.0, Double.MAX_VALUE, "wrong epsilon.");
-        Assert.checkBetween(query.getMinPts(), 2, Integer.MAX_VALUE, "wrong minPts.");
-        Assert.checkBetween(query.getMaxDistance(), -1, Double.MAX_VALUE, "wrong maxDistance.");
-        Assert.notNull(query.getKeywords(), "keywords is null.");
-        Assert.isFalse(query.getKeywords().isEmpty(), "keywords is empty.");
-
-        TimerHolder.start("DBScanBasedApproach");
-    }
-
-    protected void afterDoDbScanBasedApproach(KstcQuery query,List<Set<T>> rList) {
-        long stop = TimerHolder.stop("DBScanBasedApproach");
-        logger.info("DBScanBasedApproach cost time: " + stop + " ms.");
-    }
-
-    private List<Set<T>> doDbScanBasedApproach(KstcQuery query){
-        // before do dbScanBasedApproach
-        beforeDoDbScanBasedApproach(query);
-
-        // sort objs ascent by distance
-        SortedSet<T> sList = getSList(query.getKeywords(), query.getCoordinate(), maxDistance);
-        // sort objs descent by weight
-        SortedSet<T> tList = getTList(query.getKeywords());
-
-        List<Set<T>> rList = new ArrayList<>(query.getK());
-
-        double bound = 0.0;
-        double t = Double.MAX_VALUE;
-        int times = 0;
-        Set<T> noises = new HashSet<>();
-
-        do {
-            T obj = getNextObject(times, sList, tList);
-
-            Set<T> cluster = getCluster(obj, query, sList, tList, noises);
-            if (!cluster.isEmpty()) {
-                rList.add(cluster);
-                t = getScore(cluster, query);
-                bound = getBound(obj, query);
-            }
-
-        } while (!sList.isEmpty() && rList.size() < query.getK() && bound < t);
-
-        afterDoDbScanBasedApproach(query,rList);
-
-        return rList;
-    }
-
 
     @Override
-    public List<Set<T>> kstcSearch(KstcQuery query) {
-        return doDbScanBasedApproach(query);
+    protected void afterAddToCluster(DbScanRelevantObject obj, Set<DbScanRelevantObject> cluster, Context<DbScanRelevantObject> context) {
+        KstcQuery query = context.getQuery();
+        // 准备查询参数
+        // Prepare query parameters
+        KstcQuery kstcQuery = new KstcQuery();
+        kstcQuery.setCoordinate(obj.getCoordinate());
+        kstcQuery.setEpsilon(query.getEpsilon());
+        kstcQuery.setCommand(DataFetchConstant.DBSCAN_RTREE_RANGE_QUERY);
+        kstcQuery.setKeywords(query.getKeywords());
+        // 为下一次查询准备数据
+        // Prepare data for the next query
+        KstcDataFetchManager.generateTask(DataFetchConstant.INFRASTRUCTURE_LAYER,
+                DataFetchConstant.DBSCAN_RTREE_RANGE_QUERY,
+                JSON.toJSONString(kstcQuery));
     }
 
-    /**
-     * get cluster
-     *
-     * @param p
-     * @param q
-     * @param sList
-     * @param tList
-     * @param noises
-     * @return
-     */
-    private Set<T> getCluster(T p,
-                              KstcQuery q,
-                              SortedSet<T> sList,
-                              SortedSet<T> tList,
-                              Set<T> noises) {
-
-        Queue<T> neighbors = rangeQuery(q.getKeywords(), p.getCoordinate(), q.getEpsilon());
-
-        if (neighbors.size() < q.getMinPts()) {
-            removeObject(p, sList, tList);
-            // mark p as noise
-            noises.add(p);
-            return Collections.emptySet();
-        }
-
-        Set<T> result = new HashSet<>(neighbors);
-        removeObject(p, sList, tList);
-        neighbors.remove(p);
-
-        while (!neighbors.isEmpty()) {
-            T neighbor = neighbors.poll();
-
-            Queue<T> neighborsTmp = rangeQuery(q.getKeywords(), neighbor.getCoordinate(), q.getEpsilon());
-
-            if (neighborsTmp.size() >= q.getMinPts()) {
-
-                for (T obj : neighborsTmp) {
-                    if (noises.contains(obj)) {
-                        result.add(obj);
-                    } else if (!result.contains(obj)) {
-                        result.add(obj);
-                        neighbors.add(obj);
-                        removeObject(p, sList, tList);
-                    }
-                }
-            }
-        }
-        return result;
+    @Override
+    protected void afterDoDbScanBasedApproach(Context<DbScanRelevantObject> context) {
+        long dbScanBasedApproach = TimerHolder.stop("DBScanBasedApproach");
+        System.out.println("DBScanBasedApproach: " + dbScanBasedApproach);
     }
+
 
 }

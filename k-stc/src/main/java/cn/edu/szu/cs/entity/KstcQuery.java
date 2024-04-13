@@ -1,9 +1,7 @@
 package cn.edu.szu.cs.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,8 +13,9 @@ import java.util.List;
  * @date 2023/9/30 22:29
  * @version 1.0
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder(toBuilder = true)
+@SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class KstcQuery extends BaseDataFetchActionParams implements Serializable {

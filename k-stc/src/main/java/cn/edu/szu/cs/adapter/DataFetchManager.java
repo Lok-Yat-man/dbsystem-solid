@@ -1,15 +1,20 @@
 package cn.edu.szu.cs.adapter;
 
-import cn.edu.szu.cs.entity.DataFetchTask;
+import cn.edu.szu.cs.entity.DataFetchResult;
 
 import java.util.List;
 
 public interface DataFetchManager {
 
 
-    String generateTask(String command, String paramsStr);
+    void generateTask(String commandType, String command, String paramsStr);
 
-    List<DataFetchTask> listTask();
+    List<DataFetchResult> listTask();
 
-     DataFetchTask getTask(String actionId);
+     DataFetchResult getTask(String actionId);
+
+
+     DataFetchResult generateTaskAndGet(String commandType, String command, String paramsStr);
+
+
 }

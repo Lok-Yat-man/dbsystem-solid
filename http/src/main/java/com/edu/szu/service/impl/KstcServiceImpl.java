@@ -1,12 +1,16 @@
 package com.edu.szu.service.impl;
 
 import cn.edu.szu.cs.adapter.KstcDataFetchManager;
-import cn.edu.szu.cs.common.DataFetchCommandConstant;
-import cn.edu.szu.cs.entity.DataFetchTask;
-import cn.edu.szu.cs.entity.DbScanRelevantObject;
+import cn.edu.szu.cs.constant.DataFetchConstant;
+import cn.edu.szu.cs.dto.LabelPrefixMatchQueryDTO;
+import cn.edu.szu.cs.entity.DataFetchResult;
 import cn.edu.szu.cs.entity.KstcQuery;
-import cn.edu.szu.cs.entity.RelevantObject;
+import cn.edu.szu.cs.kstc.RelevantObject;
+import cn.edu.szu.cs.util.CommonUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
+import com.edu.szu.api.Result;
+import com.edu.szu.dto.DataCoordinateRangeDTO;
 import com.edu.szu.entity.Coordinate;
 import com.edu.szu.entity.GeoJson;
 import com.edu.szu.entity.Marker;
@@ -20,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
 @Service
 @Log4j2
 public class KstcServiceImpl implements KstcService {
@@ -28,32 +32,29 @@ public class KstcServiceImpl implements KstcService {
 
     public KstcServiceImpl() {
 
-        KstcQuery query = KstcQuery.builder()
-                .keywords(
-                        Collections.singletonList("food")
-                )
-                .coordinate(new double[]{-75.16, 39.95})
-                .k(1)
-                .epsilon(100)
-                .minPts(10)
-                .maxDistance(Double.MAX_VALUE)
-                .build();
 
-        KstcDataFetchManager.generateTask(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH, JSON.toJSONString(query));
+
+    }
+
+    private List<Set<RelevantObject>> kstcSearch(KstcQuery query) {
+
+        DataFetchResult task = KstcDataFetchManager.generateTaskAndGet(
+                DataFetchConstant.OPERATIONAL_LAYER,
+                query.getCommand(), JSON.toJSONString(query));
+
+        if (!task.isSuccess()) {
+            throw new RuntimeException("Task failed: " + task.getMsg());
+        }
+        return (List<Set<RelevantObject>>) task.getData();
     }
 
     private GeoJson doLoadGeoJson(KstcQuery query) {
 
-        String actionId = KstcDataFetchManager.generateTask(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH, JSON.toJSONString(query));
-        DataFetchTask task = KstcDataFetchManager.getTask(actionId);
-        if (!task.isSuccess()) {
-            throw new RuntimeException("Task failed: " + task.getMsg());
-        }
-        List<Set<DbScanRelevantObject>> list = (List<Set<DbScanRelevantObject>>) task.getData();
+        List<Set<RelevantObject>> list = kstcSearch(query);
         log.info("query:{}, list.size:{} ",JSON.toJSONString(query), list.size());
         GeoJson geoJson = new GeoJson();
         for (int i = 0; i < list.size(); i++) {
-            Set<DbScanRelevantObject> relatedObjects = list.get(i);
+            Set<RelevantObject> relatedObjects = list.get(i);
             String clusterId = i + "";
             List<GeoJson.Feature> features = relatedObjects.stream()
                     .map(relatedObject -> {
@@ -77,12 +78,7 @@ public class KstcServiceImpl implements KstcService {
 
     private List<Marker> doLoadMarkers(KstcQuery query) {
 
-        String actionId = KstcDataFetchManager.generateTask(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH, JSON.toJSONString(query));
-        DataFetchTask task = KstcDataFetchManager.getTask(actionId);
-        if (!task.isSuccess()) {
-            throw new RuntimeException("Task failed: " + task.getMsg());
-        }
-        List<Set<DbScanRelevantObject>> list = (List<Set<DbScanRelevantObject>>) task.getData();
+        List<Set<RelevantObject>> list = kstcSearch(query);
         log.info("query:{}, list.size:{} ",JSON.toJSONString(query), list.size());
         List<Marker> res = new ArrayList<>(list.size());
         for (int i = 0; i < list.size(); i++) {
@@ -112,5 +108,57 @@ public class KstcServiceImpl implements KstcService {
     @Override
     public List<Marker> loadMarkers(KstcQuery query) {
         return doLoadMarkers(query);
+    }
+
+    @Override
+    public Result<DataCoordinateRangeDTO> getDataCoordinateRange(KstcQuery query) {
+
+        List<Set<RelevantObject>> list = null;
+        try {
+            list = kstcSearch(query);
+        } catch (Exception e) {
+            log.error("getDataCoordinateRange error", e);
+            return Result.failed(e.getMessage());
+        }
+
+        double[] min = new double[]{180, 90};
+        double[] max = new double[]{-180, -90};
+        for (Set<RelevantObject> set : list) {
+            for (RelevantObject relevantObject : set) {
+                double[] coordinate = relevantObject.getCoordinate();
+                min[0] = Math.min(min[0], coordinate[0]);
+                min[1] = Math.min(min[1], coordinate[1]);
+                max[0] = Math.max(max[0], coordinate[0]);
+                max[1] = Math.max(max[1], coordinate[1]);
+            }
+        }
+        log.info("min:{}, max:{}", min, max);
+        Double distance = CommonUtil.calculateDistance(new double[]{min[0],max[1]}, new double[]{max[0],min[1]});
+        log.info("distance:{}", distance);
+        double[] center = new double[]{(min[0] + max[0]) / 2, (min[1] + max[1]) / 2};
+
+        return Result.success(new DataCoordinateRangeDTO(distance,list.size(),center[0],center[1]));
+    }
+
+    @Override
+    public List<String> getKeyWords(String keywords) {
+
+        if(StrUtil.isBlank(keywords)){
+            return Collections.emptyList();
+        }
+        String[] split = keywords.split(";");
+        String keyword = split[split.length - 1];
+
+        LabelPrefixMatchQueryDTO labelPrefixMatchQueryDTO = new LabelPrefixMatchQueryDTO();
+        labelPrefixMatchQueryDTO.setKeyword(keyword);
+
+        DataFetchResult dataFetchResult = KstcDataFetchManager
+                .generateTaskAndGet(
+                        DataFetchConstant.OPERATIONAL_LAYER,
+                        DataFetchConstant.PREFIX_MATCH_KEYWORDS,
+                        JSON.toJSONString(labelPrefixMatchQueryDTO)
+                );
+
+        return (List<String>) dataFetchResult.getData();
     }
 }

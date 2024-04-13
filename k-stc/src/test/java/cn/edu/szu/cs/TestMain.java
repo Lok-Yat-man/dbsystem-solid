@@ -1,8 +1,8 @@
 package cn.edu.szu.cs;
 
 import cn.edu.szu.cs.adapter.KstcDataFetchManager;
-import cn.edu.szu.cs.common.DataFetchCommandConstant;
-import cn.edu.szu.cs.entity.DataFetchTask;
+import cn.edu.szu.cs.constant.DataFetchConstant;
+import cn.edu.szu.cs.entity.DataFetchResult;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
 import cn.edu.szu.cs.entity.KstcQuery;
 import cn.hutool.core.convert.Convert;
@@ -17,22 +17,18 @@ import java.util.Set;
 public class TestMain {
     public static void main(String[] args) {
 
-
         KstcQuery query = new KstcQuery();
-        query.setKeywords(Arrays.asList("food"));
+        query.setKeywords(Arrays.asList("restaurants"));
         query.setK(10);
-        query.setEpsilon(100);
+        query.setEpsilon(1000);
         query.setMinPts(10);
         query.setMaxDistance(Double.MAX_VALUE);
         query.setCoordinate(new double[]{-75.16,39.95});
-        query.setCommand(DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH);
+        query.setCommand(DataFetchConstant.SIMPLE_DBSCAN_BASED_APPROACH);
 
-        String actionId = KstcDataFetchManager.generateTask(
-                DataFetchCommandConstant.SIMPLE_DBSCAN_BASED_APPROACH,
-                JSON.toJSONString(query)
-        );
-
-        DataFetchTask task = KstcDataFetchManager.getTask(actionId);
+        DataFetchResult task = KstcDataFetchManager.generateTaskAndGet(DataFetchConstant.OPERATIONAL_LAYER,
+                DataFetchConstant.SIMPLE_DBSCAN_BASED_APPROACH,
+                JSON.toJSONString(query));
 
         List<Set<DbScanRelevantObject>> result = new ArrayList<>();
 

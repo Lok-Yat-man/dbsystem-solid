@@ -1,5 +1,7 @@
 package cn.edu.szu.cs.entity;
 
+import cn.edu.szu.cs.kstc.RelevantObject;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.Objects;
  * @date 2024/4/5 20:07
  * @version 1.0
  */
-public class DbScanRelevantObject implements Serializable, RelevantObject {
+public class DbScanRelevantObject implements Serializable, RelevantObject,Comparable<DbScanRelevantObject>{
 
     /**
      * object id
@@ -136,5 +138,11 @@ public class DbScanRelevantObject implements Serializable, RelevantObject {
     @Override
     public int hashCode() {
         return Objects.hash(objectId);
+    }
+
+
+    @Override
+    public int compareTo(DbScanRelevantObject o) {
+        return this.objectId.compareTo(o.objectId);
     }
 }

@@ -1,0 +1,15 @@
+
+cn.edu.szu.cs.action.operatianal.SimpleDbScanBasedApproachDataFetchAction
+cn.edu.szu.cs.action.operatianal.DbScanBasedApproachDataFetchAction
+cn.edu.szu.cs.action.operatianal.OpticsOgApproachDataFetchAction
+cn.edu.szu.cs.action.operatianal.OpticsOmApproachDataFetchAction
+
+cn.edu.szu.cs.action.infrastructure.DbScanRTreeDataFetchAction
+cn.edu.szu.cs.action.infrastructure.DbScanRelevantObjectDataFetchAction
+cn.edu.szu.cs.action.infrastructure.DbScanRTreeRangeQueryDataFetchAction
+
+cn.edu.szu.cs.action.infrastructure.OpticsRelevantObjectDataFetchAction
+cn.edu.szu.cs.action.infrastructure.OpticsRTreeDataFetchAction
+cn.edu.szu.cs.action.infrastructure.OpticsRTreeRangeQueryDataFetchAction
+cn.edu.szu.cs.action.infrastructure.WordOrderingIndexDataFetchAction
+cn.edu.szu.cs.action.operatianal.LabelPrefixMatchDataFetchAction

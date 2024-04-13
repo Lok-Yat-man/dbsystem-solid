@@ -54,9 +54,18 @@ public class TimerHolder {
     }
 
     public static long stop(String id){
+        return getTimer().intervalMs(id);
+    }
+
+    public static long stopAndRelease(String id){
         long intervalMs = getTimer().intervalMs(id);
         releaseTimer();
         return intervalMs;
+    }
+
+
+    public static void release(){
+        releaseTimer();
     }
 
 }

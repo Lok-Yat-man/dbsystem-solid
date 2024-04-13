@@ -1,8 +1,9 @@
 package com.edu.szu;
 
 import cn.edu.szu.cs.entity.KstcQuery;
+import com.edu.szu.api.Result;
+import com.edu.szu.dto.DataCoordinateRangeDTO;
 import com.edu.szu.entity.GeoJson;
-import com.edu.szu.entity.Marker;
 import com.edu.szu.service.KstcService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -25,33 +26,35 @@ public class KSTCEndpoint {
     private KstcService kstcService;
 
 
-    @GetMapping("/markers")
-    public List<Marker> markers(
-            @RequestParam("keywords") String keywords,
-            @RequestParam("lon") Double lon,
-            @RequestParam("lat") Double lat,
-            @RequestParam("k") Integer k,
-            @RequestParam("epsilon") Double epsilon,
-            @RequestParam("minPts") Integer minPts,
-            @RequestParam("maxDist") Double maxDist
-            ){
+    @GetMapping("/keywords")
+    public List<String> getKeyWords(@RequestParam("keywords") String keywords){
+        return kstcService.getKeyWords(keywords);
+    }
+
+
+    @GetMapping("/dataCoordinateRange")
+    public Result<DataCoordinateRangeDTO> dataCoordinateRangeDTO(@RequestParam("keywords") String keywords,
+                                                                @RequestParam("lon") Double lon,
+                                                                @RequestParam("lat") Double lat,
+                                                                @RequestParam("k") Integer k,
+                                                                @RequestParam("epsilon") Double epsilon,
+                                                                @RequestParam("minPts") Integer minPts,
+                                                                @RequestParam("maxDist") Double maxDist,
+                                                                @RequestParam("command") String command){
         KstcQuery kstcQuery = KstcQuery.builder()
                 .keywords(
-                        Arrays.stream(keywords.split(",")).collect(Collectors.toList())
+                        Arrays.stream(keywords.split(";")).collect(Collectors.toList())
                 )
                 .coordinate(new double[]{lon, lat})
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
                 .maxDistance(maxDist<=0?Double.MAX_VALUE:maxDist)
+                .command(command)
                 .build();
 
-        log.info("markers: "+ kstcQuery.toString());
-        List<Marker> markers = kstcService.loadMarkers(
-                kstcQuery
-        );
-        log.info("markers: "+ markers.size());
-        return markers;
+
+        return kstcService.getDataCoordinateRange(kstcQuery);
     }
 
     @GetMapping("/geojson")
@@ -62,17 +65,18 @@ public class KSTCEndpoint {
             @RequestParam("k") Integer k,
             @RequestParam("epsilon") Double epsilon,
             @RequestParam("minPts") Integer minPts,
-            @RequestParam("maxDist") Double maxDist
-    ){
+            @RequestParam("maxDist") Double maxDist,
+            @RequestParam("command") String command){
         KstcQuery kstcQuery = KstcQuery.builder()
                 .keywords(
-                        Arrays.stream(keywords.split(",")).collect(Collectors.toList())
+                        Arrays.stream(keywords.split(";")).collect(Collectors.toList())
                 )
                 .coordinate(new double[]{lon, lat})
                 .k(k)
                 .epsilon(epsilon)
                 .minPts(minPts)
                 .maxDistance(maxDist<=0?Double.MAX_VALUE:maxDist)
+                .command(command)
                 .build();
         log.info("geoJson: "+ kstcQuery.toString());
 
