@@ -1,7 +1,6 @@
 package com.edu.szu;
 
 import com.edu.szu.config.*;
-
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +12,7 @@ import org.springframework.context.annotation.Import;
         KSTCConfig.class,
         KDVConfig.class,
         BSTDConfig.class,
+        //PAConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,
@@ -29,3 +29,4 @@ public class DBSystemApp {
         SpringApplication.run(DBSystemApp.class, args);
     }
 }
+

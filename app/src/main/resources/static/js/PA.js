@@ -83,7 +83,7 @@ async function loadPA(dataset,vueThis, zoom) {
     vueThis.pa.loading = true;
     vueThis.mapLoading = true;
     //get result
-    //if(env!=="local"){
+    if(env!=="local"){
       await axios({
           method: "post",
           url: vueThis.baseUrl + "/data/pa/" + dataset+".txt/runpa"
@@ -91,9 +91,9 @@ async function loadPA(dataset,vueThis, zoom) {
           const runningStatus = response.data;
           console.log("PA running status: " + runningStatus);
       });
-    //}
+    }
     //get GeoJson
-    /*if(env!=="local"){
+    if(env!=="local"){
       await axios({
           method: "Post",
           url: vueThis.baseUrl + "/data/pa/geojson/" +dataset+".json"
@@ -101,10 +101,10 @@ async function loadPA(dataset,vueThis, zoom) {
           const runningResult = response.data;
           console.log("GeoJson Address: " + runningResult);
       });
-    }*/
-    //vueThis.pa.maxClusterNums = await getClusters(dataset, zoom, vueThis);
-    //loadPoints(vueThis, path[1], zoom);
-    //loadMarkers(vueThis);
+    }
+    vueThis.pa.maxClusterNums = await getClusters(dataset, zoom, vueThis);
+    loadPoints(vueThis, path[1], zoom);
+    loadMarkers(vueThis);
     vueThis.sideBarDisabled = false;
     vueThis.pa.loading = false;
     vueThis.mapLoading = false;
@@ -112,16 +112,18 @@ async function loadPA(dataset,vueThis, zoom) {
 //HTTP请求获取数据
 async function getClusters(dataset, zoom, vueThis) {
     let nums = 0;
+    //console.log(dataset);
     await axios({
         method: "get",
-        url: vueThis.baseUrl + "/data/pa/cluster" +dataset+".json"
+        url: vueThis.baseUrl + "/data/pa/cluster/" +dataset+".json"
     }).then(response => {
         const jsonData = response.data;
-        console.log("jsonData:"+jsonData);
+        //console.log("jsonData:"+jsonData);
         vueThis.pa.clusters = jsonData.data;
-        console.log("jsonData.data:"+jsonData.data);
+        //console.log("jsonData.data:"+jsonData.data);
         vueThis.pa.maxClusterNums = vueThis.pa.clusters.length;
-        vueThis.pa.clusterNums = Math.min(10, vueThis.pa.maxClusterNums);
+        if(dataset=="Brightkite_Euro_sorted"){vueThis.pa.clusterNums = Math.min(5, vueThis.pa.maxClusterNums);}
+        else if(dataset=="Gowalla_NA_sorted"){vueThis.pa.clusterNums = Math.min(5, vueThis.pa.maxClusterNums);}
         nums = vueThis.pa.clusters.length;
         console.log("get cluster finished, clusterNums: ", vueThis.pa.maxClusterNums);
     });
@@ -170,7 +172,22 @@ function loadMarkers(vueThis) {
     vueThis.pa.markers = makers;
     console.log("maker nums: ",makers.length)
 }
-
+function updateClusterNums(vueThis){
+    let pa = vueThis.pa;
+    if(pa.clusterNums < pa.layerLoaded){
+        for(let i = pa.clusterNums;i<pa.layerLoaded;++i){
+            vueThis.map.removeLayer("layer"+i);
+            vueThis.pa.markers[i].remove();
+        }
+    }else if(pa.clusterNums > pa.layerLoaded){
+        for(let i = pa.layerLoaded;i<pa.clusterNums;++i){
+            addLayer(i,vueThis);
+            vueThis.pa.markers[i].addTo(vueThis.map);
+        }
+    }
+    pa.layerLoaded = pa.clusterNums;
+}
 export default{
     loadPA,
+    updateClusterNums,
 }

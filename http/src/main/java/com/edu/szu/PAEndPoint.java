@@ -31,7 +31,7 @@ public class PAEndPoint {
 
     @PostMapping("/{inputPath}/runpa")
     public String paRun(@PathVariable String inputPath) throws Exception {
-        var outputPath="PA/src/main/result/"+inputPath;
+        var outputPath=basePath+inputPath;
         var dataPath=basePath+inputPath;
         manager.function(dataPath, outputPath);
         log.info("runpa");

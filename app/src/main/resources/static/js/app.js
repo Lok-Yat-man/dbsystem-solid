@@ -31,6 +31,10 @@ new Vue({
             currentAlgorithm: 'DCPGS',
             sideBarDisabled: false,
             mapLoading: false,
+            expandIcon: './img/btn-open.png', // sidebar展开时的图标路径
+            collapseIcon: './img/sidebar/btn-fold.png',// sidebar收起时的图标路径
+            paramExpandIcon:'./img/params/btn-popupOpen.png',
+            paramCollapseIcon:'./img/params/btn-popupFold.png',
             DCPGS: {
                 loading: false,
                 dataset: "gowalla",//gowalla or brightkite
@@ -144,6 +148,7 @@ new Vue({
             }
         }
     },
+
     methods: {
         async paramsSwitch(state){
             this.$forceUpdate();
@@ -199,6 +204,10 @@ new Vue({
               var k = this.topk_yago.query.k_yago_topk;
               await topk_yago.PostTopK_yago(this, lon, la, key, k);
             }
+            else if(state === 'PA_UPDATE'){
+              this.pa.loading = true;
+              this.sideBarDisabled = true;
+            }
             else{
                 this.switchStatus = state;
             }
@@ -218,12 +227,22 @@ new Vue({
 
         sideBarSwitch(id, switchId,inName, outName, switchInName, switchOutName){
             let sideBar = document.getElementById(id);
-            if(sideBar.classList.contains(outName)){
+            if(sideBar.classList.contains(outName)){//展开
                 sideBar.classList.add(inName);
                 sideBar.classList.remove(outName);
-            }else if(sideBar.classList.contains(inName)){
+                if(id=='sideBar'){
+                  this.$refs.sideBarIcon.src = this.collapseIcon;
+                }else if(id=='params'){
+                  this.$refs.paramIcon.src = this.paramExpandIcon;
+                }
+            }else if(sideBar.classList.contains(inName)){//收起
                 sideBar.classList.add(outName);
                 sideBar.classList.remove(inName);
+                if(id=='sideBar'){
+                  this.$refs.sideBarIcon.src = this.expandIcon;
+                }else if(id=='params'){
+                  this.$refs.paramIcon.src = this.paramCollapseIcon;
+                }
             }
             let barSwitch = document.getElementById(switchId);
             if(barSwitch.classList.contains(switchOutName)){
@@ -237,6 +256,9 @@ new Vue({
 
         updateClusterNums(){
             dcpgs.updateClusterNums(this);
+        },
+        updatePAClusterNums(){
+          pa.updateClusterNums(this);
         },
 
         async loadDSPGS(location, zoom){
@@ -338,10 +360,14 @@ new Vue({
         },
 
         loadPA(dataset,zoom){
+           this.currentAlgorithm = "PA";
+           this.switchStatus="PA";
+           this.paramsSwitch('PA_UPDATE');
             if(dataset==""){
                 dataset=this.pa.dataset;
             }
             pa.loadPA(dataset,this,zoom);
+            pa.updateClusterNums(this);
         }
 
     },

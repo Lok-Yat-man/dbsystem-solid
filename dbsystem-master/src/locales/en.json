@@ -1,0 +1,38 @@
+{
+    "lang":"中文",
+    "header-title1" : "Hong Kong COVID-19 HotSpot Map",
+    "header-title2" :"Powered by LibKDV - The fastest library in the world",
+    "footer-text":"Copyright ©2022 Hong Kong Baptist University",
+    "footer-title": "Centre for Data Science University of Macau",
+    "update-text1":"Based on data from ",
+    "update-text2":"COVID-19 Epidemic Map",
+    "abouts-text1": "This system is developed based on LIBKDV, the state-of-the-art algorithm for heatmap computation (https://github.com/libkdv/libkdv).",
+    "abouts-text2": "The COVID-19 data is obtained from",
+    "abouts-text3": "COVID-19 Epidemic Map",
+    "abouts-text4": ".",
+    "abouts-title": "About",
+    "layer-title": "Map Style",
+    "setting-title": "Settings",
+    "tool-tip1": "Visualizing the locations visited by",
+    "tool-tip2": "confirmed cases in the past 7 days",
+    "date-filter": "Date Filter",
+    "from":"From",
+    "to":"to",
+    "S-HM":"Show HeatMap ",
+    "RTS" : "Real Time Computing",
+    "TKDV": "Temporal KDV",
+    "RL":"Resolution Level",
+    "IR": "Influence Range",
+    "ID": "Influence Days",
+    "Op": "Opacity",
+    "Light" : "Light",
+    "Dark": "Dark",
+    "Satellite" : "Satellite",
+    "Basic": "Basic",
+    "Open Street Map": "Open Street Map"
+
+
+
+}
+
+

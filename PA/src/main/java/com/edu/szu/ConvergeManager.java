@@ -14,6 +14,7 @@ public class ConvergeManager {
     //public ConvergeManager(){}
     public String function(String dataPath,String outputPath) throws Exception {
         log.info("Begin to run pa");
+        outputPath=outputPath+"/result";
         Converge manager = new Converge(new String[]{dataPath,outputPath,",","10","1","1"});
         return outputPath;
     }
