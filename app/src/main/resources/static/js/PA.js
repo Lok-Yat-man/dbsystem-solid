@@ -1,15 +1,15 @@
 import utils from "./utils.js";
 
 function getPathFromLocation(env, baseUrl, dataset) {
-    let basePath = baseUrl + "/pa/" + dataset;
+    let basePath = baseUrl + "/data" ;
     let geoJsonPath = "";
     let clusterPath = "";
     if (env === "local") {
         geoJsonPath = "./data/paGeoJson/" + dataset + ".json";
         clusterPath = "./data/pa" + dataset+ ".json";
     } else {
-        geoJsonPath = basePath + "/paGeoJson/" + dataset;
-        clusterPath = basePath + "/json/" + dataset;
+        geoJsonPath = basePath + "/paGeoJson/" + dataset+ ".json";
+        clusterPath = basePath + "/pa/" + dataset+ ".json";
     }
     return [clusterPath, geoJsonPath];
 
