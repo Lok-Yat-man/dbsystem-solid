@@ -39,22 +39,23 @@ async function LoadtopK(vueThis, lon, la, key, k) {
 
   marker1.on('dragend', onDragEnd);
 
-  vueThis.map.on('load', e => {
-    vueThis.map.addSource(sourceID, {
-      'type': 'geojson',
-      'data': 'data//geojson/uk.json'
-    });
-    vueThis.map.addLayer({
-      'id': sourceID,
-      'type': 'circle',
-      'source': sourceID,
-      'paint': {
-        'circle-radius': 2.5,
-        'circle-color': '#be6fe3',
-        'circle-opacity': 0.7,
-      }
-    });
-  });
+  //不用画可以查询的点
+  // vueThis.map.on('load', e => {
+  //   vueThis.map.addSource(sourceID, {
+  //     'type': 'geojson',
+  //     'data': 'data//geojson/uk.json'
+  //   });
+  //   vueThis.map.addLayer({
+  //     'id': sourceID,
+  //     'type': 'circle',
+  //     'source': sourceID,
+  //     'paint': {
+  //       'circle-radius': 2.5,
+  //       'circle-color': '#be6fe3',
+  //       'circle-opacity': 0.7,
+  //     }
+  //   });
+  // });
 }
 
 //初始加载
