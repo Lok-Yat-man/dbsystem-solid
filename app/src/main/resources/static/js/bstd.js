@@ -12,7 +12,7 @@ async function LoadBSTD(vueThis) {
 
     let objectData = await loadData(vueThis);
 
-    paintMap(vueThis, longitude, latitude);
+    paintMap(vueThis, longitude, latitude, objectData);
 
     vueThis.spatial_skylines.curmarker = paintCurrentLocation(vueThis, longitude, latitude, objectData);
 
@@ -42,13 +42,33 @@ async function requestObjectPoints(url) {
 }
 
 // 绘制地图
-function paintMap(vueThis, longitude, latitude) {
+function paintMap(vueThis, longitude, latitude, objectData) {
+    let minLng = 180.0, maxLng = -180.0, minLat = 90.0, maxLat = 0.0;
+    for (const objectDatum of objectData.data) {
+        if (objectDatum.coordinate.longitude < minLng) {
+            minLng = objectDatum.coordinate.longitude;
+        }
+        if (objectDatum.coordinate.longitude > maxLng) {
+            maxLng = objectDatum.coordinate.longitude;
+        }
+        if (objectDatum.coordinate.latitude < minLat) {
+            minLat = objectDatum.coordinate.latitude;
+        }
+        if (objectDatum.coordinate.latitude > maxLat) {
+            maxLat = objectDatum.coordinate.latitude;
+        }
+    }
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         style: vueThis.mapStyle,
         center: [longitude, latitude],
-        zoom: 17 // 放大级别
+        zoom: 17
     });
+    console.log(minLat + " " + maxLat);
+    vueThis.map.fitBounds([
+        [minLng, minLat], // southwestern corner of the bounds
+        [maxLng, maxLat] // northeastern corner of the bounds
+    ]);
 }
 
 // 绘制当前位置标记
@@ -62,6 +82,7 @@ function paintCurrentLocation(vueThis, longitude, latitude, objectData) {
     currentLocationMarker.setPopup(utils.getNewPopUp(
         "<strong>当前位置</strong>",
         "pointNum: " + objectData.data.length,
+
         false));
     currentLocationMarker.addTo(vueThis.map);
     return currentLocationMarker;
@@ -69,7 +90,7 @@ function paintCurrentLocation(vueThis, longitude, latitude, objectData) {
 
 function doubleClickCoordinate(vueThis) {
     vueThis.map.doubleClickZoom.disable();
-    vueThis.map.on('dblclick', (e)=> {
+    vueThis.map.on('dblclick', (e) => {
         if (vueThis.spatial_skylines.curmarker != null) {
             vueThis.spatial_skylines.curmarker.remove();
         }
