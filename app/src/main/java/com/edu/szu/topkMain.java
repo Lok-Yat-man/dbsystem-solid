@@ -301,6 +301,7 @@ public class topkMain {
     //把从根节点开始关键字不可达的根节点排除（不一定要根节点包含关键字，只要根节点往下探索有所有关键字就可以）
     //使用BFS遍历，找到所有可达结点，如果可达结点里面包含关键字序列里面的关键字就成功
 
+    //PruningPlace
     int testTotal = 0; //符合条件的点的个数
     for(int zt=0;zt<total;zt++) {
       if(graph.isRoot[zt]) {
@@ -409,7 +410,9 @@ public class topkMain {
 //    }
 
     // System.out.println(testTotal);
+    //Construct_SPP函数
     //使用剪枝规则2
+    //JudgeTotal
     if(testTotal < Qk) {
       JSONObject jsonObject = new JSONObject();
       jsonObject.put("id", -1);

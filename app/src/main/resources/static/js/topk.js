@@ -329,12 +329,22 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
 }
 
+async function JudgeInput(lon, la, key, k) {
+  //判断输入合法性
+  if(isNaN(lon) || isNaN(la) || key.length < 1 || isNaN(k) ) {
+    alert("Please input correct parameters!");
+    return 1;
+  }
+  return 0;
+}
+
 async function PostTopK(vueThis, lon, la, key, k) {
   //判断输入合法性
   if(isNaN(lon) || isNaN(la) || key.length < 1 || isNaN(k) ) {
     alert("Please input correct parameters!");
     return;
   }
+
    axios.get('/hello', {
    params: {
      lon_topk: lon,
@@ -366,5 +376,6 @@ async function PostTopK(vueThis, lon, la, key, k) {
 export default {
     LoadtopK,
     StarLoadtopK,
+    JudgeInput,
     PostTopK
 }
