@@ -90,6 +90,8 @@ public class topkMain {
 
     JSONArray jsonArray = new JSONArray();
 
+    //LoadKG
+    //StoreData
     /*读取顶点的keyword信息*/
     /*把绝对路径改为相对路径*/
     File file1 = new File("app/src/main/resources/static/data/txt/uk/eid2keyword.txt");
