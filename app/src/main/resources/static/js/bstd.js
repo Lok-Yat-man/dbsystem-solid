@@ -7,7 +7,8 @@ async function LoadBSTD(vueThis) {
     let longitude = vueThis.spatial_skylines.query.longitude;
     let latitude = vueThis.spatial_skylines.query.latitude;
 
-    vueThis.spatial_skylines.query.keywords = vueThis.spatial_skylines.query.keywords.replace(/\s/g, "");
+    vueThis.spatial_skylines.query.keywords = vueThis
+        .spatial_skylines.query.keywords.replace(/\s/g, "");
     vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
 
     let objectData = await loadData(vueThis);
@@ -58,16 +59,29 @@ function paintMap(vueThis, longitude, latitude, objectData) {
             maxLat = objectDatum.coordinate.latitude;
         }
     }
+    if (vueThis.spatial_skylines.query.longitude < minLng) {
+        minLng = vueThis.spatial_skylines.query.longitude
+    }
+    if (vueThis.spatial_skylines.query.longitude > maxLng) {
+        maxLng = vueThis.spatial_skylines.query.longitude;
+    }
+    if (vueThis.spatial_skylines.query.latitude < minLat) {
+        minLat = vueThis.spatial_skylines.query.latitude;
+    }
+    if (vueThis.spatial_skylines.query.latitude > maxLat) {
+        maxLat = vueThis.spatial_skylines.query.latitude;
+    }
+
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
         style: vueThis.mapStyle,
         center: [longitude, latitude],
         zoom: 17
     });
-    console.log(minLat + " " + maxLat);
+
     vueThis.map.fitBounds([
-        [minLng, minLat], // southwestern corner of the bounds
-        [maxLng, maxLat] // northeastern corner of the bounds
+        [minLng - 0.002, minLat - 0.002], // southwestern corner of the bounds
+        [maxLng + 0.002, maxLat + 0.002] // northeastern corner of the bounds
     ]);
 }
 

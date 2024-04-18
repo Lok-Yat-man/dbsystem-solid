@@ -36,8 +36,8 @@ public class BSTDTest {
 //        );
         Query query2 = Query.create(
                 Coordinate.create(
-                        -75.16006205842068,
-                        39.95196325428435
+                        -75.14981961686082,
+                        39.95904396208118
                 ),
                 Arrays.asList("Fast","Food","Burgers","Salad")
         );
