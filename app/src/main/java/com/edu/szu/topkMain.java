@@ -90,6 +90,7 @@ public class topkMain {
 
     JSONArray jsonArray = new JSONArray();
 
+    //性能优化
     //LoadKG
     //StoreData
     /*读取顶点的keyword信息*/
