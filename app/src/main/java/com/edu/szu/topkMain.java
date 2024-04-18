@@ -539,6 +539,7 @@ public class topkMain {
   }
 
   //未使用剪枝规则2的BFS算法
+  //Construct_BSP
   public static void PlusBFS(int src, Graph graph, Point []points) {
     boolean []keyVisit = new boolean[points[0].hasKey.length];
     for(int z=0;z<keyVisit.length;z++) //初始化根结点所有关键字都没有被访问过
