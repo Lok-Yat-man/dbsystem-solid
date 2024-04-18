@@ -330,7 +330,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 }
 
 async function JudgeInput(lon, la, key, k) {
-  //判断输入合法性
+  //判断输入合法性函数
   if(isNaN(lon) || isNaN(la) || key.length < 1 || isNaN(k) ) {
     alert("Please input correct parameters!");
     return 1;
