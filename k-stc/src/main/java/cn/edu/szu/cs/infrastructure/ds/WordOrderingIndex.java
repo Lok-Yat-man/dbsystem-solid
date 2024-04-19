@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
 
 public class WordOrderingIndex {
 
-    private static final int minPts = 10;
+    private static final int minPts = 5;
 
-    private static final double eps = 100;
+    private static final double eps = 200;
 
     private static Log log = LogFactory.get();
 
@@ -34,16 +34,15 @@ public class WordOrderingIndex {
     private LRUCache<String, List<OpticsRelevantObject>> wordOrderingIndex;
 
 
-
     public WordOrderingIndex(InputStream inputStream) {
         this.inputStream = inputStream;
-        wordOrderingIndex = new LRUCache<>(128,60*60*1000);
+        wordOrderingIndex = new LRUCache<>(128, 60 * 60 * 1000);
     }
 
 
     public synchronized List<OpticsRelevantObject> getOrderingData(String label) {
 
-        if(wordOrderingIndex.containsKey(label)){
+        if (wordOrderingIndex.containsKey(label)) {
             return wordOrderingIndex.get(label);
         }
 
@@ -51,7 +50,7 @@ public class WordOrderingIndex {
         String line;
         try {
             while ((line = reader.readLine()) != null) {
-                if(line.length() == label.length() && line.equals(label)){
+                if (line.length() == label.length() && line.equals(label)) {
                     String jsonStr = reader.readLine();
                     List<OpticsRelevantObject> objects = JSON.parseArray(jsonStr, OpticsRelevantObject.class);
                     wordOrderingIndex.put(label, objects);
@@ -101,7 +100,7 @@ public class WordOrderingIndex {
             TimerHolder.start("wordOrderingIndex");
             List<OpticsRelevantObject> opticsRelevantObjects = orderGenerate(new ArrayList<>(objects));
             long timestamp = TimerHolder.stop("wordOrderingIndex");
-            log.info("处理成功标签：{}，数据量：{},耗时：{} ms", label, opticsRelevantObjects.size(),timestamp);
+            log.info("处理成功标签：{}，数据量：{},耗时：{} ms", label, opticsRelevantObjects.size(), timestamp);
             tmpWordOrderingIndex.put(label, opticsRelevantObjects);
             cnt++;
             log.info("已处理标签数量：{},总标签数：{}", cnt, labelObjectsMap.size());
@@ -150,7 +149,7 @@ public class WordOrderingIndex {
                         )
                 ).collect(Collectors.toList());
 
-        RTree<OpticsRelevantObject,GeoPointDouble> rTree = RTree.create(entryList);
+        RTree<OpticsRelevantObject, GeoPointDouble> rTree = RTree.create(entryList);
 
         // 结果集
         // result set
@@ -162,7 +161,7 @@ public class WordOrderingIndex {
 
             // 如果已经在结果集中，跳过
             // if already in the result set, skip
-            if(resultQueue.contains(relevantObject)){
+            if (resultQueue.contains(relevantObject)) {
                 continue;
             }
 
@@ -182,7 +181,7 @@ public class WordOrderingIndex {
             );
             // 不是核心点，跳过
             // not a core point, skip
-            if(rangeQueryResult.size() < minPts){
+            if (rangeQueryResult.size() < minPts) {
                 continue;
             }
             // 根据距离排序
@@ -207,7 +206,7 @@ public class WordOrderingIndex {
                         @Override
                         public int compare(OpticsRelevantObject o1, OpticsRelevantObject o2) {
                             int compare = Double.compare(o1.getCoreDistance(), o2.getCoreDistance());
-                            if(compare == 0){
+                            if (compare == 0) {
                                 return o1.compareTo(o2);
                             }
                             return compare;
@@ -219,7 +218,7 @@ public class WordOrderingIndex {
             for (OpticsRelevantObject opticsRelevantObject : rangeQueryResult) {
                 // 如果已经在结果集中，跳过
                 // if already in the result set, skip
-                if(resultQueue.contains(opticsRelevantObject)){
+                if (resultQueue.contains(opticsRelevantObject)) {
                     continue;
                 }
                 // 计算新的可达距离
@@ -236,13 +235,13 @@ public class WordOrderingIndex {
 
             }
             // 从优先队列中获取下一个对象
-            while (!priorityQueue.isEmpty()){
+            while (!priorityQueue.isEmpty()) {
 
                 OpticsRelevantObject currentExtend = priorityQueue.first();
                 priorityQueue.remove(currentExtend);
                 // 如果已经在结果集中，跳过
                 // if already in the result set, skip
-                if(resultQueue.contains(currentExtend)){
+                if (resultQueue.contains(currentExtend)) {
                     continue;
                 }
                 // 加入结果集
@@ -260,7 +259,7 @@ public class WordOrderingIndex {
                 );
                 // 不是核心点，无法继续扩展，跳过
                 // not a core point, cannot extend, skip
-                if(currentExtendRangeQueryResult.size() < minPts){
+                if (currentExtendRangeQueryResult.size() < minPts) {
                     continue;
                 }
                 // 根据距离排序
@@ -284,7 +283,7 @@ public class WordOrderingIndex {
                 for (OpticsRelevantObject opticsRelevantObject : currentExtendRangeQueryResult) {
                     // 如果已经在结果集中，跳过
                     // if already in the result set, skip
-                    if(resultQueue.contains(opticsRelevantObject)){
+                    if (resultQueue.contains(opticsRelevantObject)) {
                         continue;
                     }
                     // 将当前对象从优先队列删除

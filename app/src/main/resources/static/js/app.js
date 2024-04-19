@@ -74,15 +74,15 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    "tmpKeywords": "restaurants",
-                    "keywords": "restaurants",
+                    "tmpKeywords": "restaurants;food",
+                    "keywords": "restaurants;food",
                     "location":{
-                        "longitude":-75.1631554387806,
-                        "latitude":39.95431833035124
+                        "longitude":-75.18782594247841,
+                        "latitude":39.939905740202335
                     },
-                    "k":20,
-                    "epsilon": 100.0,
-                    "minPts":10,
+                    "k":5,
+                    "epsilon": 200.0,
+                    "minPts":5,
                     "maxDist":-1,
                     "command":"OPTICS_BASED_APPROACH_OM"
                 },

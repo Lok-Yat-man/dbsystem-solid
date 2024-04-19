@@ -54,8 +54,8 @@ public class DefaultDataFetchManagerImpl implements DataFetchManager {
 
         dataFetchActionMap = new ConcurrentHashMap<>();
 
-        taskMapCache = new LRUCache<>(128, 30 * 60 * 1000);
-        paramsActionIdMap = new LRUCache<>(128, 30 * 60 * 1000);
+        taskMapCache = new LRUCache<>(256, 30 * 60 * 1000);
+        paramsActionIdMap = new LRUCache<>(256, 30 * 60 * 1000);
 
         List<DataFetchAction> dataFetchActions = ServiceLoaderUtil.loadList(DataFetchAction.class);
         if (CollUtil.isNotEmpty(dataFetchActions)) {
