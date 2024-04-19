@@ -86,6 +86,13 @@
     font-size:18.5px;
     color: #00FFFF;
 }
+
+.item_label1{
+  margin-left:1%;
+  font-size:16px;
+  color: #00FFFF;
+}
+
 .item_labelpart{
     margin-left:10%;
     font-size:16px;
@@ -207,6 +214,22 @@
   background-image: url(../img/params/bg_popupNumberLarge.png);
   background-size: contain;
 
+}
+
+.param2_input{
+  width: 70px;
+  /*height: 18px;*/
+  height: 27px;
+  padding: 0;
+  background-color: rgba(255,255,255,0.0);
+  border: 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: bold;
+  color: #00FFFF;
+  line-height: 15px;
+  background-image: url(../img/params/bg_popupNumberMiddle.png);
+  background-size: contain;
 }
 
 .keywords_input{
