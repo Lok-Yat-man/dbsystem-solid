@@ -143,6 +143,7 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
     //画线
     vueThis.map.addSource(sourceL, {
       type: 'geojson',
+      lineMetrics: true,
       data: {
         type: "FeatureCollection",
         features: [
@@ -191,9 +192,20 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
       'type': 'line',
       'source': sourceL,
       'paint': {
-        "line-color": '#00FDFF', // 线条颜色
+        // "line-color": '#00FDFF', // 线条颜色
         "line-width": 1, // 线条宽度
-        "line-opacity": 0.5, // 线条透明度
+        "line-opacity": 0.9, // 线条透明度
+        'line-gradient': [
+          'interpolate',
+          ['linear'],
+          ['line-progress'],
+          0.1,
+          '#041c32',
+          0.5,
+          '#00FDFF',
+          0.9,
+          '#041c32'
+        ]
       }
 
       });
@@ -270,12 +282,13 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
           .addTo(vueThis.map)
 
         //画线
-        console.log(x1, y1);
+
         sourceDT.push("tracedt" + ++targetTrackingCalls7)
         sourceDKT.push("tracekt" + ++targetTrackingCalls8);
         vueThis.map.on('load', () => {
           vueThis.map.addSource(sourceDT.at(i), {
             type: 'geojson',
+            lineMetrics: true,
             data: {
               type: "FeatureCollection",
               features: [{
@@ -290,7 +303,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
               }]
             }
           })
-          console.log(sourceDT.at(i), [lon, la], [x1, y1]);
+
           // 增加线条
           vueThis.map.addLayer({
             id: sourceDKT.at(i),
@@ -298,8 +311,19 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
             source: sourceDT.at(i),
             paint: {
               "line-width": 1, // 线条宽度
-              "line-opacity": 0.5, // 线条透明度
-              "line-color": '#00FDFF', // 线条颜色
+              "line-opacity": 0.9, // 线条透明度
+              // "line-color": '#00FDFF', // 线条颜色
+              'line-gradient': [
+                'interpolate',
+                ['linear'],
+                ['line-progress'],
+                0.1,
+                '#041c32',
+                0.5,
+                '#00FDFF',
+                0.9,
+                '#041c32'
+              ]
             }
           });
         })
@@ -319,9 +343,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
           y = 1.0 * Math.sqrt(Math.pow((0.212-x), 2)).toFixed(10); //0.003，10
         else
           y = -1.0 * Math.sqrt(Math.pow((0.212-x), 2)).toFixed(10);
-        console.log("id " + point_key.at(i).s_id);
-        console.log("x " + x);
-        console.log("y " + y);
+
         let x1 = lon + x;
         let y1 = la + y;
         let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + point_key.at(i).s_key +'</p></div>';
@@ -330,8 +352,6 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
         const el2 = document.createElement('div');
         el2.id = 'top_k_marker2';
 
-        console.log("x1 " + x1);
-        console.log("y1 " + y1);
         const marker2 = new mapboxgl.Marker(el2, { scale: 0.5, type: 'circle'})
           .setLngLat([x1, y1])
           .setPopup(popup1)
@@ -343,6 +363,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
         vueThis.map.on('load', () => {
           vueThis.map.addSource(sourceD.at(i), {
             type: 'geojson',
+            lineMetrics: true,
             data: {
               type: "FeatureCollection",
               features: [{
@@ -364,8 +385,19 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
             source: sourceD.at(i),
             paint: {
               "line-width": 1, // 线条宽度
-              "line-opacity": 0.5, // 线条透明度
-              "line-color": '#00FDFF', // 线条颜色
+              "line-opacity": 0.9, // 线条透明度
+              // "line-color": '#00FDFF', // 线条颜色
+              'line-gradient': [
+                'interpolate',
+                ['linear'],
+                ['line-progress'],
+                0.1,
+                '#041c32',
+                0.5,
+                '#00FDFF',
+                0.9,
+                '#041c32'
+              ]
             }
           });
 
