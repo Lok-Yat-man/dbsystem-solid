@@ -39,22 +39,23 @@ async function LoadtopK(vueThis, lon, la, key, k) {
 
   marker1.on('dragend', onDragEnd);
 
-  vueThis.map.on('load', e => {
-    vueThis.map.addSource(sourceID, {
-      'type': 'geojson',
-      'data': 'data//geojson/uk.json'
-    });
-    vueThis.map.addLayer({
-      'id': sourceID,
-      'type': 'circle',
-      'source': sourceID,
-      'paint': {
-        'circle-radius': 2.5,
-        'circle-color': '#be6fe3',
-        'circle-opacity': 0.7,
-      }
-    });
-  });
+  //不用画可以查询的点
+  // vueThis.map.on('load', e => {
+  //   vueThis.map.addSource(sourceID, {
+  //     'type': 'geojson',
+  //     'data': 'data//geojson/uk.json'
+  //   });
+  //   vueThis.map.addLayer({
+  //     'id': sourceID,
+  //     'type': 'circle',
+  //     'source': sourceID,
+  //     'paint': {
+  //       'circle-radius': 2.5,
+  //       'circle-color': '#be6fe3',
+  //       'circle-opacity': 0.7,
+  //     }
+  //   });
+  // });
 }
 
 //初始加载
@@ -233,9 +234,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
     let mhtml;
     if(array.length > 0) {
-      mhtml = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + "Name: " + id + '</div><br><p class=\"popup-message\">' + "Keyword: " + array +'</p></div>';
+      mhtml = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + "Keyword: " + array +'</p></div>';
     } else {
-      mhtml = '<div class="popup-window-topk-nokey"><div class=\"popup-title\">' + "Name: " + id + '</div></div>';
+      mhtml = '<div class="popup-window-topk-nokey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div></div>';
     }
 
     const el1 = document.createElement('div');
@@ -259,13 +260,19 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
         y = 1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10); //0.003，10
       else
         y = -1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10);
-      const x1 = lon + x;
-      const y1 = la + y;
-      let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + "Name: " + point_key.at(i).s_id + '</div><br><p class=\"popup-message\">' + "Keyword: " + point_key.at(i).s_key +'</p></div>';
+      console.log(point_key.at(i).s_id);
+      console.log(x);
+      console.log(y);
+      let x1 = lon + x;
+      let y1 = la + y;
+      let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + point_key.at(i).s_key +'</p></div>';
       let popup1 = new mapboxgl.Popup({ closeButton: false})
         .setHTML(mhtml1)
       const el2 = document.createElement('div');
       el2.id = 'top_k_marker2';
+
+      console.log(x1)
+      console.log(y1);
       const marker2 = new mapboxgl.Marker(el2, { scale: 0.5, type: 'circle'})
         .setLngLat([x1, y1])
         .setPopup(popup1)
@@ -328,12 +335,22 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
 }
 
+async function JudgeInput(lon, la, key, k) {
+  //判断输入合法性函数
+  if(isNaN(lon) || isNaN(la) || key.length < 1 || isNaN(k) ) {
+    alert("Please input correct parameters!");
+    return 1;
+  }
+  return 0;
+}
+
 async function PostTopK(vueThis, lon, la, key, k) {
   //判断输入合法性
   if(isNaN(lon) || isNaN(la) || key.length < 1 || isNaN(k) ) {
     alert("Please input correct parameters!");
     return;
   }
+
    axios.get('/hello', {
    params: {
      lon_topk: lon,
@@ -365,5 +382,6 @@ async function PostTopK(vueThis, lon, la, key, k) {
 export default {
     LoadtopK,
     StarLoadtopK,
+    JudgeInput,
     PostTopK
 }

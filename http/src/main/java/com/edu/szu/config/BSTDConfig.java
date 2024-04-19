@@ -38,23 +38,21 @@ public class BSTDConfig {
     @SneakyThrows
     @Bean
     public RTree<String, Geometry> rTreeBSTD() {
-        InputStream inputStream = new ClassPathResource("rtree.txt").getStream();
+        InputStream inputStream = new ClassPathResource("rtreeSkyline.txt").getStream();
         int available = inputStream.available();
         return Serializers.flatBuffers().utf8().read(inputStream, available, InternalStructure.DEFAULT);
     }
 
     /**
-     * @param relatedObjectService
      * @return IR-tree
      */
     @Bean
-    public IRTree irTreeBSTD() {
-        return new IRTree(relevantObjectService());
+    public IRTree irTreeBSTD(RTree<String, Geometry> rTree, IRelevantObjectService relevantObjectService) {
+        return new IRTree(rTree, relevantObjectService);
     }
 
     /**
      * InvertedIndex
-     * @param relevantObjectService
      * @return Inverted file index
      */
     @Bean

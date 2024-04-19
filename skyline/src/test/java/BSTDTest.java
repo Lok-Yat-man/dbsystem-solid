@@ -26,20 +26,20 @@ public class BSTDTest {
         // x1 = -120.09514 y1 = 27.555126
         // x2 = -73.200455 y2 = 53.679195
 
-        Query query1 = Query.create(
-                Coordinate.create(
-                        -86.12,
-                        39.76
-                ),
-                Arrays.asList("Rooms","Bes")
-                //Arrays.asList("Water")
-        );
+//        Query query1 = Query.create(
+//                Coordinate.create(
+//                        -86.12,
+//                        39.76
+//                ),
+//                Arrays.asList("Rooms","Bes")
+//                //Arrays.asList("Water")
+//        );
         Query query2 = Query.create(
                 Coordinate.create(
-                        -86.09,
-                        39.75
+                        -75.14981961686082,
+                        39.95904396208118
                 ),
-                Arrays.asList("Fast","Breakfast")
+                Arrays.asList("Fast","Food","Burgers","Salad")
         );
 
         //queries.add(query1);
@@ -56,7 +56,7 @@ public class BSTDTest {
 //
 //        //System.out.println(valuesEntry);
 //
-//
+//          phQcwI2JJ3BjzFEWGUAaOQ
         System.out.println(relevantObjects);
 
         System.out.println(relevantObjects.size());
