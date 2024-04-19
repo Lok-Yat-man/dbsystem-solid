@@ -7,6 +7,8 @@ let targetTrackingCalls3 = 0;
 let targetTrackingCalls4 = 0;
 let targetTrackingCalls5 = 0;
 let targetTrackingCalls6 = 0;
+let targetTrackingCalls7 = 0;
+let targetTrackingCalls8 = 0;
 var previous = null;
 var current = null;
 async function LoadtopK(vueThis, lon, la, key, k) {
@@ -234,7 +236,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
     let mhtml;
     if(array.length > 0) {
-      mhtml = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + "Keyword: " + array +'</p></div>';
+      mhtml = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' +  array +'</p></div>';
     } else {
       mhtml = '<div class="popup-window-topk-nokey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div></div>';
     }
@@ -248,90 +250,150 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
       .setPopup(popup)
       .addTo(vueThis.map)
 
+    if(point_key.length === 2) {
+      let sourceDT = [];
+      let sourceDKT = [];
+      for(let i=0;i<point_key.length;i++) {
 
-    //绘制除根节点外其他带关键字的顶点，悬浮在根节点附近，沿圆分布
-    let x = -0.15; //-0.0015
-    let y = 0.0;  //0.0
-    let turn = true;
-    let sourceD = [];
-    let sourceDK = [];
-    for(let i=0;i<point_key.length;i++) {
-      if(turn === true)
-        y = 1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10); //0.003，10
-      else
-        y = -1.0 * Math.sqrt(0.2 * 0.2 - x * x).toFixed(10);
-      console.log(point_key.at(i).s_id);
-      console.log(x);
-      console.log(y);
-      let x1 = lon + x;
-      let y1 = la + y;
-      let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + point_key.at(i).s_key +'</p></div>';
-      let popup1 = new mapboxgl.Popup({ closeButton: false})
-        .setHTML(mhtml1)
-      const el2 = document.createElement('div');
-      el2.id = 'top_k_marker2';
+        let x1 = 0;
+        if(i ===0) {x1 = lon - 0.15;}
+        else {x1 = lon + 0.15;}
+        let y1 = la + 0.13228;
+        let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + point_key.at(i).s_key + '</p></div>';
+        let popup1 = new mapboxgl.Popup({closeButton: false})
+          .setHTML(mhtml1)
+        const el2 = document.createElement('div');
+        el2.id = 'top_k_marker2';
+        const marker2 = new mapboxgl.Marker(el2, {scale: 0.5, type: 'circle'})
+          .setLngLat([x1, y1])
+          .setPopup(popup1)
+          .addTo(vueThis.map)
 
-      console.log(x1)
-      console.log(y1);
-      const marker2 = new mapboxgl.Marker(el2, { scale: 0.5, type: 'circle'})
-        .setLngLat([x1, y1])
-        .setPopup(popup1)
-        .addTo(vueThis.map)
-
-      //画线
-      sourceD.push("traced" + ++targetTrackingCalls1)
-      sourceDK.push("tracek" + ++targetTrackingCalls2);
-      vueThis.map.on('load', () => {
-        vueThis.map.addSource(sourceD.at(i), {
-          type: 'geojson',
-          data: {
-            type: "FeatureCollection",
-            features: [{
-              type: "Feature",
-              geometry: {
-                type: 'LineString',
-                coordinates: [
-                  [lon, la],
-                  [x1, y1]
-                ],
-              }
-            }]
-          }
+        //画线
+        console.log(x1, y1);
+        sourceDT.push("tracedt" + ++targetTrackingCalls7)
+        sourceDKT.push("tracekt" + ++targetTrackingCalls8);
+        vueThis.map.on('load', () => {
+          vueThis.map.addSource(sourceDT.at(i), {
+            type: 'geojson',
+            data: {
+              type: "FeatureCollection",
+              features: [{
+                type: "Feature",
+                geometry: {
+                  type: 'LineString',
+                  coordinates: [
+                    [lon, la],
+                    [x1, y1]
+                  ],
+                }
+              }]
+            }
+          })
+          console.log(sourceDT.at(i), [lon, la], [x1, y1]);
+          // 增加线条
+          vueThis.map.addLayer({
+            id: sourceDKT.at(i),
+            type: "line",
+            source: sourceDT.at(i),
+            paint: {
+              "line-width": 1, // 线条宽度
+              "line-opacity": 0.5, // 线条透明度
+              "line-color": '#00FDFF', // 线条颜色
+            }
+          });
         })
-        // 增加线条
-        vueThis.map.addLayer({
-          id: sourceDK.at(i),
-          type: "line",
-          source: sourceD.at(i),
-          paint: {
-          "line-width": 1, // 线条宽度
-           "line-opacity": 0.5, // 线条透明度
-            "line-color": '#00FDFF', // 线条颜色
-        }
-      });
 
-      })
-
-      //修改xy值
-      if(turn === true)
-        x += 0.32;//0.0008
-      else
-        x -= 0.32; //0.0008
-      if(x >= 0.2) // 0.003
-      {
-        x -= 0.2; //0.003
-        if(turn === true)
-          turn = false;
-        else
-          turn = true;
-      } else if(x <= -0.2) { //-0.003
-        x += 0.2; //0.003
-        if(turn === true)
-          turn = false;
-        else
-          turn = true;
       }
     }
+    else {
+      //绘制除根节点外其他带关键字的顶点，悬浮在根节点附近，沿圆分布
+      let x = -0.15; //-0.0015
+      let y = 0.0;  //0.0
+      let turn = true;
+      let sourceD = [];
+      let sourceDK = [];
+      console.log(point_key.length);
+      for(let i=0;i<point_key.length;i++) {
+        if(turn === true)
+          y = 1.0 * Math.sqrt(Math.pow((0.212-x), 2)).toFixed(10); //0.003，10
+        else
+          y = -1.0 * Math.sqrt(Math.pow((0.212-x), 2)).toFixed(10);
+        console.log("id " + point_key.at(i).s_id);
+        console.log("x " + x);
+        console.log("y " + y);
+        let x1 = lon + x;
+        let y1 = la + y;
+        let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><br><p class=\"popup-message-topk\">' + point_key.at(i).s_key +'</p></div>';
+        let popup1 = new mapboxgl.Popup({ closeButton: false})
+          .setHTML(mhtml1)
+        const el2 = document.createElement('div');
+        el2.id = 'top_k_marker2';
+
+        console.log("x1 " + x1);
+        console.log("y1 " + y1);
+        const marker2 = new mapboxgl.Marker(el2, { scale: 0.5, type: 'circle'})
+          .setLngLat([x1, y1])
+          .setPopup(popup1)
+          .addTo(vueThis.map)
+
+        //画线
+        sourceD.push("traced" + ++targetTrackingCalls1)
+        sourceDK.push("tracek" + ++targetTrackingCalls2);
+        vueThis.map.on('load', () => {
+          vueThis.map.addSource(sourceD.at(i), {
+            type: 'geojson',
+            data: {
+              type: "FeatureCollection",
+              features: [{
+                type: "Feature",
+                geometry: {
+                  type: 'LineString',
+                  coordinates: [
+                    [lon, la],
+                    [x1, y1]
+                  ],
+                }
+              }]
+            }
+          })
+          // 增加线条
+          vueThis.map.addLayer({
+            id: sourceDK.at(i),
+            type: "line",
+            source: sourceD.at(i),
+            paint: {
+              "line-width": 1, // 线条宽度
+              "line-opacity": 0.5, // 线条透明度
+              "line-color": '#00FDFF', // 线条颜色
+            }
+          });
+
+        })
+
+        //修改xy值
+        if(turn === true)
+          x += 0.0412;//0.0008
+        else
+          x -= 0.0412; //0.0008
+        if(x >= 0.212) // 0.003
+        {
+          x -= 0.212; //0.003
+          if(turn === true)
+            turn = false;
+          else
+            turn = true;
+        } else if(x <= -0.212) { //-0.003
+          x += 0.212; //0.003
+          if(turn === true)
+            turn = false;
+          else
+            turn = true;
+        }
+      }
+    }
+
+
 
 }
 
