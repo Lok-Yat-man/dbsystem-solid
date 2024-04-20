@@ -3,3 +3,4 @@ DCPGS:
 
 PA:
   basePath: app/src/main/resources/static/data/pa/
+  targetPath: app/src/main/resources/static/data/paGeoJson/

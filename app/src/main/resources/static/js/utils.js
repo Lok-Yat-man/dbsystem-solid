@@ -73,10 +73,10 @@ function getPopUp(message, needCloseButton){
 function getNewPopUp(title, message, needCloseButton){
     //添加气泡弹窗
     let mhtml = '<div class="popup-window">' +
-        '<div class="popup-title">'+ title +
+        '<div class="popup-content"><div class="popup-title">'+ title +
         '<img src="./img/popup/bar-nameBar.png" class="popup-img"></div>' +
         '<p class="popup-message">'+ message +'</p>' +
-        '</div>'
+        '</div></div>'
     let popup = new mapboxgl.Popup({closeButton: needCloseButton})
         .setHTML(mhtml)
     return popup;

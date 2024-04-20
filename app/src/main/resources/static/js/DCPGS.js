@@ -38,7 +38,7 @@ function layerPopup(i, vueThis){
         let coordinates = e.features[0].geometry.coordinates.slice();
         let clusterId = e.features[0].properties.clusterId;
         let index = Number(clusterId) + 1;
-        utils.getNewPopUp("clustering index","clustering " + index, false).
+        //utils.getNewPopUp("clustering index","clustering " + index, false).
         setLngLat(coordinates).addTo(vueThis.map);
     });
     vueThis.map.on('mouseenter', 'layer' + i, () => {
@@ -161,7 +161,7 @@ function loadMarkers(vueThis) {
         let checkIn = locations[0];
         // let marker = utils.getDefaultMark(checkIn.longitude, checkIn.latitude, color);
         let marker = utils.getCustomMark(checkIn.longitude, checkIn.latitude, i);
-        marker.setPopup(utils.getNewPopUp("clustering index","cluster " + (i+1), false,));
+        //marker.setPopup(utils.getNewPopUp("clustering index","cluster " + (i+1), false,));
         makers.push(marker);
         if(i < vueThis.DCPGS.clusterNums) {
             marker.addTo(vueThis.map);

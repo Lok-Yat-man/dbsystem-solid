@@ -6,7 +6,7 @@
     position: absolute;
     width: 298px;
     height: 357px;
-    bottom:0%;
+    bottom:5%;
 }
 
 #params{
@@ -17,6 +17,17 @@
     bottom: 10%;
     width: 298px;
     height: 400px;
+}
+
+#STD_params{
+    background-color: rgba(255,255,255,0.0);
+    background-image: url(../img/params/bg_popup.png);
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    position: absolute;
+    width: 298px;
+    height: 300px;
+    bottom:10%;
 }
 
 .left_gap{
@@ -82,40 +93,59 @@
     100% {right: 298px; }
 }
 .item_label{
+    font-family: CJNgaiHKS-Bold;
     margin-left:7.5%;
     font-size:18.5px;
     color: #00FFFF;
 }
-
+.item_labelSTD{
+    font-family: CJNgaiHKS-Bold;
+    margin-left:7.5%;
+    font-size:18.5px;
+    color: #00FFFF;
+}
+.keywords{
+    font-family: CJNgaiHKS-Bold;
+    font-size:16px;
+    color: #00FFFF;
+    margin-left:7.5%;
+}
 .item_label1{
-  margin-left:1%;
-  font-size:16px;
-  color: #00FFFF;
+    font-family: CJNgaiHKS-Bold;
+    margin-left:1%;
+    font-size:16px;
+    color: #00FFFF;
 }
 
 .item_labelpart{
+    font-family: CJNgaiHKS-Bold;
     margin-left:10%;
     font-size:16px;
     color: #00FFFF;
 }
+
 .item_labelpart2{
+    font-family: CJNgaiHKS-Bold;
     margin-left:16%;
     font-size:16px;
     color: #00FFFF;
 }
 .item_labelmaxD{
+    font-family: CJNgaiHKS-Bold;
     font-size:16px;
     color: #00FFFF;
 }
+
 .params_header_container {
     display: flex;
     align-items: center;
 }
 .params_header{
-    font-family: CJNgaiHKS, CJNgaiHKS;
+    font-family: CJNgaiHKS-Bold;
     font-weight: bold;
     font-size: 18px;
     font-style: normal;
+    white-space: nowrap;
     line-height: 36px;
     color: #00FFFF;
     margin-top: 35px;
@@ -167,10 +197,18 @@
     display: inline-block;
     margin-left:3%;
 }
+
 .param_adjustmaxD{
     width: 130px;
     height: 23px;
     display: inline-block;
+}
+
+.param_adjusterlong{
+    width: 180px;
+    height: 23px;
+    display: inline-block;
+    margin-left:1%;
 }
 
 .adjuster{
@@ -233,8 +271,8 @@
 }
 
 .keywords_input{
-    width: 280px;
-    height: 35px;
+    width: 180px;
+    height: 40px;
     padding: 0;
     background-color: rgba(255,255,255,0.0);
     border: 1px solid #4d4d4e;
@@ -244,6 +282,7 @@
     font-weight: normal;
     color: #00FFFF;
     line-height: 10px;
+    margin-left:4%;
 }
 
 /*减号*/
@@ -254,6 +293,7 @@
     display: inline-flex;
     margin-bottom: 3px;
     background-image: url(../img/params/btn_-.png);
+
 }
 
 /*加号*/
@@ -274,7 +314,6 @@
     text-align: center;
     display: inline-block;
     position: absolute;
-    margin-bottom:2%;
     margin-left:25%;
 }
 
@@ -289,6 +328,7 @@
     color: #00FFFF;
     line-height: 40px;
     font-weight: bold;
+
 }
 
 .progress-div{
@@ -350,3 +390,15 @@
     user-select: none;
 }
 
+.inline-input{
+    color:#f0f0f0;
+    width:175px;
+    margin-left:17.5px;
+}
+
+.inputContainer{
+    display: flex;
+    width:100%;
+    align-items:center;
+
+}

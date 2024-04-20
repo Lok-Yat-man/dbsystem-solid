@@ -99,7 +99,7 @@ async function loadPA(dataset,vueThis, zoom) {
           url: vueThis.baseUrl + "/data/pa/geojson/" +dataset+".json"
       }).then((response) => {
           const runningResult = response.data;
-          console.log("GeoJson Address: " + runningResult);
+          console.log("get GeoJson status: " + runningResult);
       });
     }
     vueThis.pa.maxClusterNums = await getClusters(dataset, zoom, vueThis);

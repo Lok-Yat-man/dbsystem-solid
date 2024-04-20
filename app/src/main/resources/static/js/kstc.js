@@ -72,7 +72,7 @@ function layerPopup(i, vueThis){
                 }
             }
             if(flag){
-                str+='<p class="popup-message" ><font color="red">'+labels[j]+'</font></p>';
+                str+='<p class="popup-message" ><font color=#FFB458>'+labels[j]+'</font></p>';
             }else{
                 str+='<p class="popup-message">'+labels[j]+'</p>';
             }
