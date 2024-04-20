@@ -17,15 +17,25 @@
 .popup-window-topk-haskey{
   background-image: url("../img/popup/bg-bubble.png");
   background-color: rgba(243, 244, 246, 0);
-  width: 221px;
-  height: 130px;
+  width: 240px;
+  height: 120px;
+  padding: 30px 0 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  overflow-y: auto;
+  transform: translate(-20px, 10px);
 }
 
 .popup-window-topk-nokey{
   background-image: url("../img/popup/bg-bubble.png");
   background-color: rgba(243, 244, 246, 0);
-  width: 221px;
-  height: 85px;
+  width: 240px;
+  height: 90px;
+  padding: 30px 0 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  overflow-y: auto;
+  transform: translate(-20px, 40px);
 }
 
 .popup-title{
@@ -41,6 +51,14 @@
     position: relative;
     color: rgba(0, 255, 255, 1);
     padding: 0 12px;
+}
+
+.popup-message-topk{
+  font-size: 14px;
+  font-weight: bold;
+  position: relative;
+  color: rgba(239, 171, 87, 1);
+  padding: 0 12px;
 }
 
 .popup-img{

@@ -133,6 +133,17 @@ public class BSTD {
             }
         }
 
+        for (int i = 0; i < S.size(); i++) {
+            Entry<String, Geometry> entry = S.get(i);
+            if (!entry.geometry().mbr().intersects(B)) {
+                System.out.println(S.get(i));
+                S.remove(i);
+                i--;
+            }
+        }
+
+        System.out.println(B);
+
         List<RelevantObject> relevantObjects = S.stream()
                 .map(Entry::value)
                 .flatMap(value -> relevantObjectService.getByIds(List.of(value)).stream())

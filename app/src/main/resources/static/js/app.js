@@ -26,7 +26,7 @@ new Vue({
             // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
             map: "",
             API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-            env: "local",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
+            env: "prod",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
             switchStatus: "SWITCH",
             currentAlgorithm: 'DCPGS',
             sideBarDisabled: false,
@@ -97,8 +97,8 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    longitude: -75.16,
-                    latitude: 39.95,
+                    longitude: -75.16133365786646,
+                    latitude: 39.95144744543839,
                     keywords: "Fast,Food,Burgers,Salad"
                 },
                 loading: false,

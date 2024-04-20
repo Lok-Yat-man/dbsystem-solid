@@ -6,7 +6,7 @@ import java.io.IOException;
 public class InputBusiness {
     public static void main(String[] args) {
         try {
-            FileReader fileReader = new FileReader("E:\\桌面文件\\Desktop_File\\毕业\\毕业设计\\archive\\yelp_academic_dataset_business.json");
+            FileReader fileReader = new FileReader("D:\\yelp_academic_dataset_business.json");
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             String s = "";
             int k = 0;
