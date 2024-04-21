@@ -5,6 +5,8 @@ import com.edu.szu.entity.CheckInJson;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileReader;
 @NoArgsConstructor
@@ -12,17 +14,18 @@ import java.io.FileReader;
  * @author 86136 Email:a@wk2.cn
  * @since 2024/03/19 16:44
  */
+@Log4j2
 public class PAGeoJson {
-    public String getGeojson(String jsonPath,String dataset) throws Exception{
+    public String getGeojson(String jsonPath,String dataset,String targetPath) throws Exception{
         try {
             CheckInJson checkInJson = readJsonFile(jsonPath);
             var geoJson = CheckInReader.parseGeoJson(checkInJson);
-            var targetPath="app/src/main/resources/static/data/paGeoJson/" + dataset;
+            log.info("parseGeoJsonTo");
             CheckInReader.parseGeoJsonTo(geoJson,targetPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "app/src/main/resources/static/data/paGeoJson/" + dataset;
+        return "Finish to get Geojson";
     }
 
     public static CheckInJson readJsonFile(String filePath) throws Exception {

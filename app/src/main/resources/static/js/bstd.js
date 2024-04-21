@@ -171,7 +171,7 @@ function layerPopup(i, vueThis, color) {
                 }
             }
             if (flag) {
-                str += '<div class="popup-message"><font color=\'red\'>' + labels[j] + '</font></div>';
+                str += '<div class="popup-message"><font color=#FFB458>' + labels[j] + '</font></div>';
             } else {
                 str += '<div class="popup-message">' + labels[j] + '</div>';
             }

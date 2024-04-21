@@ -24,14 +24,16 @@ public class PAEndPoint {
     private final PAJson clusters =new PAJson();
 
     private final String basePath;
+    private final String targetPath;
 
-    public PAEndPoint(@Value("${PA.basePath}") String basePath){
+    public PAEndPoint(@Value("${PA.basePath}") String basePath,@Value("${PA.targetPath}") String targetPath){
         this.basePath = basePath;
+        this.targetPath=targetPath;
     }
 
     @PostMapping("/{inputPath}/runpa")
     public String paRun(@PathVariable String inputPath) throws Exception {
-        var outputPath=basePath+inputPath;
+        var outputPath=basePath;
         var dataPath=basePath+inputPath;
         manager.function(dataPath, outputPath);
         log.info("runpa");
@@ -42,7 +44,7 @@ public class PAEndPoint {
     public String getGeoJson(@PathVariable String dataset) throws Exception{
         log.info("getGeoJson dataset:"+dataset);
         var jsonPath=basePath+dataset;
-        var result=paGeoJson.getGeojson(jsonPath,dataset);
+        var result=paGeoJson.getGeojson(jsonPath,dataset,targetPath+dataset);
         return result;
     }
 

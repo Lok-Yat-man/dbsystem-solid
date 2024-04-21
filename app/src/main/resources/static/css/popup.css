@@ -9,6 +9,29 @@
     background-size: 100% 100%;
     overflow-y: auto;
 }
+.popup-content {
+  position: absolute;
+  width:100%;
+  height:100%;
+  top: 15px;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  overflow:auto;
+  scrollbar-color: rgba(0, 0, 0, 0) transparent;
+}
+.popup-content::-webkit-scrollbar {
+  width: 8px; /* 设置滚动条宽度 */
+}
+
+.popup-content::-webkit-scrollbar-track {
+  background: transparent; /* 设置滚动条轨道背景为透明 */
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0); /* 设置滚动条手柄的背景颜色为完全透明 */
+  border-radius: 4px; /* 设置滚动条手柄的圆角 */
+}
 
 .popup-window::-webkit-scrollbar {
     display: none !important;
@@ -39,18 +62,24 @@
 }
 
 .popup-title{
+    font-family: CJNgaiHKS-Bold;
     font-weight: bold;
     font-size: 15px;
     position: relative;
     padding: 0 12px;
+    margin-left:10px;
+    margin-top:10%;
     color: rgba(0, 255, 255, 1);
 }
 
 .popup-message{
+    font-family: CJNgaiHKS-Bold;
     font-weight: bold;
     position: relative;
     color: rgba(0, 255, 255, 1);
-    padding: 0 12px;
+    margin-left:25px;
+    margin-bottom:10px;
+    font-size:14px;
 }
 
 .popup-message-topk{
@@ -58,7 +87,7 @@
   font-weight: bold;
   position: relative;
   color: rgba(239, 171, 87, 1);
-  padding: 0 12px;
+  padding: 0 5px;
 }
 
 .popup-img{
