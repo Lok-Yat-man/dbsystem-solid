@@ -123,6 +123,11 @@ public class KstcServiceImpl implements KstcService {
 
         double[] min = new double[]{180, 90};
         double[] max = new double[]{-180, -90};
+
+        if(list.isEmpty()){
+            return Result.success(new DataCoordinateRangeDTO(0.0,0,query.getCoordinate()[0],query.getCoordinate()[1]));
+        }
+
         for (Set<RelevantObject> set : list) {
             for (RelevantObject relevantObject : set) {
                 double[] coordinate = relevantObject.getCoordinate();

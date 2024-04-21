@@ -201,8 +201,11 @@ async function getZoom(vueThis){
     var k = (18-15)/(165.5796-2274.5034);
     var c = 14 - k * 2274.5034 + 0.5;
     var zoom = Math.ceil(k * res.data.data.hypotenuseLength + c);
-    if(zoom < 6){
-        zoom = 6;
+    if(zoom < 10){
+        zoom = 10;
+    }
+    if(zoom > 18){
+        zoom = 18;
     }
     console.log("number: "+zoom);
     return {succeed:true,zoom: zoom ,clusterSize:res.data.data.clusterNumber,lons:res.data.data.midLongitude,lats:res.data.data.midLatitude};

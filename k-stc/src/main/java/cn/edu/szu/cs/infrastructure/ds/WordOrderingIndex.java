@@ -2,9 +2,9 @@ package cn.edu.szu.cs.infrastructure.ds;
 
 import cn.edu.szu.cs.entity.GeoPointDouble;
 import cn.edu.szu.cs.entity.OpticsRelevantObject;
+import cn.edu.szu.cs.entity.OpticsRelevantObjectExtend;
 import cn.edu.szu.cs.util.CommonUtil;
 import cn.edu.szu.cs.util.TimerHolder;
-import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.io.LineHandler;
@@ -22,49 +22,42 @@ import java.util.stream.Collectors;
 
 public class WordOrderingIndex {
 
-    private static final int minPts = 5;
+    private static int minPts = 5;
 
-    private static final double eps = 200;
+    private static double eps = 200;
 
     private static Log log = LogFactory.get();
 
-    private InputStream inputStream;
-
-
-    private LRUCache<String, List<OpticsRelevantObject>> wordOrderingIndex;
+    private Map<String, List<OpticsRelevantObjectExtend>> wordOrderingIndex;
 
 
     public WordOrderingIndex(InputStream inputStream) {
-        this.inputStream = inputStream;
-        wordOrderingIndex = new LRUCache<>(128, 60 * 60 * 1000);
-    }
-
-
-    public synchronized List<OpticsRelevantObject> getOrderingData(String label) {
-
-        if (wordOrderingIndex.containsKey(label)) {
-            return wordOrderingIndex.get(label);
-        }
+        wordOrderingIndex = new ConcurrentHashMap<>();
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         String line;
         try {
             while ((line = reader.readLine()) != null) {
-                if (line.length() == label.length() && line.equals(label)) {
-                    String jsonStr = reader.readLine();
-                    List<OpticsRelevantObject> objects = JSON.parseArray(jsonStr, OpticsRelevantObject.class);
-                    wordOrderingIndex.put(label, objects);
-                    return objects;
-                }
+                String label = line;
+                String jsonStr = reader.readLine();
+                List<OpticsRelevantObjectExtend> objects = JSON.parseArray(jsonStr, OpticsRelevantObjectExtend.class);
+                wordOrderingIndex.put(label, objects);
             }
         } catch (IOException e) {
-            log.error("读取文件失败", e);
+            log.error("读取词序文件失败", e);
         }
-        return Collections.emptyList();
     }
 
 
-    public static void generateWordOrderingIndexFile(InputStream inputStream, OutputStream outputStream) {
+    public synchronized List<OpticsRelevantObjectExtend> getOrderingData(String label) {
+        return wordOrderingIndex.getOrDefault(label, Collections.emptyList());
+    }
+
+
+    public static void generateWordOrderingIndexFile(InputStream inputStream, OutputStream outputStream,int minPts,double eps) {
+
+        WordOrderingIndex.minPts = minPts;
+        WordOrderingIndex.eps = eps;
 
         log.info("开始加载数据...");
         TimerHolder.start("total");
@@ -112,7 +105,19 @@ public class WordOrderingIndex {
 
         tmpWordOrderingIndex.forEach((label, objects) -> {
             printWriter.println(label);
-            printWriter.println(JSON.toJSONString(objects));
+            List<OpticsRelevantObjectExtend> opticsRelevantObjectExtends = objects.stream().map(obj -> {
+                OpticsRelevantObjectExtend opticsRelevantObjectExtend = new OpticsRelevantObjectExtend();
+                opticsRelevantObjectExtend.setObjectId(obj.getObjectId());
+                opticsRelevantObjectExtend.setReachableDistance(
+                        obj.getReachableDistance() == Double.MAX_VALUE ? null : obj.getReachableDistance()
+                );
+                opticsRelevantObjectExtend.setCoreDistance(
+                        obj.getCoreDistance() == Double.MAX_VALUE ? null : obj.getCoreDistance()
+                );
+                return opticsRelevantObjectExtend;
+            }).collect(Collectors.toList());
+            printWriter.println(JSON.toJSONString(opticsRelevantObjectExtends));
+            printWriter.flush();
         });
         long writeFile = TimerHolder.stop("writeFile");
         log.info("写入文件完成...耗时：{} ms", writeFile);

@@ -98,24 +98,24 @@
         </div>
 
         <div
-             class="params" v-if="switchStatus === 'KSTC'" style="height: 480px; bottom: -50px">
+             class="params" v-if="switchStatus === 'KSTC'" style="height: 550px; bottom: -50px">
             <h3 class="params_header">STC</h3>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
-                <br>
                 <el-radio v-model="KSTC.query.command" label="SIMPLE_DBSCAN_BASED_APPROACH" >DbScan</el-radio>
                 <el-radio v-model="KSTC.query.command" label="OPTICS_BASED_APPROACH_OM" style="margin-bottom: 5%" @change="KstcChangeToOptics" >Optics</el-radio>
                 <br>
-                <el-form-item label="words">
-<!--                    <el-input v-model="KSTC.query.keywords" placeholder="Use the symbol';' To separate"></el-input>-->
+
+                <div class="kstc-param-adjuster" style="width: 360px">
+                    <span class="item_label">words</span>
                     <el-autocomplete
-                            class="keywords_input"
+                            class="inline-input keyword-input"
                             v-model="KSTC.query.tmpKeywords"
                             :fetch-suggestions="searchKeywords"
                             placeholder="Use the symbol ';' To separate"
                             :trigger-on-focus="false"
                             @select="handleSelect">
                     </el-autocomplete>
-                </el-form-item>
+                </div>
 
 
                 <div class="param_adjuster" style="width: 180px">
@@ -183,7 +183,7 @@
                         <div class="icon-plus"></div>
                     </div>
                 </div>
-                <div class="params_confirm">
+                <div class="params_confirm" style="margin-top: 15px">
                     <div class="confirm_button" @click="paramsSwitch('KSTC_UPDATE')">
                         <span class="confirm_label">confirm</span>
                     </div>

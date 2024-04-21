@@ -10,7 +10,6 @@ import cn.edu.szu.cs.kstc.Context;
 import cn.edu.szu.cs.util.TimerHolder;
 import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
@@ -68,17 +67,17 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
         KstcQuery query = opticsOmContext.getQuery();
 
         if(query.getKeywords().size() == 1){
-            return getOrderingList(query.getKeywords().get(0));
+            return new ArrayList<>(getOrderingList(query.getKeywords().get(0)));
         }
-        List<Set<OpticsRelevantObject>> linkedHashSets = query.getKeywords()
+        List<Queue<OpticsRelevantObject>> queueList = query.getKeywords()
                 .stream()
-                .map(keyword -> new LinkedHashSet<>(getOrderingList(keyword)))
+                .map(this::getOrderingList)
                 .filter(CollUtil::isNotEmpty)
                 .collect(Collectors.toList());
 
-        Set<OpticsRelevantObject> result = new LinkedHashSet<>();
+        List<OpticsRelevantObject> result = new ArrayList<>();
 
-        SortedSet<OpticsRelevantObject> priorityQueue = new TreeSet<>(
+        PriorityQueue<OpticsRelevantObject> priorityQueue = new PriorityQueue<>(
                 new Comparator<OpticsRelevantObject>() {
                     @Override
                     public int compare(OpticsRelevantObject o1, OpticsRelevantObject o2) {
@@ -91,40 +90,33 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
                 }
         );
 
-        Map<OpticsRelevantObject,Set<OpticsRelevantObject>> map = new HashMap<>();
-        for (Set<OpticsRelevantObject> linkedHashSet : linkedHashSets) {
+        Map<OpticsRelevantObject,Queue<OpticsRelevantObject>> map = new HashMap<>();
+        for (Queue<OpticsRelevantObject> linkedHashSet : queueList) {
             OpticsRelevantObject next = linkedHashSet.iterator().next();
             priorityQueue.add(next);
             map.put(next,linkedHashSet);
             linkedHashSet.remove(next);
         }
 
+        while(!priorityQueue.isEmpty()){
 
-        while(CollUtil.isNotEmpty(priorityQueue)){
-
-            OpticsRelevantObject relevantObject = priorityQueue.first();
-            priorityQueue.remove(relevantObject);
+            OpticsRelevantObject relevantObject = priorityQueue.poll();
 
             result.add(relevantObject);
 
-            Set<OpticsRelevantObject> opticsRelevantObjects = map.get(relevantObject);
-            Iterator<OpticsRelevantObject> iterator = opticsRelevantObjects.iterator();
-            while (iterator.hasNext()){
-                OpticsRelevantObject next = iterator.next();
-
-                if(result.contains(next)){
-                    continue;
-                }
-                priorityQueue.add(next);
-                map.put(next,opticsRelevantObjects);
-                break;
+            Queue<OpticsRelevantObject> opticsRelevantObjects = map.get(relevantObject);
+            if(opticsRelevantObjects.isEmpty()){
+                continue;
             }
+            OpticsRelevantObject nextObj = opticsRelevantObjects.poll();
+            priorityQueue.add(nextObj);
+            map.put(nextObj,opticsRelevantObjects);
 
         }
-        return new ArrayList<>(result);
+        return result;
     }
 
-    private List<OpticsRelevantObject> getOrderingList(String keyword){
+    private Queue<OpticsRelevantObject> getOrderingList(String keyword){
 
         WordOrderingIndexQueryDTO wordOrderingIndexQueryDTO = new WordOrderingIndexQueryDTO();
         wordOrderingIndexQueryDTO.setKeyword(keyword);
@@ -139,12 +131,18 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
             log.error("Get ordering list failed, keyword: {}", keyword);
             throw new RuntimeException("Get ordering list failed");
         }
-        return Convert.toList(OpticsRelevantObject.class, dataFetchResult.getData());
+        return (Queue<OpticsRelevantObject>) dataFetchResult.getData();
     }
 
     @Override
     protected void afterOpticsBasedApproach(Context<OpticsRelevantObject> context) {
         long opticsOm = TimerHolder.stop("OpticsOm");
         log.info("OpticsOm query: {}, Time Cost: {} ms", JSON.toJSONString(context.getQuery()), opticsOm);
+    }
+
+    @Override
+    protected void afterGenerateResultQueue(Context<OpticsRelevantObject> context) {
+        long opticsOm = TimerHolder.stop("OpticsOm");
+        log.info("afterGenerateResultQueue Time Cost: {} ms", opticsOm);
     }
 }

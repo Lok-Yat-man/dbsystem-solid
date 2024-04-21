@@ -81,8 +81,8 @@ new Vue({
                         "latitude":39.939905740202335
                     },
                     "k":5,
-                    "epsilon": 200.0,
-                    "minPts":5,
+                    "epsilon": 100.0,
+                    "minPts":10,
                     "maxDist":-1,
                     "command":"OPTICS_BASED_APPROACH_OM"
                 },

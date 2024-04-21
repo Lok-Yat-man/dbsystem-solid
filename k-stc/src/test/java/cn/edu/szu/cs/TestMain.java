@@ -1,43 +1,22 @@
 package cn.edu.szu.cs;
 
-import cn.edu.szu.cs.adapter.KstcDataFetchManager;
-import cn.edu.szu.cs.constant.DataFetchConstant;
-import cn.edu.szu.cs.entity.DataFetchResult;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
-import cn.edu.szu.cs.entity.KstcQuery;
-import cn.hutool.core.convert.Convert;
-import com.alibaba.fastjson.JSON;
+import cn.edu.szu.cs.infrastructure.dataloader.RelevantObjectDataLoaderImpl;
+import cn.hutool.core.io.resource.ClassPathResource;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.File;
+import java.io.InputStream;
 import java.util.List;
-import java.util.Set;
+import java.util.zip.ZipFile;
 
 
 public class TestMain {
-    public static void main(String[] args) {
+    public static void main(String[] args)throws Exception {
 
-        KstcQuery query = new KstcQuery();
-        query.setKeywords(Arrays.asList("restaurants"));
-        query.setK(10);
-        query.setEpsilon(1000);
-        query.setMinPts(10);
-        query.setMaxDistance(Double.MAX_VALUE);
-        query.setCoordinate(new double[]{-75.16,39.95});
-        query.setCommand(DataFetchConstant.SIMPLE_DBSCAN_BASED_APPROACH);
-
-        DataFetchResult task = KstcDataFetchManager.generateTaskAndGet(DataFetchConstant.OPERATIONAL_LAYER,
-                DataFetchConstant.SIMPLE_DBSCAN_BASED_APPROACH,
-                JSON.toJSONString(query));
-
-        List<Set<DbScanRelevantObject>> result = new ArrayList<>();
-
-        List<?> list = Convert.toList(task.getData());
-        for (Object o : list) {
-            result.add(Convert.toSet(DbScanRelevantObject.class, o));
-        }
-
-        System.out.println(result.size());
-
+        File file = new ClassPathResource("objs.zip").getFile();
+        ZipFile zipFile = new ZipFile(file);
+        InputStream stream = zipFile.getInputStream(zipFile.entries().nextElement());
+        List<DbScanRelevantObject> all = new RelevantObjectDataLoaderImpl<>(stream, DbScanRelevantObject.class).getAll();
+        System.out.println(all.size());
     }
 }

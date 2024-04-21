@@ -4,6 +4,7 @@ import cn.edu.szu.cs.action.DataFetchAction;
 import cn.edu.szu.cs.adapter.KstcDataFetchManager;
 import cn.edu.szu.cs.constant.DataFetchConstant;
 import cn.edu.szu.cs.entity.DbScanRelevantObject;
+import cn.edu.szu.cs.entity.DefaultRelevantObject;
 import cn.edu.szu.cs.entity.KstcQuery;
 import cn.edu.szu.cs.infrastructure.dataloader.IRelevantObjectDataLoader;
 import cn.hutool.core.collection.CollUtil;
@@ -13,11 +14,12 @@ import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class DbScanRelevantObjectDataFetchAction implements DataFetchAction<KstcQuery, List> {
 
-    private IRelevantObjectDataLoader<DbScanRelevantObject> relevantObjectDataLoader = null;
+    private IRelevantObjectDataLoader<DefaultRelevantObject> relevantObjectDataLoader = null;
 
     private static final String CACHE_KEY_PREFIX = "DBSCAN_DATA_BY_KEYWORDS:{0}";
 
@@ -25,7 +27,7 @@ public class DbScanRelevantObjectDataFetchAction implements DataFetchAction<Kstc
 
     public DbScanRelevantObjectDataFetchAction() {
 
-        relevantObjectDataLoader = KstcDataFetchManager.getDbscanDataLoader();
+        relevantObjectDataLoader = KstcDataFetchManager.getDataLoader();
     }
 
     @Override
@@ -67,7 +69,14 @@ public class DbScanRelevantObjectDataFetchAction implements DataFetchAction<Kstc
 
         log.info("DbScanDataByKeywordsDataFetchAction fetchData: {}", params);
 
-        return relevantObjectDataLoader.getObjectsByKeywords(params.getKeywords());
+        return relevantObjectDataLoader.getObjectsByKeywords(params.getKeywords())
+                .stream().map(
+                        defaultRelevantObject -> new DbScanRelevantObject(
+                                defaultRelevantObject.getObjectId(),
+                                defaultRelevantObject.getCoordinate(),
+                                defaultRelevantObject.getName(),
+                                defaultRelevantObject.getLabels())
+                ).collect(Collectors.toList());
     }
 
 }

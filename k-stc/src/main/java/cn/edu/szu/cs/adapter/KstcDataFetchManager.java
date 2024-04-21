@@ -1,7 +1,7 @@
 package cn.edu.szu.cs.adapter;
 
 import cn.edu.szu.cs.entity.DataFetchResult;
-import cn.edu.szu.cs.entity.DbScanRelevantObject;
+import cn.edu.szu.cs.entity.DefaultRelevantObject;
 import cn.edu.szu.cs.infrastructure.dataloader.IRelevantObjectDataLoader;
 import cn.edu.szu.cs.infrastructure.dataloader.RelevantObjectDataLoaderImpl;
 import cn.edu.szu.cs.infrastructure.ds.WordOrderingIndex;
@@ -10,8 +10,11 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ServiceLoaderUtil;
 import lombok.NonNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.zip.ZipFile;
 
 /**
  * 用于接受并处理请求的管理器
@@ -25,30 +28,41 @@ public class KstcDataFetchManager {
 
     private static DataFetchManager dataFetchManager = null;
 
-    private static IRelevantObjectDataLoader<DbScanRelevantObject> dbscanDataLoader = null;
+    private static IRelevantObjectDataLoader<DefaultRelevantObject> dbscanDataLoader = null;
 
     private static WordOrderingIndex wordOrderingIndex = null;
 
     static {
 
-        InputStream stream = new ClassPathResource("objs.txt").getStream();
-        dbscanDataLoader = new RelevantObjectDataLoaderImpl<>(stream, DbScanRelevantObject.class);
-        Assert.notNull(dbscanDataLoader, "dbscanDataLoader is null");
 
-        InputStream inputStream = new ClassPathResource("wordOrderingIndex.txt").getStream();
-        wordOrderingIndex = new WordOrderingIndex(inputStream);
-        Assert.notNull(wordOrderingIndex, "wordOrderingIndex is null");
 
-        dataFetchManager = ServiceLoaderUtil.loadFirstAvailable(DataFetchManager.class);
+        try {
+            File objFile = new ClassPathResource("objs.zip").getFile();
+            ZipFile objZipFile = new ZipFile(objFile);
+            InputStream stream = objZipFile.getInputStream(objZipFile.entries().nextElement());
+            dbscanDataLoader = new RelevantObjectDataLoaderImpl<>(stream, DefaultRelevantObject.class);
+            Assert.notNull(dbscanDataLoader, "dbscanDataLoader is null");
 
-        if(dataFetchManager == null){
-            throw new RuntimeException("No implementation of DataFetchManager found");
+
+            File file = new ClassPathResource("wordOrderingIndex_10_100.zip").getFile();
+            ZipFile zipFile = new ZipFile(file);
+            InputStream inputStream = zipFile.getInputStream(zipFile.entries().nextElement());
+            wordOrderingIndex = new WordOrderingIndex(inputStream);
+            Assert.notNull(wordOrderingIndex, "wordOrderingIndex is null");
+
+            dataFetchManager = ServiceLoaderUtil.loadFirst(DataFetchManager.class);
+
+            if(dataFetchManager == null){
+                throw new RuntimeException("No implementation of DataFetchManager found");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
     }
 
-    public static IRelevantObjectDataLoader<DbScanRelevantObject> getDbscanDataLoader() {
+    public static IRelevantObjectDataLoader<DefaultRelevantObject> getDataLoader() {
         return dbscanDataLoader;
     }
 

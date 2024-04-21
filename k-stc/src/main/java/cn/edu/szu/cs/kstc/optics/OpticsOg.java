@@ -205,4 +205,9 @@ public class OpticsOg extends AbstractOpticsBasedApproach<OpticsRelevantObject> 
         long opticsOg = TimerHolder.stop("OpticsOg");
         log.info("OpticsOg Time Cost: {}", opticsOg);
     }
+
+    @Override
+    protected void afterGenerateResultQueue(Context<OpticsRelevantObject> context) {
+
+    }
 }

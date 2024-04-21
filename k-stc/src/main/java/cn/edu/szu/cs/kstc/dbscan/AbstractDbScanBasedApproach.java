@@ -201,8 +201,11 @@ public abstract class AbstractDbScanBasedApproach<T extends DbScanRelevantObject
                 }
             }
         }
+        afterGetCluster(context);
         return result;
     }
+
+    protected abstract void afterGetCluster(Context<T> context);
 
     @Override
     public List<Set<T>> kstcSearch(KstcQuery query) {

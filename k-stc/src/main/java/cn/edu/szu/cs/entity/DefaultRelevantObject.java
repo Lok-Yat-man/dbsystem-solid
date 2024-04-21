@@ -3,19 +3,17 @@ package cn.edu.szu.cs.entity;
 import cn.edu.szu.cs.kstc.RelevantObject;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
- *  适用与DBSCAN算法的相关对象。包含对象的id、坐标、名称、标签等信息的同时，还包含了文本权重信息。
- *  <p> Relevant object for DBSCAN algorithm. In addition to the object's id, coordinates, name, and labels, it also contains text weight information.
+ *  默认相关对象。包含对象的id、坐标、名称、标签等信息的
+ *  <p> Default relevant object. Contains the id, coordinates, name, labels, etc. of the object.
  * @author Whitence
  * @date 2024/4/5 20:07
  * @version 1.0
  */
-public class DbScanRelevantObject implements Serializable, RelevantObject,Comparable<DbScanRelevantObject>{
+public class DefaultRelevantObject implements Serializable, RelevantObject,Comparable<DefaultRelevantObject>{
 
     /**
      * object id
@@ -37,28 +35,15 @@ public class DbScanRelevantObject implements Serializable, RelevantObject,Compar
      * 标签
      */
     private List<String> labels;
-    /**
-     * weights
-     * 标签文本权重
-     */
-    private Map<String,Double> weights = null;
 
-    public DbScanRelevantObject() {
+    public DefaultRelevantObject() {
     }
 
-    public DbScanRelevantObject(String objectId, double[] coordinate, String name, List<String> labels) {
+    public DefaultRelevantObject(String objectId, double[] coordinate, String name, List<String> labels) {
         this.objectId = objectId;
         this.coordinate = coordinate;
         this.name = name;
         this.labels = labels;
-    }
-
-    private DbScanRelevantObject(String objectId, double[] coordinate, String name, List<String> labels, Map<String, Double> weights) {
-        this.objectId = objectId;
-        this.coordinate = coordinate;
-        this.name = name;
-        this.labels = labels;
-        this.weights = weights;
     }
 
     @Override
@@ -101,28 +86,6 @@ public class DbScanRelevantObject implements Serializable, RelevantObject,Compar
         this.labels = labels;
     }
 
-    public Double getWeight(String label) {
-        if(weights == null) {
-            return 0.0;
-        }
-        return weights.getOrDefault(label,0.0);
-    }
-
-
-    public Double getWeight(List<String> labels) {
-        if(weights == null) {
-            return 0.0;
-        }
-        return labels.stream().mapToDouble(weights::get).filter(Objects::nonNull).sum();
-    }
-
-    public void setWeight(String label, Double weight) {
-        if(weights == null) {
-            weights = new HashMap<>(16);
-        }
-        weights.put(label,weight);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -131,7 +94,7 @@ public class DbScanRelevantObject implements Serializable, RelevantObject,Compar
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DbScanRelevantObject that = (DbScanRelevantObject) o;
+        DefaultRelevantObject that = (DefaultRelevantObject) o;
         return objectId.equals(that.objectId);
     }
 
@@ -142,7 +105,7 @@ public class DbScanRelevantObject implements Serializable, RelevantObject,Compar
 
 
     @Override
-    public int compareTo(DbScanRelevantObject o) {
+    public int compareTo(DefaultRelevantObject o) {
         return this.objectId.compareTo(o.objectId);
     }
 }

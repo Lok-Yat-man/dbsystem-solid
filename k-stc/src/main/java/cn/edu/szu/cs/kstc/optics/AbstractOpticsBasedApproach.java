@@ -25,7 +25,7 @@ public abstract class AbstractOpticsBasedApproach<T extends OpticsRelevantObject
         beforeOpticsBasedApproach(context);
 
         List<T> resultQueue = generateResultQueue(context);
-
+        afterGenerateResultQueue(context);
         List<Set<T>> clusters = getClusters(resultQueue, context);
         afterOpticsBasedApproach(context);
         return clusters;
@@ -39,13 +39,13 @@ public abstract class AbstractOpticsBasedApproach<T extends OpticsRelevantObject
         for (T object : resultQueue) {
 
             // if reachable distance is less than epsilon, add to cluster
-            if(object.getReachableDistance() <= query.getEpsilon()){
+            if(Optional.ofNullable(object.getReachableDistance()).orElse(Double.MAX_VALUE) <= query.getEpsilon()){
                 cluster.add(object);
                 continue;
             }
 
             // if core distance is less than epsilon, create a new cluster and add the point to cluster
-            if(object.getCoreDistance() <= query.getEpsilon()){
+            if(Optional.ofNullable(object.getCoreDistance()).orElse(Double.MAX_VALUE) <= query.getEpsilon()){
                 if(!cluster.isEmpty()){
                     clusters.add(cluster);
                     cluster = new HashSet<>();
@@ -76,6 +76,8 @@ public abstract class AbstractOpticsBasedApproach<T extends OpticsRelevantObject
     protected abstract List<T> generateResultQueue(Context<T> context);
 
     protected abstract void afterOpticsBasedApproach(Context<T> context);
+
+    protected abstract void afterGenerateResultQueue(Context<T> context);
 
     @Override
     public List<Set<T>> kstcSearch(KstcQuery query) {

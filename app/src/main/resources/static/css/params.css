@@ -327,3 +327,24 @@
     user-select: none;
 }
 
+.kstc-param-adjuster {
+    width: 100%;
+    display: inline-flex;
+    gap: 12px;
+    margin-left:0%;
+    margin-bottom: 3%;
+}
+
+.keyword-input input {
+    flex-grow: 1;
+    height: 35px;
+    padding: 0;
+    background-color: rgba(255,255,255,0.0);
+    border: 1px solid #4d4d4e;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: normal;
+    color: #00FFFF;
+    line-height: 10px;
+}

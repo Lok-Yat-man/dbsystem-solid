@@ -60,8 +60,12 @@ public class OpticsRelevantObject implements RelevantObject, Serializable, Compa
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         OpticsRelevantObject that = (OpticsRelevantObject) o;
         return objectId.equals(that.objectId);
     }

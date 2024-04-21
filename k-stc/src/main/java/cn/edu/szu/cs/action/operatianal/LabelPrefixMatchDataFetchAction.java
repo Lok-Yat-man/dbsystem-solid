@@ -48,7 +48,7 @@ public class LabelPrefixMatchDataFetchAction implements DataFetchAction<LabelPre
             return cache.get(keyword);
         }
 
-        List<String> result = KstcDataFetchManager.getDbscanDataLoader().getAllLabels()
+        List<String> result = KstcDataFetchManager.getDataLoader().getAllLabels()
                 .stream()
                 .filter(label -> label.startsWith(keyword))
                 .collect(Collectors.toList());

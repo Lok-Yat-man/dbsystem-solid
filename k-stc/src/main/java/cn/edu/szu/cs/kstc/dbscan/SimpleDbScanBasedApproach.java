@@ -265,4 +265,10 @@ public class SimpleDbScanBasedApproach extends AbstractDbScanBasedApproach<DbSca
         long timestamp = TimerHolder.stop("SimpleDbScanBasedApproach");
         logger.info("SimpleDbScanBasedApproach finished in {} ms", timestamp);
     }
+
+    @Override
+    protected void afterGetCluster(Context<DbScanRelevantObject> context) {
+        SimpleDbScanBasedContext simpleDbScanBasedContext = (SimpleDbScanBasedContext) context;
+        simpleDbScanBasedContext.setFirst(true);
+    }
 }

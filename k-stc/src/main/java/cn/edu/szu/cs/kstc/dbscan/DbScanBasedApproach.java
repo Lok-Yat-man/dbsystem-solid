@@ -279,5 +279,10 @@ public class DbScanBasedApproach extends AbstractDbScanBasedApproach<DbScanRelev
         System.out.println("DBScanBasedApproach: " + dbScanBasedApproach);
     }
 
+    @Override
+    protected void afterGetCluster(Context<DbScanRelevantObject> context) {
+
+    }
+
 
 }
