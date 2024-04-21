@@ -8,7 +8,6 @@ cn.edu.szu.cs.action.infrastructure.DbScanRTreeDataFetchAction
 cn.edu.szu.cs.action.infrastructure.DbScanRelevantObjectDataFetchAction
 cn.edu.szu.cs.action.infrastructure.DbScanRTreeRangeQueryDataFetchAction
 
-cn.edu.szu.cs.action.infrastructure.OpticsRelevantObjectDataFetchAction
 cn.edu.szu.cs.action.infrastructure.OpticsRTreeDataFetchAction
 cn.edu.szu.cs.action.infrastructure.OpticsRTreeRangeQueryDataFetchAction
 cn.edu.szu.cs.action.infrastructure.WordOrderingIndexDataFetchAction
