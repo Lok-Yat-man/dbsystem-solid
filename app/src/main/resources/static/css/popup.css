@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
+}
 .popup-window{
     background-image: url("../img/popup/bg-bubble.png");
     background-color: rgba(243, 244, 246, 0);
@@ -8,6 +12,7 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;
     overflow-y: auto;
+
 }
 .popup-content {
   position: absolute;
@@ -47,6 +52,7 @@
   background-size: 100% 100%;
   overflow-y: auto;
   transform: translate(-20px, 10px);
+  font-family:Montserrat,Montserrat;
 }
 
 .popup-window-topk-nokey{
@@ -62,32 +68,34 @@
 }
 
 .popup-title{
-    font-family: CJNgaiHKS-Bold;
+    font-family:Montserrat,Montserrat;
     font-weight: bold;
-    font-size: 15px;
+    font-size: 18px;
     position: relative;
     padding: 0 12px;
     margin-left:10px;
-    margin-top:10%;
+    margin-top:5%;
     color: rgba(0, 255, 255, 1);
 }
 
 .popup-message{
-    font-family: CJNgaiHKS-Bold;
+    font-family:Montserrat,Montserrat;
     font-weight: bold;
     position: relative;
     color: rgba(0, 255, 255, 1);
     margin-left:25px;
-    margin-bottom:10px;
+    margin-bottom:3%;
     font-size:14px;
 }
 
 .popup-message-topk{
+  font-family:Montserrat,Montserrat;
   font-size: 14px;
   font-weight: bold;
   position: relative;
   color: rgba(239, 171, 87, 1);
   padding: 0 5px;
+  margin-left:7%;
 }
 
 .popup-img{

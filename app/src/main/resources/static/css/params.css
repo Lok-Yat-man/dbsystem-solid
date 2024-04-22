@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
+}
 .params{
     background-color: rgba(255,255,255,0.0);
     background-image: url(../img/params/bg_popup.png);
@@ -7,6 +11,7 @@
     width: 298px;
     height: 357px;
     bottom:0%;
+    font-family: Montserrat, Montserrat;
 }
 
 #params{
@@ -83,28 +88,45 @@
 }
 .item_label{
     margin-left:7.5%;
-    font-size:18.5px;
+    font-size:14px;
     color: #00FFFF;
 }
 
 .item_label1{
-  margin-left:8%;
-  font-size:16px;
-  color: #00FFFF;
+    margin-left:8%;
+    font-size:16px;
+    color: #00FFFF;
 }
 
 .item_labelpart{
     margin-left:10%;
-    font-size:16px;
+    font-size:18px;
     color: #00FFFF;
 }
+
 .item_labelpart2{
     margin-left:16%;
     font-size:16px;
     color: #00FFFF;
 }
 .item_labelmaxD{
-    font-size:16px;
+    font-size:14px;
+    color: #00FFFF;
+}
+.item_labelSTC{
+    margin-left:10%;
+    font-size:14px;
+    color: #00FFFF;
+}
+
+.keywords{
+    font-size:14px;
+    color: #00FFFF;
+    margin-left:7.5%;
+}
+.item_labelSTD{
+    margin-left:7.5%;
+    font-size:15px;
     color: #00FFFF;
 }
 .params_header_container {
@@ -112,7 +134,6 @@
     align-items: center;
 }
 .params_header{
-    font-family: CJNgaiHKS, CJNgaiHKS;
     font-weight: bold;
     font-size: 18px;
     font-style: normal;
@@ -172,7 +193,18 @@
     height: 23px;
     display: inline-block;
 }
-
+.param_adjusterlong{
+    width: 180px;
+    height: 23px;
+    display: inline-block;
+    margin-left:1%;
+}
+.param_adjustSTD{
+    width: 180px;
+    height: 23px;
+    display: inline-block;
+    margin-left:3%;
+}
 .adjuster{
     height: 23px;
     width: 10px;
@@ -181,7 +213,7 @@
 }
 
 .param_input{
-    font-family: DIN Next LT Pro, ui-serif;
+    font-family: Montserrat, Montserrat;
     /*width: 35px;*/
     width: 45px;
     /*height: 18px;*/
@@ -190,14 +222,83 @@
     background-color: rgba(255,255,255,0.0);
     border: 0;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     /*font-weight: bold;*/
     color: #00FFFF;
     line-height: 22px;
     background-image: url(../img/params/bg_popupNumber.png);
     background-size: contain;
 }
-
+.kstclon_input{
+    font-family: Montserrat, Montserrat;
+    /*width: 35px;*/
+    width: 55px;
+    /*height: 18px;*/
+    height: 25px;
+    padding: 0;
+    background-color: rgba(255,255,255,0.0);
+    border: 0;
+    text-align: center;
+    font-size: 14px;
+    /*font-weight: bold;*/
+    color: #00FFFF;
+    line-height: 22px;
+    background-image: url(../img/params/bg_popupNumber.png);
+    background-size: contain;
+    margin-left:4%;
+}
+.kstclat_input{
+     font-family: Montserrat, Montserrat;
+    /*width: 35px;*/
+    width: 55px;
+    /*height: 18px;*/
+    height: 25px;
+    padding: 0;
+    background-color: rgba(255,255,255,0.0);
+    border: 0;
+    text-align: center;
+    font-size: 14px;
+    /*font-weight: bold;*/
+    color: #00FFFF;
+    line-height: 22px;
+    background-image: url(../img/params/bg_popupNumber.png);
+    background-size: contain;
+    margin-left:7%;
+}
+.kstcparam_input{
+    /*width: 35px;*/
+    width: 180px;
+    /*height: 18px;*/
+    height: 27px;
+    padding: 0;
+    background-color: rgba(255,255,255,0.0);
+    border: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #00FFFF;
+    line-height: 15px;
+    background-image: url(../img/params/bg_popupNumberLarge.png);
+    background-size: contain;
+    margin-left:5%;
+}
+.stdparam_input{
+    /*width: 35px;*/
+    width: 200px;
+    /*height: 18px;*/
+    height: 27px;
+    padding: 0;
+    background-color: rgba(255,255,255,0.0);
+    border: 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    color: #00FFFF;
+    line-height: 15px;
+    background-image: url(../img/params/bg_popupNumberLarge.png);
+    background-size: contain;
+    margin-left:5%;
+}
 .param1_input{
   /*width: 35px;*/
   width: 180px;
@@ -207,7 +308,7 @@
   background-color: rgba(255,255,255,0.0);
   border: 0;
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   color: #00FFFF;
   line-height: 15px;
@@ -224,7 +325,7 @@
   background-color: rgba(255,255,255,0.0);
   border: 0;
   text-align: center;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   color: #00FFFF;
   line-height: 15px;
@@ -232,10 +333,9 @@
   background-size: contain;
 }
 
-
 .keywords_input{
-    width: 280px;
-    height: 35px;
+    width: 180px;
+    height: 40px;
     padding: 0;
     background-color: rgba(255,255,255,0.0);
     border: 1px solid #4d4d4e;
@@ -245,6 +345,7 @@
     font-weight: normal;
     color: #00FFFF;
     line-height: 10px;
+    margin-left:4%;
 }
 
 /*减号*/
@@ -286,7 +387,7 @@
 }
 
 .confirm_label{
-    font-size: 15px;
+    font-size: 14px;
     color: #00FFFF;
     line-height: 40px;
     font-weight: bold;
@@ -352,11 +453,14 @@
 }
 
 .kstc-param-adjuster {
-    width: 100%;
+    /*width: 100%;
     display: inline-flex;
     gap: 12px;
     margin-left:0%;
-    margin-bottom: 3%;
+    margin-bottom: 3%;*/
+    display: flex;
+    width:100%;
+    align-items:center;
 }
 
 .keyword-input input {
@@ -371,4 +475,9 @@
     font-weight: normal;
     color: #00FFFF;
     line-height: 10px;
+}
+.inputContainer{
+    display: flex;
+    width:100%;
+    align-items:center;
 }

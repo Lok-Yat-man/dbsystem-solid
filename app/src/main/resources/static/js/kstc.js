@@ -72,15 +72,16 @@ function layerPopup(i, vueThis){
                 }
             }
             if(flag){
-                str+='<p class="popup-message" ><font color=#FFB458>'+labels[j]+'</font></p>';
+                str+='<div class="popup-message" ><font color=#FFB458>'+labels[j]+'</font></div>';
             }else{
-                str+='<p class="popup-message">'+labels[j]+'</p>';
+                str+='<div class="popup-message">'+labels[j]+'</div>';
             }
         }
 
         utils.getNewPopUp(
             "<strong>"+e.features[0].properties.name+"</strong>",
-            str
+            str,
+            false
         ).
         setLngLat(coordinates)
             .addTo(vueThis.map);

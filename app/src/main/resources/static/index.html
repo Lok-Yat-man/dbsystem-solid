@@ -41,9 +41,9 @@
                 <span class="item_label">dataset</span>
                 <br><br>
                 <div class="left_gap"></div>
-                <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)">gowalla</el-radio>
-                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%" @change="loadDSPGS('',-1)">brightkite</el-radio>
-                <br>
+                <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)" style="font-size:14px;">gowalla</el-radio>
+                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5% font-size:14px;" @change="loadDSPGS('',-1)">brightkite</el-radio>
+                <br><br>
                 <span class="item_label" >params</span>
                 <br><br>
                 <div class="param_adjuster" >
@@ -97,72 +97,43 @@
         </div>
 
         <div
-             class="params" v-if="switchStatus === 'KSTC'" style="height: 550px; bottom: -50px">
-            <h3 class="params_header">STC</h3>
+             class="params" v-if="switchStatus === 'KSTC'" style="height: 480px;">
+            <div class="params_header_container">
+                <h3 class="params_header">STC</h3>
+                <img class="params_headerside" src="./img/params/titleside.png">
+            </div>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
+                <div class="left_gap"></div>
                 <el-radio v-model="KSTC.query.command" label="SIMPLE_DBSCAN_BASED_APPROACH" >DbScan</el-radio>
                 <el-radio v-model="KSTC.query.command" label="OPTICS_BASED_APPROACH_OM" style="margin-bottom: 5%" @change="KstcChangeToOptics" >Optics</el-radio>
                 <br>
 
-                <div class="kstc-param-adjuster" style="width: 360px">
-                    <span class="item_label">words</span>
-                    <el-autocomplete
-                            class="inline-input keyword-input"
+                <div class="kstc-param-adjuster" >
+                    <span class="keywords">Words</span>
+                    <input
+                            class="kstcparam_input"
                             v-model="KSTC.query.tmpKeywords"
                             :fetch-suggestions="searchKeywords"
                             placeholder="Use the symbol ';' To separate"
                             :trigger-on-focus="false"
                             @select="handleSelect">
-                    </el-autocomplete>
+                    </input>
                 </div>
-
-
-                <div class="param_adjuster" style="width: 180px">
-                    <span class="item_label">epsilon</span>
-                    <div class="adjuster" v-if="KSTC.query.command !== 'OPTICS_BASED_APPROACH_OM'" @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,false,1.0,0,0.1,1)" style="margin-left: 5px;">
+                <br>
+                <span class="item_label" >params</span>
+                <br><br>
+                <div class="param_adjuster" >
+                    <span class="item_labelpart">&epsilon;</span>
+                    <div class="adjuster"  @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,false,1.0,0,0.1,1)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
                     <input class="param_input" :disabled = "KSTC.query.command === 'OPTICS_BASED_APPROACH_OM'" type="text" v-model="KSTC.query.epsilon">
-                    <div class="adjuster" v-if="KSTC.query.command !== 'OPTICS_BASED_APPROACH_OM'" @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,true,1.0,0,0.1,1)">
+                    <div class="adjuster"  @click="KSTC.query.epsilon = paramAdjust(KSTC.query.epsilon,true,1.0,0,0.1,1)">
                         <div class="icon-plus"></div>
                     </div>
                 </div>
-                <br><br>
-                <div class="param_adjuster" style="width: 180px">
-                    <span class="item_label">minPts</span>
-                    <div class="adjuster" v-if="KSTC.query.command !== 'OPTICS_BASED_APPROACH_OM'" @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,false,20,2,1,0)" style="margin-left: 5px;">
-                        <div class="icon-minus"></div>
-                    </div>
-                    <input class="param_input" :disabled = "KSTC.query.command === 'OPTICS_BASED_APPROACH_OM'" type="text" v-model="KSTC.query.minPts">
-                    <div class="adjuster" v-if="KSTC.query.command !== 'OPTICS_BASED_APPROACH_OM'" @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,true,20,2,1,0)">
-                        <div class="icon-plus"></div>
-                    </div>
-                </div>
-                <br><br>
-                <div class="param_adjuster" style="width: 150px">
-                    <span class="item_label">lon</span>
-                    <div class="adjuster" @click="KSTC.query.location.longitude = paramAdjust(KSTC.query.location.longitude,false,180,-180,0.1,2)" style="margin-left: 5px;">
-                        <div class="icon-minus"></div>
-                    </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.location.longitude">
-                    <div class="adjuster" @click="KSTC.query.location.longitude = paramAdjust(KSTC.query.location.longitude,true,180,-180,0.1,2)">
-                        <div class="icon-plus"></div>
-                    </div>
-                </div>
-                <br><br>
-                <div class="param_adjuster" style="width: 150px">
-                    <span class="item_label">lat</span>
-                    <div class="adjuster" @click="KSTC.query.location.latitude = paramAdjust(KSTC.query.location.latitude,false,90,-90,0.1,2)" style="margin-left: 5px;">
-                        <div class="icon-minus"></div>
-                    </div>
-                    <input class="param_input" type="text" v-model="KSTC.query.location.latitude">
-                    <div class="adjuster" @click="KSTC.query.location.latitude = paramAdjust(KSTC.query.location.latitude,true,90,-90,0.1,2)">
-                        <div class="icon-plus"></div>
-                    </div>
-                </div>
-                <br><br>
-                <div class="param_adjuster" style="width: 150px">
-                    <span class="item_label">k</span>
+                <div class="param_adjuster" >
+                    <span class="item_labelpart">k</span>
                     <div class="adjuster" @click="KSTC.query.k = paramAdjust(KSTC.query.k,false,20,1,1,0)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
@@ -172,9 +143,29 @@
                     </div>
                 </div>
                 <br><br>
-                <div class="param_adjuster" style="width: 180px">
-                    <span class="item_label">maxDist</span>
-                    <div class="adjuster" @click="KSTC.query.maxDist = paramAdjust(KSTC.query.maxDist,false,9999999999,-1,1,0)" style="margin-left: 5px;">
+                <div class="param_adjuster" >
+                    <span class="item_labelSTC">lon</span>
+                    <input class="kstclon_input" type="text" v-model="KSTC.query.location.longitude" >
+                </div>
+                <div class="param_adjuster">
+                    <span class="item_labelSTC">lat</span>
+                    <input class="kstclat_input" type="text" v-model="KSTC.query.location.latitude" >
+                </div>
+                <br><br>
+                <div class="param_adjusterlong">
+                    <span class="item_labelSTC">minPts</span>
+                    <div class="adjuster"  @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,false,20,2,1,0)" style="margin-left: 9.5%;">
+                        <div class="icon-minus"></div>
+                    </div>
+                    <input class="param_input" :disabled = "KSTC.query.command === 'OPTICS_BASED_APPROACH_OM'" type="text" v-model="KSTC.query.minPts">
+                    <div class="adjuster"  @click="KSTC.query.minPts = paramAdjust(KSTC.query.minPts,true,20,2,1,0)">
+                        <div class="icon-plus"></div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="param_adjusterlong">
+                    <span class="item_labelSTC">maxDist</span>
+                    <div class="adjuster" @click="KSTC.query.maxDist = paramAdjust(KSTC.query.maxDist,false,9999999999,-1,1,0)" style="margin-left: 5%;">
                         <div class="icon-minus"></div>
                     </div>
                     <input class="param_input" type="text" v-model="KSTC.query.maxDist">
@@ -182,7 +173,8 @@
                         <div class="icon-plus"></div>
                     </div>
                 </div>
-                <div class="params_confirm" style="margin-top: 15px">
+                <br><br>
+                <div class="params_confirm">
                     <div class="confirm_button" @click="paramsSwitch('KSTC_UPDATE')">
                         <span class="confirm_label">confirm</span>
                     </div>
@@ -193,40 +185,24 @@
 
         <div
                 class="params" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
-            <h3 class="params_header">STD</h3>
+            <div class="params_header_container">
+                <h3 class="params_header">STD</h3>
+                <img class="params_headerside" src="./img/params/titleside.png">
+            </div>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
-                <div class="param_adjuster" style="width: 200px">
-                    <span class="item_label">longitude</span>
-                    <div class="adjuster"
-                         @click="spatial_skylines.query.longitude = paramAdjust(spatial_skylines.query.longitude,false,179,-180,0.1,2)"
-                         style="margin-left: 5px;">
-                        <div class="icon-minus"></div>
-                    </div>
-                    <input class="param_input" type="text" v-model="spatial_skylines.query.longitude">
-                    <div class="adjuster"
-                         @click="spatial_skylines.query.longitude = paramAdjust(spatial_skylines.query.longitude,true,179,-180,0.1,2)">
-                        <div class="icon-plus"></div>
-                    </div>
+                <div class="param_adjustSTD" >
+                    <span class="item_labelSTD">lon</span>
+                    <input class="param2_input" type="text" v-model="spatial_skylines.query.longitude" style="margin-left:19%;">
                 </div>
                 <br><br>
-                <div class="param_adjuster" style="width: 200px">
-                    <span class="item_label">latitude</span>
-                    <div class="adjuster"
-                         @click="spatial_skylines.query.latitude = paramAdjust(spatial_skylines.query.latitude,false,90,-90,0.1,2)"
-                         style="margin-left: 21.43px;">
-                        <div class="icon-minus"></div>
-                    </div>
-                    <input class="param_input" type="text" v-model="spatial_skylines.query.latitude">
-                    <div class="adjuster"
-                         @click="spatial_skylines.query.latitude = paramAdjust(spatial_skylines.query.latitude,true,90,-90,0.1,2)">
-                        <div class="icon-plus"></div>
-                    </div>
+                <div class="param_adjustSTD" style="margin-top:7%;">
+                    <span class="item_labelSTD">lat</span>
+                    <input class="param2_input" type="text" v-model="spatial_skylines.query.latitude" style="margin-left:23%;">
                 </div>
                 <br><br>
-                <div class="param_adjuster" style="width: 150px">
-                    <span class="item_label">keywords</span>
-                    <br><br>
-                    <input class="keywords_input" type="text" v-model="spatial_skylines.query.keywords">
+                <div class="inputContainer" style="margin-top:7%;" >
+                    <span class="keywords">Words</span>
+                    <input class="stdparam_input" type="text" v-model="spatial_skylines.query.keywords">
                 </div>
                 <br><br>
                 <div class="params_confirm">
@@ -238,23 +214,26 @@
         </div>
 
         <div class="params" v-if="switchStatus === 'topK'">
-        <h3 class="params_header" >SP</h3>
+            <div class="params_header_container">
+                <h3 class="params_header">SP</h3>
+                <img class="params_headerside" src="./img/params/titleside.png">
+            </div>
         <el-form :label-position="topk.labelPosition" label-width=" 100px" :model="topk" >
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
             <span class="item_label1" >lon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <input v-model="topk.query.longitude_topk" class="param2_input" type="text"></input>
+            <input v-model="topk.query.longitude_topk" class="param2_input" type="text" style="margin-left:2%;"></input>
           </div>
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" >la&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <input v-model="topk.query.latitude_topk"  class="param2_input" type="text"></input>
+            <span class="item_label1" >lat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input v-model="topk.query.latitude_topk"  class="param2_input" type="text" style="margin-left:3%;"></input>
           </div>
           <div class="param_adjuster" style="width: 280px; padding-bottom: 30px">
-            <span class="item_label1" >words&nbsp;&nbsp;</span>
-            <input v-model="topk.query.keywords_topk" class="param1_input" type="text" ></input>
+            <span class="item_label1" >Words&nbsp;&nbsp;</span>
+            <input v-model="topk.query.keywords_topk" class="param1_input" type="text" style="margin-left:2.5%;"></input>
           </div>
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" >k&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <input v-model="topk.query.k_topk"  class="param2_input" type="text"></input>
+            <span class="item_label1" style="margin-left:10%;" >k&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input v-model="topk.query.k_topk"  class="param2_input" type="text" style="margin-left:5%;"></input>
           </div>
 
           <div class="params_confirm">

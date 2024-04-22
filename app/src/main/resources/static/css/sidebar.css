@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
+}
 .tac{
     background-image: url(../img/sidebar/bg_tab.png);
     position: absolute;
@@ -27,6 +31,7 @@
 }
 
 .el-submenu{
+    font-family: Montserrat,Montserrat;
     margin-left: 15px;
     background-image: url(../img/sidebar/bg_tabBigBtnNormal.png);
     background-repeat: no-repeat;
@@ -64,12 +69,14 @@
 }
 
 .el-submenu .el-submenu__title{
+    font-family: Montserrat,Montserrat;
     font-weight: bold;
     left: 25%;
     color: #00FFFF;
 }
 
 .el-submenu .el-submenu .el-submenu__title{
+    font-family: Montserrat,Montserrat;
     left: 1%;
     color: #00FFFF;
 }

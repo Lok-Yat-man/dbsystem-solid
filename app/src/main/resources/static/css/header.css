@@ -1,3 +1,7 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
+}
 #header{
     position:fixed;
     display: inline-block;
@@ -54,7 +58,7 @@
     width: 505px;
     height: 18px;
     font-size: 16px;
-    font-family: CJNgaiHKS, CJNgaiHKS;
+    font-family: Montserrat,Montserrat;
     font-weight: bold;
     color: #00FFFF;
     line-height: 36px;
