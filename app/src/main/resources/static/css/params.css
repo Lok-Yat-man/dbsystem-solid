@@ -134,13 +134,13 @@
     margin-left:9%;
 }
 .item_labelSTD{
-    margin-left:22.5%;
-    font-size:15px;
+    margin-left:16.5%;
+    font-size:14px;
     color: #00FFFF;
 }
 .item_labelSTDlon{
-    margin-left:21%;
-    font-size:15px;
+    margin-left:19.5%;
+    font-size:14px;
     color: #00FFFF;
 }
 .params_header_container {
@@ -214,10 +214,10 @@
     margin-left:1%;
 }
 .param_adjustSTD{
-    width: 180px;
+    width:200px;
     height: 23px;
     display: inline-block;
-    margin-left:3%;
+    margin-left:1.8%;
 }
 .adjuster{
     height: 23px;
@@ -317,7 +317,7 @@
   /*width: 35px;*/
   width: 180px;
   /*height: 18px;*/
-  height: 27px;
+  height: 22px;
   padding: 0;
   background-color: rgba(255,255,255,0.0);
   border: 0;
@@ -334,7 +334,7 @@
 .param2_input{
   width: 70px;
   /*height: 18px;*/
-  height: 27px;
+  height: 22px;
   padding: 0;
   background-color: rgba(255,255,255,0.0);
   border: 0;
