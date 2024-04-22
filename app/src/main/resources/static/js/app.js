@@ -263,7 +263,9 @@ new Vue({
 
         async loadDSPGS(location, zoom){
             this.currentAlgorithm = "DCPGS";
-            this.DCPGS.location = location;
+            if(location !== ''){
+                this.DCPGS.location = location;
+            }
 
             this.paramsSwitch('DCPGS');
             if(location === '')
