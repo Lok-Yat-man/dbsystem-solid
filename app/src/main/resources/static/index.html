@@ -240,18 +240,22 @@
         <div class="params" v-if="switchStatus === 'topK'">
         <h3 class="params_header" >SP</h3>
         <el-form :label-position="topk.labelPosition" label-width=" 100px" :model="topk" >
-          <el-form-item class="item_label" label="Longitude">
-            <input v-model="topk.query.longitude_topk" class="param_input" type="text"></input>
-          </el-form-item>
-          <el-form-item class="item_label" label="Latitude">
-            <input v-model="topk.query.latitude_topk"  class="param_input" type="text"></input>
-          </el-form-item>
-          <el-form-item class="item_label" label="Keywords" >
+          <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
+            <span class="item_label1" >lon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input v-model="topk.query.longitude_topk" class="param2_input" type="text"></input>
+          </div>
+          <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
+            <span class="item_label1" >la&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input v-model="topk.query.latitude_topk"  class="param2_input" type="text"></input>
+          </div>
+          <div class="param_adjuster" style="width: 280px; padding-bottom: 30px">
+            <span class="item_label1" >words&nbsp;&nbsp;</span>
             <input v-model="topk.query.keywords_topk" class="param1_input" type="text" ></input>
-          </el-form-item>
-          <el-form-item class="item_label" label="K">
-            <input v-model="topk.query.k_topk"  class="param_input" type="text"></input>
-          </el-form-item>
+          </div>
+          <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
+            <span class="item_label1" >k&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <input v-model="topk.query.k_topk"  class="param2_input" type="text"></input>
+          </div>
 
           <div class="params_confirm">
             <div class="confirm_button" @click="paramsSwitch('topK_UPDATE')" >
