@@ -109,7 +109,7 @@
                 <br>
 
                 <div class="kstc-param-adjuster" >
-                    <span class="keywords">Words</span>
+                    <span class="keywords">words</span>
                     <input
                             class="kstcparam_input"
                             v-model="KSTC.query.tmpKeywords"
@@ -191,17 +191,17 @@
             </div>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
                 <div class="param_adjustSTD" >
-                    <span class="item_labelSTD">lon</span>
-                    <input class="param2_input" type="text" v-model="spatial_skylines.query.longitude" style="margin-left:19%;">
+                    <span class="item_labelSTDlon">lon</span>
+                    <input class="param2_input" type="text" v-model="spatial_skylines.query.longitude" style="margin-left:4.5%;">
                 </div>
                 <br><br>
                 <div class="param_adjustSTD" style="margin-top:7%;">
                     <span class="item_labelSTD">lat</span>
-                    <input class="param2_input" type="text" v-model="spatial_skylines.query.latitude" style="margin-left:23%;">
+                    <input class="param2_input" type="text" v-model="spatial_skylines.query.latitude" style="margin-left:6%;">
                 </div>
                 <br><br>
                 <div class="inputContainer" style="margin-top:7%;" >
-                    <span class="keywords">Words</span>
+                    <span class="keywords">words</span>
                     <input class="stdparam_input" type="text" v-model="spatial_skylines.query.keywords">
                 </div>
                 <br><br>
@@ -220,19 +220,19 @@
             </div>
         <el-form :label-position="topk.labelPosition" label-width=" 100px" :model="topk" >
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" >lon&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <input v-model="topk.query.longitude_topk" class="param2_input" type="text" style="margin-left:2%;"></input>
+            <span class="item_label1" >lon</span>
+            <input v-model="topk.query.longitude_topk" class="param2_input" type="text" style="margin-left:3%;"></input>
           </div>
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" >lat&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-            <input v-model="topk.query.latitude_topk"  class="param2_input" type="text" style="margin-left:3%;"></input>
+            <span class="item_label1" >lat</span>
+            <input v-model="topk.query.latitude_topk"  class="param2_input" type="text" style="margin-left:5%;"></input>
           </div>
           <div class="param_adjuster" style="width: 280px; padding-bottom: 30px">
-            <span class="item_label1" >Words&nbsp;&nbsp;</span>
-            <input v-model="topk.query.keywords_topk" class="param1_input" type="text" style="margin-left:2.5%;"></input>
+            <span class="item_labelword" >words</span>
+            <input v-model="topk.query.keywords_topk" class="param1_input" type="text" style="margin-left:3%;"></input>
           </div>
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" style="margin-left:10%;" >k&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span class="item_labelk" >k</span>
             <input v-model="topk.query.k_topk"  class="param2_input" type="text" style="margin-left:5%;"></input>
           </div>
 

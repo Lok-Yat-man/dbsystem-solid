@@ -93,11 +93,20 @@
 }
 
 .item_label1{
-    margin-left:8%;
-    font-size:16px;
+    margin-left:16.5%;
+    font-size:14px;
     color: #00FFFF;
 }
-
+.item_labelword{
+    margin-left:8%;
+    font-size:14px;
+    color: #00FFFF;
+}
+.item_labelk{
+    margin-left:21.5%;
+    font-size:14px;
+    color: #00FFFF;
+}
 .item_labelpart{
     margin-left:10%;
     font-size:18px;
@@ -122,10 +131,15 @@
 .keywords{
     font-size:14px;
     color: #00FFFF;
-    margin-left:7.5%;
+    margin-left:9%;
 }
 .item_labelSTD{
-    margin-left:7.5%;
+    margin-left:22.5%;
+    font-size:15px;
+    color: #00FFFF;
+}
+.item_labelSTDlon{
+    margin-left:21%;
     font-size:15px;
     color: #00FFFF;
 }
