@@ -13,13 +13,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * DefaultLeafInvertedIndex
- *
- * @author Whitence
- * @version 1.0
- * @date 2023/10/17 21:26
- */
+
 public class DefaultLeafInvertedIndex implements InvertedIndex<RelevantObject> {
 
     private static final int MAX_SIZE = 1000;

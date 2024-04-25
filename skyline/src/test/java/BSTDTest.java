@@ -26,24 +26,24 @@ public class BSTDTest {
         // x1 = -120.09514 y1 = 27.555126
         // x2 = -73.200455 y2 = 53.679195
 
-//        Query query1 = Query.create(
-//                Coordinate.create(
-//                        -86.12,
-//                        39.76
-//                ),
-//                Arrays.asList("Rooms","Bes")
-//                //Arrays.asList("Water")
-//        );
-        Query query2 = Query.create(
+        Query query1 = Query.create(
                 Coordinate.create(
-                        -75.14981961686082,
-                        39.95904396208118
+                        -75.16133365786646,
+                        39.95144744543839
                 ),
                 Arrays.asList("Fast","Food","Burgers","Salad")
+                //Arrays.asList("Water")
         );
+//        Query query2 = Query.create(
+//                Coordinate.create(
+//                        -75.14981961686082,
+//                        39.95904396208118
+//                ),
+//                Arrays.asList("Fast","Food","Burgers","Salad")
+//        );
 
-        //queries.add(query1);
-        queries.add(query2);
+        queries.add(query1);
+        //queries.add(query2);
 
 
 //        List<Entry<String, Geometry>> valuesEntry = b.bstd(queries);

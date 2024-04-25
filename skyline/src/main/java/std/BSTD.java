@@ -211,7 +211,7 @@ public class BSTD {
         boolean isSpatialDominant = !uncertainty.contains(log, lat);
         for (Query query : queries) {
             List<String> queryKeywords = query.getKeywords();
-            List<String> weightKey = invertedIndex.getValue(e.value()).getWeightKey();
+            List<String> weightKey = invertedIndex.getValue(e.value()).getLabels();
             boolean isTextualDominant = Collections.disjoint(queryKeywords, weightKey);
             if (!(isSpatialDominant || isTextualDominant)) {
                 return false;
@@ -298,7 +298,7 @@ public class BSTD {
     public double w(Query query, EntryDefault<String, Geometry> entry) {
         String relevantObjectId = entry.value();
         RelevantObject relevantObject = invertedIndex.getValue(relevantObjectId);
-        List<String> weightKey = relevantObject.getWeightKey();
+        List<String> weightKey = relevantObject.getLabels();
         boolean anyContain = query.getKeywords().stream().anyMatch(weightKey::contains);
         if (!anyContain) {
             return 0;

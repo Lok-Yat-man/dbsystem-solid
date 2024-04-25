@@ -1,6 +1,8 @@
 import utils from "./utils.js";
 
 async function LoadBSTD(vueThis) {
+    console.time("time");
+
     vueThis.spatial_skylines.loading = true;
     vueThis.spatial_skylines.timeout = false;
 
@@ -22,6 +24,8 @@ async function LoadBSTD(vueThis) {
     await paintPoints(vueThis, objectData.data.length);
 
     vueThis.spatial_skylines.loading = false;
+
+    console.timeEnd("time");
 }
 
 // 异步加载后端运行的Skyline结果集
