@@ -6,8 +6,11 @@ async function LoadBSTD(vueThis) {
     vueThis.spatial_skylines.loading = true;
     vueThis.spatial_skylines.timeout = false;
 
-    let longitude = vueThis.spatial_skylines.query.longitude;
-    let latitude = vueThis.spatial_skylines.query.latitude;
+    let lon = vueThis.spatial_skylines.query.longitude.toFixed(3);
+    let longitude = parseFloat(lon);
+
+    let lat = vueThis.spatial_skylines.query.latitude.toFixed(3);
+    let latitude = parseFloat(lat);
 
     vueThis.spatial_skylines.query.keywords = vueThis
         .spatial_skylines.query.keywords.replace(/\s/g, "");
@@ -112,8 +115,12 @@ function doubleClickCoordinate(vueThis) {
         if (vueThis.spatial_skylines.curmarker != null) {
             vueThis.spatial_skylines.curmarker.remove();
         }
-        vueThis.spatial_skylines.query.longitude = e.lngLat.lng;
-        vueThis.spatial_skylines.query.latitude = e.lngLat.lat;
+
+        let lon = e.lngLat.lng.toFixed(3);
+        vueThis.spatial_skylines.query.longitude = parseFloat(lon);
+
+        let lat = e.lngLat.lat.toFixed(3);
+        vueThis.spatial_skylines.query.latitude = parseFloat(lat);
         let marker = utils.getCustomMark(e.lngLat.lng, e.lngLat.lat, 1);
         marker.setPopup(utils.getNewPopUp(
             "<strong>当前位置</strong>",
