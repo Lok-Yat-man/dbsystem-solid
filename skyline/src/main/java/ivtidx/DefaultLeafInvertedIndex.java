@@ -4,6 +4,7 @@ package ivtidx;
 import com.alibaba.fastjson.JSONObject;
 import entity.Pair;
 import entity.RelevantObject;
+import lombok.Getter;
 import service.IRelevantObjectService;
 
 import java.io.BufferedReader;
@@ -85,5 +86,10 @@ public class DefaultLeafInvertedIndex implements InvertedIndex<RelevantObject> {
                                 }
                         )
         ).orElse(new ArrayList<>());
+    }
+
+    @Override
+    public List<Pair> getMapList(String term) {
+        return map.get(term);
     }
 }

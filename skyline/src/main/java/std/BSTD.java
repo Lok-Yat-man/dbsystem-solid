@@ -37,7 +37,7 @@ public class BSTD {
 
     private InvertedIndex<RelevantObject> invertedIndex;
 
-    private final static Double smoothingFactor = 0.03;
+    private final static Double smoothingFactor = 0.005;
 
     public BSTD() {
 
@@ -136,13 +136,13 @@ public class BSTD {
         for (int i = 0; i < S.size(); i++) {
             Entry<String, Geometry> entry = S.get(i);
             if (!entry.geometry().mbr().intersects(B)) {
-                System.out.println(S.get(i));
+//                System.out.println(S.get(i));
                 S.remove(i);
                 i--;
             }
         }
 
-        System.out.println(B);
+//        System.out.println(B);
 
         List<RelevantObject> relevantObjects = S.stream()
                 .map(Entry::value)
@@ -205,13 +205,16 @@ public class BSTD {
     }
 
     public boolean isDominant(Entry<String, Geometry> e, Rectangle uncertainty, List<Query> queries) {
-        RelevantObject relevantObject = invertedIndex.getValue(e.value());
+        RelevantObject relevantObject = relevantObjectService.getById(e.value());
+        if (relevantObject == null) {
+           return true;
+        }
         double log = relevantObject.getCoordinate().getLongitude();
         double lat = relevantObject.getCoordinate().getLatitude();
         boolean isSpatialDominant = !uncertainty.contains(log, lat);
         for (Query query : queries) {
             List<String> queryKeywords = query.getKeywords();
-            List<String> weightKey = invertedIndex.getValue(e.value()).getLabels();
+            List<String> weightKey = relevantObjectService.getById(e.value()).getLabels();
             boolean isTextualDominant = Collections.disjoint(queryKeywords, weightKey);
             if (!(isSpatialDominant || isTextualDominant)) {
                 return false;

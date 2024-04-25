@@ -23,7 +23,7 @@ public class RelevantObject implements Serializable {
 
     @Getter
     @Setter
-    private List<String>  labels;
+    private List<String> labels;
 
     @Getter
     @Setter
@@ -79,9 +79,11 @@ public class RelevantObject implements Serializable {
 
     @Override
     public String toString() {
-        return "RelevantObject{" +
+        return "{" +
                 "objectId='" + objectId + '\'' +
+                ", name='" + name + '\'' +
                 ", coordinate=" + coordinate +
+                ", labels=" + labels +
                 ", weights=" + weights +
                 '}' + '\n';
     }

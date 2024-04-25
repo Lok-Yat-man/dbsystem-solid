@@ -31,7 +31,7 @@ public class BSTDTest {
                         -75.16133365786646,
                         39.95144744543839
                 ),
-                Arrays.asList("Fast","Food","Burgers","Salad")
+                Arrays.asList("Fast","Burgers","Salad","Food")
                 //Arrays.asList("Water")
         );
 //        Query query2 = Query.create(
