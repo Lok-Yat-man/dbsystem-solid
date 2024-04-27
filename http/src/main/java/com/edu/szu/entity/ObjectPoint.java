@@ -15,6 +15,8 @@ public class ObjectPoint implements Serializable {
 
     private String objId;
 
+    private String name;
+
     private Coordinate coordinate;
 
     private List<String> keywords;

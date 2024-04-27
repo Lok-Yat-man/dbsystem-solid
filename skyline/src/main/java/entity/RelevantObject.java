@@ -1,62 +1,63 @@
 package entity;
 
-import util.TfIdfStrategy;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.*;
 
-/**
- * 相关对象
- *
- * @author Whitence
- * @version 1.0
- * @date 2023/10/1 10:31
- */
+
 public class RelevantObject implements Serializable {
 
+    @Getter
+    @Setter
     private String objectId;
 
+    @Getter
+    @Setter
+    private String name;
+
+    @Getter
+    @Setter
     private Coordinate coordinate;
 
+    @Getter
+    @Setter
+    private List<String> labels;
+
+    @Getter
+    @Setter
     private Map<String, Double> weights;
 
     public RelevantObject() {
     }
 
-    public RelevantObject(String objectId, Coordinate coordinate, List<String> keywords) {
+    public RelevantObject(String objectId, String name, Coordinate coordinate, List<String> keywords) {
         this.coordinate = coordinate;
+        this.labels = keywords;
         this.objectId = objectId;
-        weights = new TfIdfStrategy().calculateWeight(keywords);
+        this.name = name;
     }
 
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId;
-    }
-
-    public void setCoordinate(Coordinate coordinate) {
-        this.coordinate = coordinate;
-    }
-
-    public void setWeights(Map<String, Double> weights) {
-        this.weights = weights;
-    }
-
-    public double getWeights(List<String> keywords) {
-
-        if (keywords == null || keywords.isEmpty()) {
-            return 0;
+    public Double getWeight(String label) {
+        if (weights == null) {
+            return 0.0;
         }
-        return keywords.stream().map(weights::get).reduce(0.0, Double::sum);
+        return weights.getOrDefault(label, 0.0);
     }
 
-    public List<String> getWeightKey() {
-
-        return new LinkedList<>(weights.keySet());
+    public Double getWeight(List<String> labels) {
+        if (weights == null) {
+            return 0.0;
+        }
+        return labels.stream().mapToDouble(weights::get).filter(Objects::nonNull).sum();
     }
 
-    public String getObjectId() {
-        return objectId;
+    public void setWeight(String label, Double weight) {
+        if (weights == null) {
+            weights = new HashMap<>(16);
+        }
+        weights.put(label, weight);
     }
 
     @Override
@@ -76,19 +77,13 @@ public class RelevantObject implements Serializable {
         return Objects.hash(coordinate, weights);
     }
 
-    public Coordinate getCoordinate() {
-        return coordinate;
-    }
-
-    public Map<String, Double> getWeights() {
-        return weights;
-    }
-
     @Override
     public String toString() {
-        return "RelevantObject{" +
+        return "{" +
                 "objectId='" + objectId + '\'' +
+                ", name='" + name + '\'' +
                 ", coordinate=" + coordinate +
+                ", labels=" + labels +
                 ", weights=" + weights +
                 '}' + '\n';
     }

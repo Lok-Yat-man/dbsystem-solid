@@ -30,11 +30,12 @@ public class BstdServiceImpl implements BstdService {
         for (int i = 0; i < relevantObjectList.size(); i++) {
             ObjectPoint objectPoint = new ObjectPoint();
             objectPoint.setObjId(relevantObjectList.get(i).getObjectId());
+            objectPoint.setName(relevantObjectList.get(i).getName());
             objectPoint.setCoordinate(Coordinate.create(
                     relevantObjectList.get(i).getCoordinate().getLongitude(),
                     relevantObjectList.get(i).getCoordinate().getLatitude()
             ));
-            objectPoint.setKeywords(relevantObjectList.get(i).getWeightKey());
+            objectPoint.setKeywords(relevantObjectList.get(i).getLabels());
             res.add(objectPoint);
         }
         return res;
@@ -54,7 +55,7 @@ public class BstdServiceImpl implements BstdService {
                     relevantObject.getCoordinate().getLongitude(),
                     relevantObject.getCoordinate().getLatitude()
             );
-            GeoJsonSkyline.Properties properties = new GeoJsonSkyline.Properties(skylineId, relevantObject.getObjectId(), relevantObject.getWeightKey());
+            GeoJsonSkyline.Properties properties = new GeoJsonSkyline.Properties(skylineId, relevantObject.getName(), relevantObject.getLabels());
             GeoJsonSkyline.Feature feature = new GeoJsonSkyline.Feature(geometry, properties);
             geoJsonSkyline.getFeatures().add(feature);
         }

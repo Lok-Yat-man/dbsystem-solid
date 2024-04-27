@@ -380,7 +380,7 @@ public class topkMain {
 
     //在已排序的Sp的结点中计算Lp
     //在对根节点使用BFS的过程中判断访问的顶点是否包含未消去的关键字，逐个消除关键字直到每个关键字
-    //未使用剪枝规则2
+    //CONSTRUCT_SPP
     for(int zt=0;zt<graph.Sp.size();zt++) {
       PlusBFS(graph.Sp.get(zt).item1,graph,points);
       points[graph.Sp.get(zt).item1].Lp = 0;
@@ -444,7 +444,6 @@ public class topkMain {
 
     // System.out.println(testTotal);
     //Construct_SPP函数
-    //使用剪枝规则2
     //JudgeTotal
 //    if(testTotal < Qk) {
 //      JSONObject jsonObject = new JSONObject();
@@ -568,7 +567,7 @@ public class topkMain {
     return reachableNodes;
   }
 
-  //未使用剪枝规则2的BFS算法
+  //NP2_BFS
   //Construct_BSP
   public static void PlusBFS(int src, Graph graph, Point []points) {
     boolean []keyVisit = new boolean[points[0].hasKey.length];
@@ -611,7 +610,7 @@ public class topkMain {
     }
   }
 
-  //使用剪枝规则2的BFS算法
+  //P2_BFS
   public static boolean PlusPlusBFS(int src, Graph graph, Point []points, Vector<Tuple<Integer, Double>> Ks, int pos) {
     boolean []keyVisit = new boolean[points[0].hasKey.length];
     for(int z=0;z<keyVisit.length;z++) //初始化根结点所有关键字都没有被访问过

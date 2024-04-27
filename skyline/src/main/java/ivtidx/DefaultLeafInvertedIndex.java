@@ -4,6 +4,7 @@ package ivtidx;
 import com.alibaba.fastjson.JSONObject;
 import entity.Pair;
 import entity.RelevantObject;
+import lombok.Getter;
 import service.IRelevantObjectService;
 
 import java.io.BufferedReader;
@@ -13,13 +14,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-/**
- * DefaultLeafInvertedIndex
- *
- * @author Whitence
- * @version 1.0
- * @date 2023/10/17 21:26
- */
+
 public class DefaultLeafInvertedIndex implements InvertedIndex<RelevantObject> {
 
     private static final int MAX_SIZE = 1000;
@@ -91,5 +86,10 @@ public class DefaultLeafInvertedIndex implements InvertedIndex<RelevantObject> {
                                 }
                         )
         ).orElse(new ArrayList<>());
+    }
+
+    @Override
+    public List<Pair> getMapList(String term) {
+        return map.get(term);
     }
 }

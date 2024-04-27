@@ -97,9 +97,9 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    longitude: -75.16133365786646,
-                    latitude: 39.95144744543839,
-                    keywords: "Fast,Food,Burgers,Salad"
+                    longitude: -75.161,
+                    latitude: 39.951,
+                    keywords: "Fast,Burgers,Salad"
                 },
                 loading: false,
                 timeout: false,
