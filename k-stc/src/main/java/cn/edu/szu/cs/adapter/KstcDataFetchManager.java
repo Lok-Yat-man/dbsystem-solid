@@ -75,6 +75,14 @@ public class KstcDataFetchManager {
         KstcDataFetchManager.dataFetchManager = dataFetchManager;
     }
 
+    public static void setDbscanDataLoader(IRelevantObjectDataLoader<DefaultRelevantObject> dbscanDataLoader) {
+        KstcDataFetchManager.dbscanDataLoader = dbscanDataLoader;
+    }
+
+    public static void setWordOrderingIndex(WordOrderingIndex wordOrderingIndex) {
+        KstcDataFetchManager.wordOrderingIndex = wordOrderingIndex;
+    }
+
 
     public static void generateTask(String commandType, String command, String paramsStr){
         dataFetchManager.generateTask(commandType, command, paramsStr);
