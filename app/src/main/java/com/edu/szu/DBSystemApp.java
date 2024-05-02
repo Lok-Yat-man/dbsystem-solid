@@ -11,14 +11,14 @@ import org.springframework.context.annotation.Import;
         DCPGSConfig.class,
         KSTCConfig.class,
         KDVConfig.class,
-        BSTDConfig.class,
+        STDConfig.class,
         //PAConfig.class,
 
         // endpoint
         DCPGSEndpoint.class,
         KSTCEndpoint.class,
         KDVEndpoint.class,
-        BSTDEndPoint.class,
+        STDEndPoint.class,
         topkMain.class
 })
 @SpringBootApplication

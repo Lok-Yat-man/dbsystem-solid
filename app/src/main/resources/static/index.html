@@ -42,7 +42,7 @@
                 <br><br>
                 <div class="left_gap"></div>
                 <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)" style="font-size:14px;">gowalla</el-radio>
-                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5% font-size:14px;" @change="loadDSPGS('',-1)">brightkite</el-radio>
+                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%; font-size:14px;" @change="loadDSPGS('',-1)">brightkite</el-radio>
                 <br><br>
                 <span class="item_label" >params</span>
                 <br><br>
@@ -190,6 +190,12 @@
                 <img class="params_headerside" src="./img/params/titleside.png">
             </div>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
+
+                <div class="left_gap"></div>
+                <el-radio v-model="spatial_skylines.query.command" label="BSTD" >BSTD</el-radio>
+                <el-radio v-model="spatial_skylines.query.command" label="ASTD" style="margin-bottom: 5%">ASTD</el-radio>
+                <br><br>
+
                 <div class="param_adjustSTD" >
                     <span class="item_labelSTDlon">lon</span>
                     <input class="param2_input" type="text" v-model="spatial_skylines.query.longitude" style="margin-left:4.5%;">
@@ -327,7 +333,7 @@
                     </el-submenu>
                     <el-submenu index="1-3">
                         <template slot="title">Textually spatial skylines</template>
-                        <el-menu-item index="1-3-1"  @click="loadBSTD()">yelp_academic</el-menu-item>
+                        <el-menu-item index="1-3-1"  @click="loadSTD()">yelp_academic</el-menu-item>
                     </el-submenu>
 
                     <el-submenu index="1-4">

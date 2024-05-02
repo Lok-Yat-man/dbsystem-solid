@@ -4,7 +4,7 @@ import kstc from "./kstc.js";
 import test from "./test.js";
 import topk from "./topk.js";
 import topk_yago from "./topk_yago.js";
-import bstd from "./bstd.js";
+import std from "./std.js";
 import pa from "./PA.js";
 // import { Loading } from './environment/elementUI'
 
@@ -97,9 +97,10 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    longitude: -75.161,
-                    latitude: 39.951,
-                    keywords: "Fast,Burgers,Salad"
+                    longitude: -75.157,
+                    latitude: 39.95,
+                    keywords: "Fast,Burgers,Salad",
+                    command: "BSTD"
                 },
                 loading: false,
                 timeout: false,
@@ -172,7 +173,7 @@ new Vue({
             else if (state === 'spatial_skylines_UPDATE') {
                 this.currentAlgorithm = "spatial_skylines";
                 this.switchStatus = "spatial_skylines";
-                await bstd.LoadBSTD(this);
+                await std.LoadSTD(this);
             }
             else if(state === 'topK') {
               this.switchStatus = 'topK'
@@ -327,10 +328,10 @@ new Vue({
 
         },
 
-        loadBSTD() {
+        loadSTD() {
             this.currentAlgorithm = "spatial_skylines";
             this.switchStatus = "spatial_skylines";
-            bstd.LoadBSTD(this);
+            std.LoadSTD(this);
         },
 
         loadTopK(){

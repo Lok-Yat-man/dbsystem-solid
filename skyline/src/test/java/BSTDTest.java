@@ -2,6 +2,7 @@ import com.github.davidmoten.rtree.geometry.Geometry;
 import entity.RelevantObject;
 import ivtidx.DefaultLeafInvertedIndex;
 import ivtidx.InvertedIndex;
+import std.ASTD;
 import std.BSTD;
 import com.github.davidmoten.rtree.Entry;
 import entity.Coordinate;
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 
 public class BSTDTest {
     private BSTD b = new BSTD();
+    private ASTD a = new ASTD();
 
     @Test
     public void bstdTest() {
@@ -31,7 +33,7 @@ public class BSTDTest {
                         -75.16133365786646,
                         39.95144744543839
                 ),
-                Arrays.asList("Fast","Burgers","Salad","Food")
+                Arrays.asList("Fast","Burgers","Salad")
                 //Arrays.asList("Water")
         );
 //        Query query2 = Query.create(
@@ -47,7 +49,9 @@ public class BSTDTest {
 
 
 //        List<Entry<String, Geometry>> valuesEntry = b.bstd(queries);
-        List<RelevantObject> relevantObjects = b.bstd(queries);
+
+        //List<RelevantObject> relevantObjects = b.bstd(queries);
+        List<RelevantObject> relevantObjects = a.astd(query1);
 
 //        List<String> values = valuesEntry.stream()
 //                .map(Entry::value)

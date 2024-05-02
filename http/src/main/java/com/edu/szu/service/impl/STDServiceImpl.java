@@ -3,29 +3,44 @@ package com.edu.szu.service.impl;
 
 import com.edu.szu.entity.GeoJsonSkyline;
 import com.edu.szu.entity.ObjectPoint;
-import com.edu.szu.service.BstdService;
+import com.edu.szu.service.STDService;
 import entity.Coordinate;
 import entity.Query;
 import entity.RelevantObject;
+import std.ASTD;
 import std.BSTD;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class BstdServiceImpl implements BstdService {
+public class STDServiceImpl implements STDService {
 
     private BSTD bstd;
+    private ASTD astd;
 
-    public BstdServiceImpl(BSTD bstd) {
+    public STDServiceImpl(BSTD bstd, ASTD astd) {
         this.bstd = bstd;
+        this.astd = astd;
     }
 
     @Override
-    public List<ObjectPoint> loadObjectPoint(Query query) {
+    public List<ObjectPoint> loadBstdObjectPoint(Query query) {
         List<Query> queries = new LinkedList<>();
         queries.add(query);
         List<RelevantObject> relevantObjectList = this.bstd.bstd(queries);
 
+        return getObjectPoints(relevantObjectList);
+    }
+
+    @Override
+    public List<ObjectPoint> loadAstdObjectPoint(Query query) {
+
+        List<RelevantObject> relevantObjectList = this.astd.astd(query);
+
+        return getObjectPoints(relevantObjectList);
+    }
+
+    private List<ObjectPoint> getObjectPoints(List<RelevantObject> relevantObjectList) {
         List<ObjectPoint> res = new LinkedList<>();
         for (int i = 0; i < relevantObjectList.size(); i++) {
             ObjectPoint objectPoint = new ObjectPoint();
@@ -42,11 +57,23 @@ public class BstdServiceImpl implements BstdService {
     }
 
     @Override
-    public GeoJsonSkyline loadGeoJsonSkyline(Query query) {
+    public GeoJsonSkyline loadBstdGeoJsonSkyline(Query query) {
         List<Query> queries = new LinkedList<>();
         queries.add(query);
         List<RelevantObject> relevantObjectList = this.bstd.bstd(queries);
 
+        return getGeoJsonSkyline(relevantObjectList);
+    }
+
+    @Override
+    public GeoJsonSkyline loadAstdGeoJsonSkyline(Query query) {
+
+        List<RelevantObject> relevantObjectList = this.astd.astd(query);
+
+        return getGeoJsonSkyline(relevantObjectList);
+    }
+
+    private GeoJsonSkyline getGeoJsonSkyline(List<RelevantObject> relevantObjectList) {
         GeoJsonSkyline geoJsonSkyline = new GeoJsonSkyline();
         for (int i = 0; i < relevantObjectList.size(); i++) {
             RelevantObject relevantObject = relevantObjectList.get(i);

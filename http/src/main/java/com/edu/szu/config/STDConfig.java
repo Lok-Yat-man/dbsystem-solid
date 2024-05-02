@@ -1,8 +1,8 @@
 package com.edu.szu.config;
 
 import cn.hutool.core.io.resource.ClassPathResource;
-import com.edu.szu.service.BstdService;
-import com.edu.szu.service.impl.BstdServiceImpl;
+import com.edu.szu.service.STDService;
+import com.edu.szu.service.impl.STDServiceImpl;
 import com.github.davidmoten.rtree.InternalStructure;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.Serializers;
@@ -16,12 +16,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import service.DefaultRelevantObjectServiceImpl;
 import service.IRelevantObjectService;
+import std.ASTD;
 import std.BSTD;
 
 import java.io.InputStream;
 
 @Configuration
-public class BSTDConfig {
+public class STDConfig {
 
     /**
      * relevantObjectService
@@ -37,7 +38,7 @@ public class BSTDConfig {
      */
     @SneakyThrows
     @Bean
-    public RTree<String, Geometry> rTreeBSTD() {
+    public RTree<String, Geometry> rTreeSTD() {
         InputStream inputStream = new ClassPathResource("rtreeSkyline.txt").getStream();
         int available = inputStream.available();
         return Serializers.flatBuffers().utf8().read(inputStream, available, InternalStructure.DEFAULT);
@@ -47,7 +48,7 @@ public class BSTDConfig {
      * @return IR-tree
      */
     @Bean
-    public IRTree irTreeBSTD(RTree<String, Geometry> rTree, IRelevantObjectService relevantObjectService) {
+    public IRTree irTreeSTD(RTree<String, Geometry> rTree, IRelevantObjectService relevantObjectService) {
         return new IRTree(rTree, relevantObjectService);
     }
 
@@ -56,7 +57,7 @@ public class BSTDConfig {
      * @return Inverted file index
      */
     @Bean
-    public InvertedIndex<RelevantObject> invertedIndexBSTD(IRelevantObjectService relevantObjectService) {
+    public InvertedIndex<RelevantObject> invertedIndexSTD(IRelevantObjectService relevantObjectService) {
         return new DefaultLeafInvertedIndex(relevantObjectService);
     }
 
@@ -65,12 +66,17 @@ public class BSTDConfig {
      * @return bstd
      */
     @Bean("bstd")
-    public BSTD bstd(IRTree irTree, IRelevantObjectService relevantObjectService, InvertedIndex<RelevantObject> invertedIndexBSTD) {
-        return new BSTD(irTree, relevantObjectService, invertedIndexBSTD);
+    public BSTD bstd(IRTree irTree, IRelevantObjectService relevantObjectService, InvertedIndex<RelevantObject> invertedIndexSTD) {
+        return new BSTD(irTree, relevantObjectService, invertedIndexSTD);
+    }
+
+    @Bean("astd")
+    public ASTD astd(IRTree irTree, IRelevantObjectService relevantObjectService, InvertedIndex<RelevantObject> invertedIndexSTD) {
+        return new ASTD(irTree, relevantObjectService, invertedIndexSTD);
     }
 
     @Bean
-    public BstdService bstdService(BSTD bstd) {
-        return new BstdServiceImpl(bstd);
+    public STDService stdService(BSTD bstd, ASTD astd) {
+        return new STDServiceImpl(bstd, astd);
     }
 }

@@ -1,6 +1,6 @@
 import utils from "./utils.js";
 
-async function LoadBSTD(vueThis) {
+async function LoadSTD(vueThis) {
     console.time("time");
 
     vueThis.spatial_skylines.loading = true;
@@ -33,10 +33,18 @@ async function LoadBSTD(vueThis) {
 
 // 异步加载后端运行的Skyline结果集
 async function loadData(vueThis) {
-    let path = vueThis.baseUrl + '/bstd/objectPoints?'
-        + 'longitude=' + vueThis.spatial_skylines.query.longitude
-        + '&latitude=' + vueThis.spatial_skylines.query.latitude
-        + '&keywords=' + vueThis.spatial_skylines.query.keywords;
+    let path;
+    if (vueThis.spatial_skylines.query.command === "BSTD") {
+        path = vueThis.baseUrl + '/std/bstd/objectPoints?'
+            + 'longitude=' + vueThis.spatial_skylines.query.longitude
+            + '&latitude=' + vueThis.spatial_skylines.query.latitude
+            + '&keywords=' + vueThis.spatial_skylines.query.keywords;
+    } else if (vueThis.spatial_skylines.query.command === "ASTD") {
+        path = vueThis.baseUrl + '/std/astd/objectPoints?'
+            + 'longitude=' + vueThis.spatial_skylines.query.longitude
+            + '&latitude=' + vueThis.spatial_skylines.query.latitude
+            + '&keywords=' + vueThis.spatial_skylines.query.keywords;
+    }
     let res = await requestObjectPoints(path);
     return res;
 }
@@ -134,10 +142,18 @@ function doubleClickCoordinate(vueThis) {
 
 // 绘制Skyline结果点
 async function paintPoints(vueThis, size) {
-    let url = vueThis.baseUrl + '/bstd/geojson?'
-        + 'longitude=' + vueThis.spatial_skylines.query.longitude
-        + '&latitude=' + vueThis.spatial_skylines.query.latitude
-        + '&keywords=' + vueThis.spatial_skylines.query.keywords;
+    let url;
+    if (vueThis.spatial_skylines.query.command == "BSTD") {
+        url = vueThis.baseUrl + '/std/bstd/geojson?'
+            + 'longitude=' + vueThis.spatial_skylines.query.longitude
+            + '&latitude=' + vueThis.spatial_skylines.query.latitude
+            + '&keywords=' + vueThis.spatial_skylines.query.keywords;
+    } else if (vueThis.spatial_skylines.query.command == "ASTD") {
+        url = vueThis.baseUrl + '/std/astd/geojson?'
+            + 'longitude=' + vueThis.spatial_skylines.query.longitude
+            + '&latitude=' + vueThis.spatial_skylines.query.latitude
+            + '&keywords=' + vueThis.spatial_skylines.query.keywords;
+    }
 
     vueThis.map.on('load', function () {
         vueThis.map.addSource('points-source', {
@@ -235,5 +251,5 @@ function layerPopup(i, vueThis, color) {
 }
 
 export default {
-    LoadBSTD
+    LoadSTD
 }
