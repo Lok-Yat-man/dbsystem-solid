@@ -17,7 +17,7 @@ public class WriteGeoJson {
     @SneakyThrows
     @Test
     public void writeGeoJson() {
-        LinkedList<Query> queries = new LinkedList<>();
+
         Query query2 = Query.create(
                 Coordinate.create(
                         -118.26,
@@ -25,9 +25,8 @@ public class WriteGeoJson {
                 ),
                 Arrays.asList("Restaurants")
         );
-        queries.add(query2);
 
-        List<RelevantObject> relevantObjectList = b.bstd(queries);
+        List<RelevantObject> relevantObjectList = b.bstd(query2);
         GeoJson geoJson = new GeoJson();
         for (int i = 0; i < relevantObjectList.size(); i++) {
             RelevantObject relevantObject = relevantObjectList.get(i);

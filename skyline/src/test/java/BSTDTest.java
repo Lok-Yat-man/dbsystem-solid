@@ -1,21 +1,13 @@
-import com.github.davidmoten.rtree.geometry.Geometry;
 import entity.RelevantObject;
-import ivtidx.DefaultLeafInvertedIndex;
-import ivtidx.InvertedIndex;
 import std.ASTD;
 import std.BSTD;
-import com.github.davidmoten.rtree.Entry;
 import entity.Coordinate;
 import entity.Query;
 import org.junit.jupiter.api.Test;
-import service.DefaultRelevantObjectServiceImpl;
-import service.IRelevantObjectService;
 
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class BSTDTest {
     private BSTD b = new BSTD();
@@ -30,8 +22,8 @@ public class BSTDTest {
 
         Query query1 = Query.create(
                 Coordinate.create(
-                        -75.16133365786646,
-                        39.95144744543839
+                        -75.166,
+                        39.942
                 ),
                 Arrays.asList("Fast","Burgers","Salad")
                 //Arrays.asList("Water")
@@ -51,6 +43,7 @@ public class BSTDTest {
 //        List<Entry<String, Geometry>> valuesEntry = b.bstd(queries);
 
         //List<RelevantObject> relevantObjects = b.bstd(queries);
+        //List<RelevantObject> relevantObjects = b.bstd(query1);
         List<RelevantObject> relevantObjects = a.astd(query1);
 
 //        List<String> values = valuesEntry.stream()

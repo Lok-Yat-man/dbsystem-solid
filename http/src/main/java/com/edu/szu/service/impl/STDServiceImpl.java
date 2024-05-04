@@ -25,9 +25,8 @@ public class STDServiceImpl implements STDService {
 
     @Override
     public List<ObjectPoint> loadBstdObjectPoint(Query query) {
-        List<Query> queries = new LinkedList<>();
-        queries.add(query);
-        List<RelevantObject> relevantObjectList = this.bstd.bstd(queries);
+
+        List<RelevantObject> relevantObjectList = this.bstd.bstd(query);
 
         return getObjectPoints(relevantObjectList);
     }
@@ -58,9 +57,8 @@ public class STDServiceImpl implements STDService {
 
     @Override
     public GeoJsonSkyline loadBstdGeoJsonSkyline(Query query) {
-        List<Query> queries = new LinkedList<>();
-        queries.add(query);
-        List<RelevantObject> relevantObjectList = this.bstd.bstd(queries);
+
+        List<RelevantObject> relevantObjectList = this.bstd.bstd(query);
 
         return getGeoJsonSkyline(relevantObjectList);
     }

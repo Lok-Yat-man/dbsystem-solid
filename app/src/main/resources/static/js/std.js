@@ -6,11 +6,13 @@ async function LoadSTD(vueThis) {
     vueThis.spatial_skylines.loading = true;
     vueThis.spatial_skylines.timeout = false;
 
-    let lon = vueThis.spatial_skylines.query.longitude.toFixed(3);
-    let longitude = parseFloat(lon);
+    let lonFloat = parseFloat(vueThis.spatial_skylines.query.longitude);
+    let lonString = lonFloat.toFixed(3);
+    let longitude = parseFloat(lonString);
 
-    let lat = vueThis.spatial_skylines.query.latitude.toFixed(3);
-    let latitude = parseFloat(lat);
+    let latFloat = parseFloat(vueThis.spatial_skylines.query.latitude);
+    let latString = latFloat.toFixed(3);
+    let latitude = parseFloat(latString);
 
     vueThis.spatial_skylines.query.keywords = vueThis
         .spatial_skylines.query.keywords.replace(/\s/g, "");
@@ -124,11 +126,14 @@ function doubleClickCoordinate(vueThis) {
             vueThis.spatial_skylines.curmarker.remove();
         }
 
-        let lon = e.lngLat.lng.toFixed(3);
-        vueThis.spatial_skylines.query.longitude = parseFloat(lon);
+        let lonFloat = e.lngLat.lng;
+        let lonString = lonFloat.toFixed(3);
+        vueThis.spatial_skylines.query.longitude = parseFloat(lonString);
 
-        let lat = e.lngLat.lat.toFixed(3);
-        vueThis.spatial_skylines.query.latitude = parseFloat(lat);
+        let latFloat = e.lngLat.lat;
+        let latString = latFloat.toFixed(3);
+        vueThis.spatial_skylines.query.latitude = parseFloat(latString);
+
         let marker = utils.getCustomMark(e.lngLat.lng, e.lngLat.lat, 1);
         marker.setPopup(utils.getNewPopUp(
             "<strong>当前位置</strong>",

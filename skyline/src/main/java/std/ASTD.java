@@ -83,9 +83,9 @@ public class ASTD {
 
         while (!minHeap.isEmpty()) {
             HasGeometry e = minHeap.poll();
-            if (e.geometry().mbr().intersects(B)) {
+            if (e.geometry().mbr().intersects(B) && keywordsHave(e, query)) {
                 if (e instanceof Entry) {
-                    if (keywordsHave(e, query) && (S.isEmpty() || !skyRTreePrunes(skyRtree, e, query))) {
+                    if (S.isEmpty() || !skyRTreePrunes(skyRtree, e, query)) {
                         S.add((Entry<String, Geometry>) e);
                         Rectangle Ru = generateUncertaintyMBR(e, query);
                         B = getIntersectMBR(B, Ru);
@@ -94,7 +94,7 @@ public class ASTD {
                         skyRtree = skyRtree.add((Entry<String, Rectangle>) entry);
                     }
                 } else {
-                    if (keywordsHave(e, query) && !skyRTreePrunes(skyRtree, e, query)) {
+                    if (!skyRTreePrunes(skyRtree, e, query)) {
                         Node<String, Geometry> N = (Node<String, Geometry>) e;
                         if (N instanceof NonLeafDefault<String, Geometry>) {
                             for (Node<String, Geometry> e1 : ((NonLeafDefault<String, Geometry>) N).children()) {
@@ -111,6 +111,17 @@ public class ASTD {
                         }
                     }
                 }
+            }
+        }
+
+        for (int i = 0; i < S.size(); i++) {
+            Entry<String, Geometry> entry = S.get(i);
+            if (!entry.geometry().mbr().intersects(B)) {
+
+//                System.out.println(S.get(i));
+
+                S.remove(i);
+                i--;
             }
         }
 
@@ -174,10 +185,6 @@ public class ASTD {
     }
 
     public Rectangle generateUncertaintyMBR(HasGeometry e, Query query) {
-        double x = e.geometry().mbr().x1();
-        double y = e.geometry().mbr().y1();
-        Rectangle MBR = Geometries.rectangle(x, y, x, y);
-
         double radius = 0;
         if (e instanceof NonLeafDefault) {
             double st = st((NonLeafDefault<String, Geometry>) e, query);
@@ -198,13 +205,11 @@ public class ASTD {
 
         Coordinate llCoordinate = CommonAlgorithm.getLLCoordinate(query.getLocation(), radius);
         Coordinate ruCoordinate = CommonAlgorithm.getRUCoordinate(query.getLocation(), radius);
-        try {
-            MBR = MBR.add(Geometries.rectangle(
-                    llCoordinate.getLongitude(), llCoordinate.getLatitude(),
-                    ruCoordinate.getLongitude(), ruCoordinate.getLatitude()));
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        }
+
+        Rectangle MBR = Geometries.rectangleGeographic(
+                llCoordinate.getLongitude(), llCoordinate.getLatitude(),
+                ruCoordinate.getLongitude(), ruCoordinate.getLatitude());
+
         return MBR;
     }
 

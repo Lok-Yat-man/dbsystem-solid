@@ -1,12 +1,14 @@
 package std;
 
 import com.github.davidmoten.rtree.Entry;
+import com.github.davidmoten.rtree.Leaf;
 import com.github.davidmoten.rtree.Node;
+import com.github.davidmoten.rtree.NonLeaf;
 import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.HasGeometry;
 import com.github.davidmoten.rtree.geometry.Rectangle;
-import com.github.davidmoten.rtree.geometry.internal.GeometryUtil;
+
 import com.github.davidmoten.rtree.internal.EntryDefault;
 import com.github.davidmoten.rtree.internal.LeafDefault;
 import com.github.davidmoten.rtree.internal.NonLeafDefault;
@@ -23,7 +25,6 @@ import util.CommonAlgorithm;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.Double.min;
 import static java.lang.Double.max;
@@ -55,7 +56,7 @@ public class BSTD {
         this.invertedIndex = invertedIndex;
     }
 
-    public List<RelevantObject> bstd(List<Query> queries) {
+    public List<RelevantObject> bstd(Query query) {
         // S=∅; B=U
         List<Entry<String, Geometry>> S = new LinkedList<>();
         Optional<? extends Node<String, Geometry>> rootOptional = irTree.getRTree().root();
@@ -63,70 +64,59 @@ public class BSTD {
             throw new RuntimeException("RTree not exists!");
         }
         Node<String, Geometry> rootNode = rootOptional.get();
-
-        double lon = queries.get(0).getLocation().getLongitude();
-        double lat = queries.get(0).getLocation().getLatitude();
+        double lon = query.getLocation().getLongitude();
+        double lat = query.getLocation().getLatitude();
         Rectangle B = Geometries.rectangle(lon - 0.5, lat - 0.05, lon + 0.5, lat + 0.05);
 
         // MinHeap H=∅
         // Add root of IRTree to H, ∑(qi∈Q)〖st(qi,p)〗
-        PriorityQueue<Node<String, Geometry>> minHeap = new PriorityQueue<>((o1, o2) -> {
+        PriorityQueue<HasGeometry> minHeap = new PriorityQueue<>((o1, o2) -> {
             double stSum1 = 0.0, stSum2 = 0.0;
-            for (Query query : queries) {
-                stSum1 += st(o1, query);
-                stSum2 += st(o2, query);
-            }
+            stSum1 += st(o1, query);
+            stSum2 += st(o2, query);
             return Double.compare(stSum1, stSum2);
         });
         minHeap.add(rootNode);
 
         while (!minHeap.isEmpty()) {
-            Node<String, Geometry> e = minHeap.poll();
-            if (e.geometry().intersects(B)) {
-                // e is a leaf node
-                if (e instanceof LeafDefault) {
+            HasGeometry e = minHeap.poll();
+            Rectangle MBRe = generateUncertaintyMBR(e, query);
+            if (MBRe.intersects(B)) {
+                if (e instanceof Entry<?, ?>) {
                     if (S.isEmpty()) {
-                        // Add e to S
-                        // B = B ∩ Ru(e)
-                        List<Entry<String, Geometry>> entries = ((LeafDefault<String, Geometry>) e).entries();
-                        for (Query query : queries) {
-                            for (Entry<String, Geometry> entry : entries) {
-                                boolean dominant = isDominant(entry, B, queries);
-                                if (!dominant) {
-                                    S.add(entry);
-                                    Rectangle Rue = generateSkylinesMBR(S, queries);
-                                    B = getIntersectMBR(B, Rue);
-                                }
-                            }
+                        if (keywordsHave(e, query)) {
+                            S.add((Entry<String, Geometry>) e);
+                            B = getIntersectMBR(B, MBRe);
                         }
-                        if (S.isEmpty()) {
-                            continue;
-                        }
-                        Rectangle Rue = generateSkylinesMBR(S, queries);
-                        B = getIntersectMBR(B, Rue);
-
                     } else {
-                        // for each p ∈ S
-                        //对所有的skyline，先构造一个整体的不确定区域交集
-                        Rectangle uncertainty = generateSkylinesMBR(S, queries);
-                        // for each entry ∈ LeafNode
-                        for (Entry<String, Geometry> ee : ((LeafDefault<String, Geometry>) e).entries()) {
-                            if (isDominant(ee, uncertainty, queries)) {
-                                continue;
+                        boolean isSkyline = true;
+                        for (Entry<String, Geometry> p : S) {
+                            Rectangle MBRp = generateUncertaintyMBR(p, query);
+                            if (!MBRp.intersects(e.geometry().mbr()) || !keywordsHave(e, query)) {
+                                isSkyline = false;
+                                break;
                             }
-                            S.add(ee);
-                            Rectangle Ruee = generateUncertaintyMBR(ee, queries);
-                            B = getIntersectMBR(B, Ruee);
-                            uncertainty = generateSkylinesMBR(S, queries);
+                        }
+                        if (isSkyline) {
+                            S.add((Entry<String, Geometry>) e);
+                            B = getIntersectMBR(B, MBRe);
                         }
                     }
-                }
-                // e is a non-leaf node
-                else if (e instanceof NonLeafDefault) {
-
-                    for (Node<String, Geometry> ee : ((NonLeafDefault<String, Geometry>) e).children()) {
-                        if (ee.geometry().intersects(B)) {
-                            minHeap.add(ee);
+                } else {
+                    Node<String, Geometry> N = (Node<String, Geometry>) e;
+                    if (N instanceof NonLeaf<String, Geometry>) {
+                        for (Node e1 : ((NonLeaf<String, Geometry>) N).children()) {
+                            Rectangle MBRe1 = generateUncertaintyMBR(e1, query);
+                            if (MBRe1.intersects(B) && keywordsHave(e, query)) {
+                                minHeap.add(e1);
+                            }
+                        }
+                    } else if (N instanceof Leaf<String, Geometry>) {
+                        for (Entry e1 : ((Leaf<String, Geometry>) N).entries()) {
+                            Rectangle MBRe1 = generateUncertaintyMBR(e1, query);
+                            if (MBRe1.intersects(B) && keywordsHave(e, query)) {
+                                minHeap.add(e1);
+                            }
                         }
                     }
                 }
@@ -136,13 +126,15 @@ public class BSTD {
         for (int i = 0; i < S.size(); i++) {
             Entry<String, Geometry> entry = S.get(i);
             if (!entry.geometry().mbr().intersects(B)) {
+
 //                System.out.println(S.get(i));
+
                 S.remove(i);
                 i--;
             }
         }
 
-//        System.out.println(B);
+        System.out.println(B);
 
         List<RelevantObject> relevantObjects = S.stream()
                 .map(Entry::value)
@@ -158,67 +150,52 @@ public class BSTD {
                 min(r1.x2(), r2.x2()), min(r1.y2(), r2.y2()));
     }
 
-    public Rectangle generateUncertaintyMBR(HasGeometry e, List<Query> queries) {
-        double x = e.geometry().mbr().x1();
-        double y = e.geometry().mbr().y1();
-        Rectangle MBR = Geometries.rectangle(x, y, x, y);
-
-        for (Query query : queries) {
-            double radius = 0;
-            if (e instanceof NonLeafDefault) {
-                double st = st((NonLeafDefault<String, Geometry>) e, query);
-                if (Double.compare(st, Double.MAX_VALUE) == 0)
-                    return Geometries.rectangle(-180d, 0d, 179d, 90d);
-                radius = st;
-            } else if (e instanceof LeafDefault) {
-                double st = st((LeafDefault<String, Geometry>) e, query);
-                if (Double.compare(st, Double.MAX_VALUE) == 0)
-                    return Geometries.rectangle(-180d, 0d, 179d, 90d);
-                radius = st;
-            } else if (e instanceof EntryDefault) {
-                double st = st((EntryDefault<String, Geometry>) e, query);
-                if (Double.compare(st, Double.MAX_VALUE) == 0)
-                    return Geometries.rectangle(-180d, 0d, 179d, 90d);
-                radius = st;
-            }
-
-            Coordinate llCoordinate = CommonAlgorithm.getLLCoordinate(query.getLocation(), radius);
-            Coordinate ruCoordinate = CommonAlgorithm.getRUCoordinate(query.getLocation(), radius);
-            try {
-                MBR = MBR.add(Geometries.rectangle(
-                        llCoordinate.getLongitude(), llCoordinate.getLatitude(),
-                        ruCoordinate.getLongitude(), ruCoordinate.getLatitude()));
-            } catch (IllegalArgumentException ex) {
-                ex.printStackTrace();
-            }
+    public Rectangle generateUncertaintyMBR(HasGeometry e, Query query) {
+        double radius = 0;
+        if (e instanceof NonLeafDefault) {
+            double st = st((NonLeafDefault<String, Geometry>) e, query);
+            if (Double.compare(st, Double.MAX_VALUE) == 0)
+                return Geometries.rectangle(-180d, 0d, 179d, 90d);
+            radius = st;
+        } else if (e instanceof LeafDefault) {
+            double st = st((LeafDefault<String, Geometry>) e, query);
+            if (Double.compare(st, Double.MAX_VALUE) == 0)
+                return Geometries.rectangle(-180d, 0d, 179d, 90d);
+            radius = st;
+        } else if (e instanceof EntryDefault) {
+            double st = st((EntryDefault<String, Geometry>) e, query);
+            if (Double.compare(st, Double.MAX_VALUE) == 0)
+                return Geometries.rectangle(-180d, 0d, 179d, 90d);
+            radius = st;
         }
+
+        Coordinate llCoordinate = CommonAlgorithm.getLLCoordinate(query.getLocation(), radius);
+        Coordinate ruCoordinate = CommonAlgorithm.getRUCoordinate(query.getLocation(), radius);
+
+        Rectangle MBR = Geometries.rectangleGeographic(
+                llCoordinate.getLongitude(), llCoordinate.getLatitude(),
+                ruCoordinate.getLongitude(), ruCoordinate.getLatitude());
+
         return MBR;
     }
 
-    public Rectangle generateSkylinesMBR(List<Entry<String, Geometry>> S, List<Query> queries) {
-        Rectangle MBR = Geometries.rectangle(-180d, 0d, 179d, 90d);
-        for (Entry<String, Geometry> s : S) {
-            Rectangle Rus = generateUncertaintyMBR(s, queries);
-            MBR = getIntersectMBR(MBR, Rus);
-        }
-        return MBR;
-    }
-
-    public boolean isDominant(Entry<String, Geometry> e, Rectangle uncertainty, List<Query> queries) {
-        RelevantObject relevantObject = relevantObjectService.getById(e.value());
-        if (relevantObject == null) {
-           return true;
-        }
-        double log = relevantObject.getCoordinate().getLongitude();
-        double lat = relevantObject.getCoordinate().getLatitude();
-        boolean isSpatialDominant = !uncertainty.contains(log, lat);
-        for (Query query : queries) {
-            List<String> queryKeywords = query.getKeywords();
-            List<String> weightKey = relevantObjectService.getById(e.value()).getLabels();
-            boolean isTextualDominant = Collections.disjoint(queryKeywords, weightKey);
-            if (!(isSpatialDominant || isTextualDominant)) {
+    public boolean keywordsHave(HasGeometry e, Query query) {
+        if (e instanceof NonLeafDefault<?, ?>) {
+            Map<String, List<IRTree.NodePair>> nonLeafInvFile = irTree.getNonLeafInvFile((Node<String, Geometry>) e);
+            boolean anyContain = query.getKeywords().stream().anyMatch(nonLeafInvFile::containsKey);
+            return anyContain;
+        } else if (e instanceof LeafDefault<?, ?>) {
+            Map<String, List<IRTree.StringPair>> leafInvFile = irTree.getLeafInvFile((Node<String, Geometry>) e);
+            boolean anyContain = query.getKeywords().stream().anyMatch(leafInvFile::containsKey);
+            return anyContain;
+        } else if (e instanceof Entry<?, ?>) {
+            RelevantObject relevantObject = relevantObjectService.getById(((Entry<String, Geometry>) e).value());
+            if (relevantObject == null) {
                 return false;
             }
+            List<String> weightKey = relevantObject.getLabels();
+            boolean anyContain = query.getKeywords().stream().anyMatch(weightKey::contains);
+            return anyContain;
         }
         return true;
     }
@@ -272,7 +249,7 @@ public class BSTD {
                 weight *= smoothingFactor;
             }
         }
-        weight = Math.pow(weight, 1.0  / query.getKeywords().size());
+        weight = Math.pow(weight, 1.0 / query.getKeywords().size());
         return weight;
     }
 
@@ -300,7 +277,10 @@ public class BSTD {
 
     public double w(Query query, EntryDefault<String, Geometry> entry) {
         String relevantObjectId = entry.value();
-        RelevantObject relevantObject = invertedIndex.getValue(relevantObjectId);
+        RelevantObject relevantObject = relevantObjectService.getById(relevantObjectId);
+        if (relevantObject == null) {
+            return 0;
+        }
         List<String> weightKey = relevantObject.getLabels();
         boolean anyContain = query.getKeywords().stream().anyMatch(weightKey::contains);
         if (!anyContain) {
