@@ -279,7 +279,7 @@
     background-size: contain;
     margin-left:7%;
 }
-.kstcparam_input{
+.kstcparam_input input{
     /*width: 35px;*/
     width: 180px;
     /*height: 18px;*/
@@ -347,7 +347,7 @@
   background-size: contain;
 }
 
-.keywords_input{
+.keywords_input {
     width: 180px;
     height: 40px;
     padding: 0;
@@ -477,19 +477,6 @@
     align-items:center;
 }
 
-.keyword-input input {
-    flex-grow: 1;
-    height: 35px;
-    padding: 0;
-    background-color: rgba(255,255,255,0.0);
-    border: 1px solid #4d4d4e;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 13px;
-    font-weight: normal;
-    color: #00FFFF;
-    line-height: 10px;
-}
 .inputContainer{
     display: flex;
     width:100%;

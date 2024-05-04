@@ -110,14 +110,14 @@
 
                 <div class="kstc-param-adjuster" >
                     <span class="keywords">words</span>
-                    <input
+                    <el-autocomplete
                             class="kstcparam_input"
                             v-model="KSTC.query.tmpKeywords"
                             :fetch-suggestions="searchKeywords"
                             placeholder="Use the symbol ';' To separate"
                             :trigger-on-focus="false"
                             @select="handleSelect">
-                    </input>
+                    </el-autocomplete>
                 </div>
                 <br>
                 <span class="item_label" >params</span>
