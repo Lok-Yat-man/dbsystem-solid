@@ -1,7 +1,6 @@
 import utils from "./utils.js";
 
 async function LoadSTD(vueThis) {
-    console.time("time");
 
     vueThis.spatial_skylines.loading = true;
     vueThis.spatial_skylines.timeout = false;
@@ -18,7 +17,9 @@ async function LoadSTD(vueThis) {
         .spatial_skylines.query.keywords.replace(/\s/g, "");
     vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
 
+    console.time("time");
     let objectData = await loadData(vueThis);
+    console.timeEnd("time");
 
     paintMap(vueThis, longitude, latitude, objectData);
 
@@ -29,8 +30,6 @@ async function LoadSTD(vueThis) {
     await paintPoints(vueThis, objectData.data.length);
 
     vueThis.spatial_skylines.loading = false;
-
-    console.timeEnd("time");
 }
 
 // 异步加载后端运行的Skyline结果集

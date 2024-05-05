@@ -7,7 +7,6 @@ import com.github.davidmoten.rtree.geometry.Geometries;
 import com.github.davidmoten.rtree.geometry.Geometry;
 import com.github.davidmoten.rtree.geometry.HasGeometry;
 import com.github.davidmoten.rtree.geometry.Rectangle;
-import com.github.davidmoten.rtree.geometry.internal.RectangleDouble;
 import com.github.davidmoten.rtree.internal.EntryDefault;
 import com.github.davidmoten.rtree.internal.LeafDefault;
 import com.github.davidmoten.rtree.internal.NonLeafDefault;
@@ -17,8 +16,6 @@ import entity.RelevantObject;
 import irtree.IRTree;
 import ivtidx.DefaultLeafInvertedIndex;
 import ivtidx.InvertedIndex;
-import rx.Observable;
-import rx.Subscription;
 import service.DefaultRelevantObjectServiceImpl;
 import service.IRelevantObjectService;
 import util.CommonAlgorithm;
@@ -83,9 +80,10 @@ public class ASTD {
 
         while (!minHeap.isEmpty()) {
             HasGeometry e = minHeap.poll();
-            if (e.geometry().mbr().intersects(B) && keywordsHave(e, query)) {
+            Rectangle MBRe = generateUncertaintyMBR(e, query);
+            if (MBRe.intersects(B) && keywordsHave(e, query)) {
                 if (e instanceof Entry) {
-                    if (S.isEmpty() || !skyRTreePrunes(skyRtree, e, query)) {
+                    if (S.isEmpty() || !skyRTreePrunes(skyRtree, e)) {
                         S.add((Entry<String, Geometry>) e);
                         Rectangle Ru = generateUncertaintyMBR(e, query);
                         B = getIntersectMBR(B, Ru);
@@ -94,17 +92,19 @@ public class ASTD {
                         skyRtree = skyRtree.add((Entry<String, Rectangle>) entry);
                     }
                 } else {
-                    if (!skyRTreePrunes(skyRtree, e, query)) {
+                    if (!skyRTreePrunes(skyRtree, e)) {
                         Node<String, Geometry> N = (Node<String, Geometry>) e;
                         if (N instanceof NonLeafDefault<String, Geometry>) {
                             for (Node<String, Geometry> e1 : ((NonLeafDefault<String, Geometry>) N).children()) {
-                                if (e1.geometry().mbr().intersects(B)) {
+                                Rectangle MBRe1 = generateUncertaintyMBR(e1, query);
+                                if (MBRe1.intersects(B)) {
                                     minHeap.add(e1);
                                 }
                             }
                         } else if (N instanceof LeafDefault<String, Geometry>) {
                             for (Entry<String, Geometry> e1 : ((LeafDefault<String, Geometry>) N).entries()) {
-                                if (e1.geometry().mbr().intersects(B)) {
+                                Rectangle MBRe1 = generateUncertaintyMBR(e1, query);
+                                if (MBRe1.intersects(B)) {
                                     minHeap.add(e1);
                                 }
                             }
@@ -133,7 +133,7 @@ public class ASTD {
         return relevantObjects;
     }
 
-    public boolean skyRTreePrunes(RTree<String, Rectangle> skyRtree, HasGeometry p, Query query) {
+    public boolean skyRTreePrunes(RTree<String, Rectangle> skyRtree, HasGeometry p) {
         Optional<? extends Node<String, Rectangle>> root = skyRtree.root();
         if (root.isEmpty()) {
             return false;
@@ -150,7 +150,7 @@ public class ASTD {
             if (N instanceof NonLeafDefault<String, Rectangle>) {
                 for (Node<String, Rectangle> childNode : ((NonLeafDefault<String, Rectangle>) N).children()) {
                     Rectangle upperCorner1 = childNode.geometry().mbr();
-                    if (!upperCorner.intersects(p.geometry().mbr())) {
+                    if (!upperCorner1.intersects(p.geometry().mbr())) {
                         return true;
                     }
                     nodes.add(childNode);
