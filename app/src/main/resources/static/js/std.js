@@ -75,18 +75,7 @@ function paintMap(vueThis, longitude, latitude, objectData) {
             maxLat = objectDatum.coordinate.latitude;
         }
     }
-    if (vueThis.spatial_skylines.query.longitude < minLng) {
-        minLng = vueThis.spatial_skylines.query.longitude
-    }
-    if (vueThis.spatial_skylines.query.longitude > maxLng) {
-        maxLng = vueThis.spatial_skylines.query.longitude;
-    }
-    if (vueThis.spatial_skylines.query.latitude < minLat) {
-        minLat = vueThis.spatial_skylines.query.latitude;
-    }
-    if (vueThis.spatial_skylines.query.latitude > maxLat) {
-        maxLat = vueThis.spatial_skylines.query.latitude;
-    }
+
 
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
@@ -95,9 +84,15 @@ function paintMap(vueThis, longitude, latitude, objectData) {
         zoom: 17
     });
 
+    minLng -= 0.002;
+    minLat -= 0.002;
+    maxLng += 0.002;
+    maxLat += 0.002;
+
+
     vueThis.map.fitBounds([
-        [minLng - 0.002, minLat - 0.002], // southwestern corner of the bounds
-        [maxLng + 0.002, maxLat + 0.002] // northeastern corner of the bounds
+        [minLng, minLat], // southwestern corner of the bounds
+        [maxLng, maxLat] // northeastern corner of the bounds
     ]);
 }
 

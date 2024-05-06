@@ -116,7 +116,7 @@ public class ASTD {
 
         for (int i = 0; i < S.size(); i++) {
             Entry<String, Geometry> entry = S.get(i);
-            if (!entry.geometry().mbr().intersects(B)) {
+            if (!B.intersects(entry.geometry().mbr())) {
 
 //                System.out.println(S.get(i));
 
