@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Log4j2
 public class DCPGSManager {
@@ -65,6 +66,10 @@ public class DCPGSManager {
         log.info("RTree build finished, using time: {} s", (timeEnd1 - timeStart) / 1000.0);
         DCPGS<CheckIn> dbscan = new DCPGS<>(checkIns,5, calculator, pool, params);
         var clusters = dbscan.performClustering(rTree);
+        AtomicLong sum = new AtomicLong(0);
+        clusters.forEach(c -> sum.addAndGet(c.size()));
+        log.info("clusters sum: {}", sum.get());
+        log.info("noise point size: {}", CheckInReader.getLocationMap().size()-sum.get());
         long timeEnd2 = System.currentTimeMillis();
         log.info("DCPGS finished, using time: {} s", (timeEnd2 - timeEnd1) / 1000.0);
         //排序
