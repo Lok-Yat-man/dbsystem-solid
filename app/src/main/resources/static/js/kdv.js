@@ -142,56 +142,6 @@ function compute(kdv){
     //     st, ed, kdv.x_L, kdv.x_U, kdv.y_L, kdv.y_U, kdv.t_L, kdv.t_U, kdv.cur_time, kdv.bandwidth_t);
 }
 
-function callKdvCpp(vueThis){
-    console.log("callKdvCpp");
-    // 2, 1, 113.5, 114.5, 22, 22.6, 10, 10, 1, 1000, 1, 1, 1, 1000, 1
-    let request = compute(vueThis.kdv);
-    console.log("request: " + request);
-    axios.post(vueThis.baseUrl + "/kdv/geojson", request)
-        .then(function (response) {
-            console.log(response.data);
-            vueThis.map = new mapboxgl.Map({
-                container: 'map', // container id
-                style: vueThis.mapStyle,
-                center: [114.1161616, 22.36363636],
-                zoom: 9
-            });
-            vueThis.map.on('load', () => {
-                vueThis.map.addSource('kdvPolygon', {
-                    'type': 'geojson',
-                    'data': response.data
-                });
-                response.data.features.forEach((feature, i) => {
-                    vueThis.map.addLayer({
-                        'id': 'poly' + i,
-                        'type': 'fill',
-                        'source': 'kdvPolygon',
-                        'layout': {},
-                        "filter": ["==", "index", i],
-                        'paint': {
-                            'fill-color': feature.properties.color,
-                            'fill-opacity': 0.5
-                        }
-                    });
-                    // 添加轮廓
-                    vueThis.map.addLayer({
-                        'id': 'outline' + i,
-                        'type': 'line',
-                        'source': 'kdvPolygon',
-                        'layout': {},
-                        "filter": ["==", "index", i],
-                        'paint': {
-                            'line-color': feature.properties.color,
-                            'line-width': 2,
-                            'line-opacity': 0.5
-                        }
-                    });
-                });
-            });
-        });
-}
-
 export default {
     loadHeatMap,
-    callKdvCpp,
 }
