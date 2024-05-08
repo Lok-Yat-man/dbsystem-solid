@@ -34,6 +34,11 @@ public class SimpleDbScanBasedApproach extends AbstractDbScanBasedApproach<DbSca
      */
     private static final Log logger = LogFactory.get();
 
+    /**
+     * 是否提前准备数据
+     * <p> Whether to prepare data in advance
+     */
+    public static boolean prepareAdvance = true;
 
     /**
      *  基于DBSCAN的简约版上下文实现类
@@ -82,10 +87,11 @@ public class SimpleDbScanBasedApproach extends AbstractDbScanBasedApproach<DbSca
 
         // 根据关键字异步加载数据，生成RTree
         // Load data by keyword and generate RTree
-        KstcDataFetchManager.generateTask(DataFetchConstant.INFRASTRUCTURE_LAYER,
-                DataFetchConstant.LOAD_OPTICS_RTREE_DATA_BY_KEYWORDS,
-                JSON.toJSONString(query));
-
+        if(prepareAdvance){
+            KstcDataFetchManager.generateTask(DataFetchConstant.INFRASTRUCTURE_LAYER,
+                    DataFetchConstant.LOAD_OPTICS_RTREE_DATA_BY_KEYWORDS,
+                    JSON.toJSONString(query));
+        }
         return simpleDbScanBasedContext;
     }
 
@@ -186,7 +192,7 @@ public class SimpleDbScanBasedApproach extends AbstractDbScanBasedApproach<DbSca
 
         // 提前为下一次查询准备数据
         // Prepare data for the next query in advance
-        if(queue.size() >= query.getMinPts() && simpleDbScanBasedContext.isFirst()){
+        if(queue.size() >= query.getMinPts() && simpleDbScanBasedContext.isFirst() && prepareAdvance){
             for (DbScanRelevantObject dbScanRelevantObject : queue) {
                 kstcQuery.setCoordinate(dbScanRelevantObject.getCoordinate());
                 KstcDataFetchManager.generateTask(DataFetchConstant.INFRASTRUCTURE_LAYER,

@@ -9,8 +9,8 @@ import cn.edu.szu.cs.entity.OpticsRelevantObject;
 import cn.edu.szu.cs.kstc.Context;
 import cn.edu.szu.cs.util.CommonUtil;
 import cn.edu.szu.cs.util.TimerHolder;
-import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Tuple;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
@@ -30,13 +30,7 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
 
     private Log log = LogFactory.get();
 
-    private LRUCache<String, List<OpticsRelevantObject>> cache = new LRUCache<>(128);
-
-
     public OpticsOm() {
-
-
-
     }
 
     @EqualsAndHashCode(callSuper = true)
@@ -70,6 +64,7 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
         if(query.getKeywords().size() == 1){
             return new ArrayList<>(getOrderingList(query.getKeywords().get(0)));
         }
+
         List<Queue<OpticsRelevantObject>> queueList = query.getKeywords()
                 .stream()
                 .map(this::getOrderingList)
@@ -77,42 +72,48 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
                 .collect(Collectors.toList());
 
         List<OpticsRelevantObject> result = new ArrayList<>();
+        Set<String> visited = new HashSet<>();
 
-        PriorityQueue<OpticsRelevantObject> priorityQueue = new PriorityQueue<>(
-                new Comparator<OpticsRelevantObject>() {
+        PriorityQueue<Tuple> priorityQueue = new PriorityQueue<>(
+                new Comparator<Tuple>() {
                     @Override
-                    public int compare(OpticsRelevantObject o1, OpticsRelevantObject o2) {
-                        int compare = Double.compare(o1.getReachableDistance(), o2.getReachableDistance());
+                    public int compare(Tuple o1, Tuple o2) {
+                        OpticsRelevantObject a = o1.get(0);
+                        OpticsRelevantObject b = o2.get(0);
+                        int compare = Double.compare(a.getReachableDistance(), b.getReachableDistance());
                         if(compare == 0){
-                            return o1.compareTo(o2);
+                            return a.compareTo(b);
                         }
                         return compare;
                     }
                 }
         );
 
-        Map<OpticsRelevantObject,Queue<OpticsRelevantObject>> map = new HashMap<>();
-        for (Queue<OpticsRelevantObject> linkedHashSet : queueList) {
-            OpticsRelevantObject next = linkedHashSet.iterator().next();
-            priorityQueue.add(next);
-            map.put(next,linkedHashSet);
-            linkedHashSet.remove(next);
+        for (Queue<OpticsRelevantObject> queue : queueList) {
+            OpticsRelevantObject relevantObject = queue.poll();
+            priorityQueue.add(new Tuple(relevantObject,queue));
         }
 
         while(!priorityQueue.isEmpty()){
 
-            OpticsRelevantObject relevantObject = priorityQueue.poll();
+            Tuple tuple = priorityQueue.poll();
+            OpticsRelevantObject opticsRelevantObject = tuple.get(0);
+            result.add(opticsRelevantObject);
+            visited.add(opticsRelevantObject.getObjectId());
 
-            result.add(relevantObject);
+            Queue<OpticsRelevantObject> opticsRelevantObjects = tuple.get(1);
 
-            Queue<OpticsRelevantObject> opticsRelevantObjects = map.get(relevantObject);
+            while (!opticsRelevantObjects.isEmpty() && visited.contains(opticsRelevantObjects.peek().getObjectId())){
+                opticsRelevantObjects.poll();
+            }
+
             if(opticsRelevantObjects.isEmpty()){
                 continue;
             }
-            OpticsRelevantObject nextObj = opticsRelevantObjects.poll();
-            priorityQueue.add(nextObj);
-            map.put(nextObj,opticsRelevantObjects);
 
+            OpticsRelevantObject nextObj = opticsRelevantObjects.poll();
+
+            priorityQueue.add(new Tuple(nextObj,opticsRelevantObjects));
         }
         return result.stream()
                 .filter(obj -> CommonUtil.calculateDistance(obj.getCoordinate(), query.getCoordinate()) <= query.getMaxDistance())
