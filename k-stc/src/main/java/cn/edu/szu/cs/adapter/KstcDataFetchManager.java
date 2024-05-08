@@ -10,11 +10,9 @@ import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ServiceLoaderUtil;
 import lombok.NonNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.zip.ZipFile;
 
 /**
  * 用于接受并处理请求的管理器
@@ -37,16 +35,18 @@ public class KstcDataFetchManager {
 
 
         try {
-            File objFile = new ClassPathResource("objs.zip").getFile();
-            ZipFile objZipFile = new ZipFile(objFile);
-            InputStream stream = objZipFile.getInputStream(objZipFile.entries().nextElement());
+            //File objFile = new ClassPathResource("objs.zip").getFile();
+            //ZipFile objZipFile = new ZipFile(objFile);
+            //InputStream stream = objZipFile.getInputStream(objZipFile.entries().nextElement());
+            InputStream stream = new ClassPathResource("objs.txt").getStream();
             dbscanDataLoader = new RelevantObjectDataLoaderImpl<>(stream, DefaultRelevantObject.class);
             Assert.notNull(dbscanDataLoader, "dbscanDataLoader is null");
             stream.close();
 
-            File file = new ClassPathResource("wordOrderingIndex_10_100.zip").getFile();
-            ZipFile zipFile = new ZipFile(file);
-            InputStream inputStream = zipFile.getInputStream(zipFile.entries().nextElement());
+            //File file = new ClassPathResource("wordOrderingIndex_10_100.zip").getFile();
+            //ZipFile zipFile = new ZipFile(file);
+            //InputStream inputStream = zipFile.getInputStream(zipFile.entries().nextElement());
+            InputStream inputStream = new ClassPathResource("wordOrderingIndex_10_100.txt").getStream();
             wordOrderingIndex = new WordOrderingIndex(inputStream);
             Assert.notNull(wordOrderingIndex, "wordOrderingIndex is null");
             inputStream.close();
