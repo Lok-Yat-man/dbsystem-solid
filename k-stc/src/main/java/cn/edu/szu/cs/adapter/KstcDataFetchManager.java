@@ -42,13 +42,14 @@ public class KstcDataFetchManager {
             InputStream stream = objZipFile.getInputStream(objZipFile.entries().nextElement());
             dbscanDataLoader = new RelevantObjectDataLoaderImpl<>(stream, DefaultRelevantObject.class);
             Assert.notNull(dbscanDataLoader, "dbscanDataLoader is null");
-
+            stream.close();
 
             File file = new ClassPathResource("wordOrderingIndex_10_100.zip").getFile();
             ZipFile zipFile = new ZipFile(file);
             InputStream inputStream = zipFile.getInputStream(zipFile.entries().nextElement());
             wordOrderingIndex = new WordOrderingIndex(inputStream);
             Assert.notNull(wordOrderingIndex, "wordOrderingIndex is null");
+            inputStream.close();
 
             dataFetchManager = ServiceLoaderUtil.loadFirst(DataFetchManager.class);
 

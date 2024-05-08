@@ -1,24 +1,25 @@
 package cn.edu.szu.cs.action.infrastructure;
 
 import cn.edu.szu.cs.action.DataFetchAction;
+import cn.edu.szu.cs.adapter.KstcDataFetchManager;
 import cn.edu.szu.cs.constant.DataFetchConstant;
+import cn.edu.szu.cs.entity.DefaultRelevantObject;
 import cn.edu.szu.cs.entity.KstcQuery;
 import cn.edu.szu.cs.entity.OpticsRelevantObject;
 import cn.edu.szu.cs.infrastructure.dataloader.IRelevantObjectDataLoader;
-import cn.edu.szu.cs.infrastructure.dataloader.RelevantObjectDataLoaderImpl;
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.alibaba.fastjson.JSON;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("all")
 public class OpticsRelevantObjectDataFetchAction implements DataFetchAction<KstcQuery, List> {
 
-    private IRelevantObjectDataLoader<OpticsRelevantObject> relevantObjectDataLoader = null;
+    private IRelevantObjectDataLoader<DefaultRelevantObject> relevantObjectDataLoader = null;
 
     private static final String CACHE_KEY_PREFIX = "OPTICS_DATA_BY_KEYWORDS:{0}";
 
@@ -26,11 +27,7 @@ public class OpticsRelevantObjectDataFetchAction implements DataFetchAction<Kstc
 
     public OpticsRelevantObjectDataFetchAction() {
 
-        ClassPathResource classPathResource = new ClassPathResource("objs.txt");
-
-        relevantObjectDataLoader = new RelevantObjectDataLoaderImpl<>(classPathResource.getStream(), OpticsRelevantObject.class);
-
-        List<OpticsRelevantObject> scanRelevantObjects = relevantObjectDataLoader.getAll();
+        relevantObjectDataLoader = KstcDataFetchManager.getDataLoader();
 
     }
 
@@ -73,7 +70,16 @@ public class OpticsRelevantObjectDataFetchAction implements DataFetchAction<Kstc
 
         log.info("OpticsRelevantObject fetchData: {}", params);
 
-        return relevantObjectDataLoader.getObjectsByKeywords(params.getKeywords());
+        return relevantObjectDataLoader.getObjectsByKeywords(params.getKeywords())
+                .stream().map(
+                    defaultRelevantObject -> new OpticsRelevantObject(
+                            defaultRelevantObject.getObjectId(),
+                            defaultRelevantObject.getCoordinate(),
+                            defaultRelevantObject.getName(),
+                            defaultRelevantObject.getLabels(),
+                            Double.MAX_VALUE,
+                            Double.MAX_VALUE)
+        ).collect(Collectors.toList());
     }
 
 }
