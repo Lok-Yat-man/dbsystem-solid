@@ -8,13 +8,10 @@ import cn.edu.szu.cs.entity.DefaultRelevantObject;
 import cn.edu.szu.cs.entity.OpticsRelevantObject;
 import cn.edu.szu.cs.entity.OpticsRelevantObjectExtend;
 import cn.edu.szu.cs.infrastructure.dataloader.IRelevantObjectDataLoader;
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 
-import java.text.MessageFormat;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +24,6 @@ public class WordOrderingIndexDataFetchAction implements DataFetchAction<WordOrd
 
     private static final String CACHE_KEY_PREFIX = "WORD_ORDERING_INDEX:{0}";
 
-    private LRUCache<String, Queue> wordOrderingIndexCache = CacheUtil.newLRUCache(64, 60 * 60 * 1000L);
 
     @Override
     public String getCommand() {
@@ -51,10 +47,6 @@ public class WordOrderingIndexDataFetchAction implements DataFetchAction<WordOrd
 
     @Override
     public Queue fetchData(WordOrderingIndexQueryDTO params) {
-
-        if(wordOrderingIndexCache.containsKey(MessageFormat.format(CACHE_KEY_PREFIX, params.getKeyword()))){
-            return wordOrderingIndexCache.get(MessageFormat.format(CACHE_KEY_PREFIX, params.getKeyword()));
-        }
 
         List<OpticsRelevantObjectExtend> orderingData = KstcDataFetchManager.getWordOrderingIndex().getOrderingData(params.getKeyword());
 
@@ -88,7 +80,6 @@ public class WordOrderingIndexDataFetchAction implements DataFetchAction<WordOrd
                         }
                 ).collect(Collectors.toCollection(ArrayDeque::new));
 
-        wordOrderingIndexCache.put(MessageFormat.format(CACHE_KEY_PREFIX, params.getKeyword()), arrayDeque);
-        return arrayDeque;
+        return new ArrayDeque<>(arrayDeque);
     }
 }

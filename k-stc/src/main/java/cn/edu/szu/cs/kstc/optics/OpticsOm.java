@@ -7,6 +7,7 @@ import cn.edu.szu.cs.entity.DataFetchResult;
 import cn.edu.szu.cs.entity.KstcQuery;
 import cn.edu.szu.cs.entity.OpticsRelevantObject;
 import cn.edu.szu.cs.kstc.Context;
+import cn.edu.szu.cs.util.CommonUtil;
 import cn.edu.szu.cs.util.TimerHolder;
 import cn.hutool.cache.impl.LRUCache;
 import cn.hutool.core.collection.CollUtil;
@@ -113,7 +114,9 @@ public class OpticsOm extends AbstractOpticsBasedApproach<OpticsRelevantObject>{
             map.put(nextObj,opticsRelevantObjects);
 
         }
-        return result;
+        return result.stream()
+                .filter(obj -> CommonUtil.calculateDistance(obj.getCoordinate(), query.getCoordinate()) <= query.getMaxDistance())
+                .collect(Collectors.toList());
     }
 
     private Queue<OpticsRelevantObject> getOrderingList(String keyword){

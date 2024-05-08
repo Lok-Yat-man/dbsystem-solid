@@ -104,8 +104,8 @@
             </div>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
                 <div class="left_gap"></div>
-                <el-radio v-model="KSTC.query.command" label="SIMPLE_DBSCAN_BASED_APPROACH" >DbScan</el-radio>
-                <el-radio v-model="KSTC.query.command" label="OPTICS_BASED_APPROACH_OM" style="margin-bottom: 5%" @change="KstcChangeToOptics" >Optics</el-radio>
+                <el-radio v-model="KSTC.query.command" label="SIMPLE_DBSCAN_BASED_APPROACH" >DBSCAN</el-radio>
+                <el-radio v-model="KSTC.query.command" label="OPTICS_BASED_APPROACH_OM" style="margin-bottom: 5%" @change="KstcChangeToOptics" >OPTICS</el-radio>
                 <br>
 
                 <div class="kstc-param-adjuster" >
@@ -114,7 +114,7 @@
                             class="kstcparam_input"
                             v-model="KSTC.query.tmpKeywords"
                             :fetch-suggestions="searchKeywords"
-                            placeholder="Use the symbol ';' To separate"
+                            placeholder="separate by ';'"
                             :trigger-on-focus="false"
                             @select="handleSelect">
                     </el-autocomplete>

@@ -128,6 +128,12 @@ public class DefaultDataFetchManagerImpl implements DataFetchManager {
                     threadPoolExecutorMap.get(commandType));
 
             Tuple tuple = new Tuple(dataFetchAction.getCommand(), future);
+            //
+            //if(taskMapCache.isFull()){
+            //    taskMapCache.clear();
+            //    paramsActionIdMap.clear();
+            //}
+
             taskMapCache.put(actionId, tuple);
             paramsActionIdMap.put(cacheKey, actionId);
 
@@ -172,7 +178,18 @@ public class DefaultDataFetchManagerImpl implements DataFetchManager {
                 // double check
                 if(paramsActionIdMap.containsKey(cacheKey)){
                     String actionId = paramsActionIdMap.get(cacheKey);
-                    return getTask(actionId);
+                    Tuple tuple = taskMapCache.get(actionId);
+
+                    if (tuple != null) {
+                        CompletableFuture<Object> future = tuple.get(1);
+                        Object value = null;
+                        try {
+                            value = future.get();
+                            return DataFetchResult.success(actionId, command, value);
+                        } catch (InterruptedException | ExecutionException e) {
+                            logger.error("Task get failed.", e);
+                        }
+                    }
                 }
             }
         }

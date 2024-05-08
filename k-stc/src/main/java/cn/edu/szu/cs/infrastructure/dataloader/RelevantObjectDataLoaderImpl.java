@@ -68,7 +68,7 @@ public class RelevantObjectDataLoaderImpl<T extends RelevantObject> implements I
             }
         }
 
-        log.info("Data loaded successfully.");
+        log.info("Data loaded successfully.object size:{},label size:{}", objs.size(), labelObjectMap.size());
 
 
     }
@@ -149,10 +149,10 @@ public class RelevantObjectDataLoaderImpl<T extends RelevantObject> implements I
         Set<T> set = keywords.stream()
                 .map(labelObjectMap::get)
                 .filter(CollUtil::isNotEmpty)
-                .reduce((set1, set2) -> {
-                    set1.retainAll(set2);
+                .reduce(new HashSet<>(),(set1, set2) -> {
+                    set1.addAll(set2);
                     return set1;
-                }).orElse(new HashSet<>());
+                });
 
         return new ArrayList<>(set);
 

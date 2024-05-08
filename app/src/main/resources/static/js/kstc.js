@@ -97,7 +97,7 @@ function layerPopup(i, vueThis){
             paint: {
                 'circle-radius': 7,
                 'circle-color': color,
-                'circle-opacity': 0.5,
+                'circle-opacity': 0.7,
             },
         });
         vueThis.map.getCanvas().style.cursor = 'pointer';
@@ -202,8 +202,8 @@ async function getZoom(vueThis){
     var k = (18-15)/(165.5796-2274.5034);
     var c = 14 - k * 2274.5034 + 0.5;
     var zoom = Math.ceil(k * res.data.data.hypotenuseLength + c);
-    if(zoom < 10){
-        zoom = 10;
+    if(zoom < 11){
+        zoom = 11;
     }
     if(zoom > 18){
         zoom = 18;
