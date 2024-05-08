@@ -149,7 +149,9 @@ public class CheckInReader {
      * @param fileName path refer to DCPGS module resources/
      */
     public static CheckInJson parseJson(String fileName) throws IOException {
-        String str = IOUtils.resourceToString(fileName, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
+        byte[] bytes = IOUtils.buffer(new FileInputStream(fileName)).readAllBytes();
+//        String str = IOUtils.resourceToString(fileName, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
+        String str = new String(bytes, StandardCharsets.UTF_8);
         return gson.fromJson(str, CheckInJson.class);
     }
 
@@ -165,7 +167,9 @@ public class CheckInReader {
     }
 
     public static DCPGSGeoJson readGeoJsonFromFile(String path) throws IOException {
-        String json = IOUtils.resourceToString(path, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
+        byte[] bytes = IOUtils.buffer(new FileInputStream(path)).readAllBytes();
+//        String json = IOUtils.resourceToString(path, StandardCharsets.UTF_8, CheckInReader.class.getClassLoader());
+        String json = new String(bytes, StandardCharsets.UTF_8);
         return new Gson().fromJson(json, DCPGSGeoJson.class);
     }
 

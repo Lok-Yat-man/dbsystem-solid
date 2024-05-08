@@ -1,24 +1,25 @@
 import utils from "./utils.js";
 
 async function LoadSTD(vueThis) {
-    console.time("time");
 
     vueThis.spatial_skylines.loading = true;
     vueThis.spatial_skylines.timeout = false;
 
     let lonFloat = parseFloat(vueThis.spatial_skylines.query.longitude);
-    let lonString = lonFloat.toFixed(3);
+    let lonString = lonFloat.toFixed(4);
     let longitude = parseFloat(lonString);
 
     let latFloat = parseFloat(vueThis.spatial_skylines.query.latitude);
-    let latString = latFloat.toFixed(3);
+    let latString = latFloat.toFixed(4);
     let latitude = parseFloat(latString);
 
     vueThis.spatial_skylines.query.keywords = vueThis
         .spatial_skylines.query.keywords.replace(/\s/g, "");
     vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
 
+    console.time("time");
     let objectData = await loadData(vueThis);
+    console.timeEnd("time");
 
     paintMap(vueThis, longitude, latitude, objectData);
 
@@ -29,8 +30,6 @@ async function LoadSTD(vueThis) {
     await paintPoints(vueThis, objectData.data.length);
 
     vueThis.spatial_skylines.loading = false;
-
-    console.timeEnd("time");
 }
 
 // 异步加载后端运行的Skyline结果集
@@ -76,18 +75,7 @@ function paintMap(vueThis, longitude, latitude, objectData) {
             maxLat = objectDatum.coordinate.latitude;
         }
     }
-    if (vueThis.spatial_skylines.query.longitude < minLng) {
-        minLng = vueThis.spatial_skylines.query.longitude
-    }
-    if (vueThis.spatial_skylines.query.longitude > maxLng) {
-        maxLng = vueThis.spatial_skylines.query.longitude;
-    }
-    if (vueThis.spatial_skylines.query.latitude < minLat) {
-        minLat = vueThis.spatial_skylines.query.latitude;
-    }
-    if (vueThis.spatial_skylines.query.latitude > maxLat) {
-        maxLat = vueThis.spatial_skylines.query.latitude;
-    }
+
 
     vueThis.map = new mapboxgl.Map({
         container: 'map', // container id
@@ -96,9 +84,15 @@ function paintMap(vueThis, longitude, latitude, objectData) {
         zoom: 17
     });
 
+    minLng -= 0.002;
+    minLat -= 0.002;
+    maxLng += 0.002;
+    maxLat += 0.002;
+
+
     vueThis.map.fitBounds([
-        [minLng - 0.002, minLat - 0.002], // southwestern corner of the bounds
-        [maxLng + 0.002, maxLat + 0.002] // northeastern corner of the bounds
+        [minLng, minLat], // southwestern corner of the bounds
+        [maxLng, maxLat] // northeastern corner of the bounds
     ]);
 }
 
@@ -127,14 +121,14 @@ function doubleClickCoordinate(vueThis) {
         }
 
         let lonFloat = e.lngLat.lng;
-        let lonString = lonFloat.toFixed(3);
+        let lonString = lonFloat.toFixed(4);
         vueThis.spatial_skylines.query.longitude = parseFloat(lonString);
 
         let latFloat = e.lngLat.lat;
-        let latString = latFloat.toFixed(3);
+        let latString = latFloat.toFixed(4);
         vueThis.spatial_skylines.query.latitude = parseFloat(latString);
 
-        let marker = utils.getCustomMark(e.lngLat.lng, e.lngLat.lat, 1);
+        let marker = utils.getCustomMark(vueThis.spatial_skylines.query.longitude, vueThis.spatial_skylines.query.latitude, 1);
         marker.setPopup(utils.getNewPopUp(
             "<strong>当前位置</strong>",
             "",

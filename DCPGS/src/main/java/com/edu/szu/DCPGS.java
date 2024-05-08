@@ -9,6 +9,7 @@ import com.github.davidmoten.rtree.Node;
 import com.github.davidmoten.rtree.RTree;
 import com.github.davidmoten.rtree.internal.LeafDefault;
 import com.github.davidmoten.rtree.internal.NonLeafDefault;
+import lombok.Setter;
 import rx.Observable;
 
 import java.util.*;
@@ -31,6 +32,9 @@ public class DCPGS<V extends NamedPoint> {
     private final ExecutorService pool;
 
     private final PointDistanceCalculator<V> pointDistanceCalculator;
+
+    @Setter
+    private boolean multiThreaded = true;
 
     public DCPGS(final Collection<V> inputValues, int minNumElements,
                  PointDistanceCalculator<V> calculator, ExecutorService pool,
@@ -79,12 +83,16 @@ public class DCPGS<V extends NamedPoint> {
         ArrayList<ArrayList<V>> resultList = new ArrayList<>();
         ArrayList<V> neighbours;
         int index = 0;
-        getAllNeighbours(rTree);
+        if(multiThreaded){
+            getAllNeighbours(rTree);
+        }
         while (index < inputValues.size()) {
             V p = inputValues.get(index);
             if (!visitedPoints.contains(p)) {
                 visitedPoints.add(p);
-                neighbours = getNeighbours(p);
+                neighbours = multiThreaded?
+                        getNeighbours(p):
+                        getNeighbours(p,rTree);
 
                 if (neighbours.size() >= minimumNumberOfClusterMembers) {
                     Set<V> cache = new HashSet<>(neighbours);
@@ -93,7 +101,9 @@ public class DCPGS<V extends NamedPoint> {
                         V r = neighbours.get(ind);
                         if (!visitedPoints.contains(r)) {
                             visitedPoints.add(r);
-                            ArrayList<V> individualNeighbours = getNeighbours(r);
+                            ArrayList<V> individualNeighbours = multiThreaded?
+                                    getNeighbours(r):
+                                    getNeighbours(r,rTree);
                             if (individualNeighbours.size() >= minimumNumberOfClusterMembers) {
                                 mergeRightToLeftCollection(
                                         cache,

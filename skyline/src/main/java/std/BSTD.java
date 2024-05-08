@@ -134,7 +134,7 @@ public class BSTD {
             }
         }
 
-        System.out.println(B);
+//        System.out.println(B);
 
         List<RelevantObject> relevantObjects = S.stream()
                 .map(Entry::value)
