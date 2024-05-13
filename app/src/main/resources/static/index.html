@@ -27,7 +27,7 @@
                 <img class="params_headerside" src="./img/params/titleside.png"></div>
 
             <el-form :label-position="DCPGS.labelPosition" label-width="50px" :model="DCPGS">
-                <span class="item_label">cluster</span>
+                <span class="item_label">Cluster</span>
                 <div class="param_adjuster" style="width: 100%;display: inline-block">
                     <div class="progress-div">
                         <img src="img/params/pause.png" class="process-pause">
@@ -38,13 +38,14 @@
                 </div>
                 <br><br>
 
-                <span class="item_label">dataset</span>
+                <span class="item_label">Dataset</span>
                 <br><br>
                 <div class="left_gap"></div>
-                <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)" style="font-size:14px;">gowalla</el-radio>
-                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%; font-size:14px;" @change="loadDSPGS('',-1)">brightkite</el-radio>
-                <br><br>
-                <span class="item_label" >params</span>
+                <el-radio v-model="DCPGS.dataset" label="gowalla" @change="loadDSPGS('',-1)" style="font-size:14px;">Gowalla</el-radio>
+                <el-radio v-model="DCPGS.dataset" label="brightkite" style="margin-bottom: 5%; font-size:14px;" @change="loadDSPGS('',-1)">Brightkite</el-radio>
+                <br>
+
+                <span class="item_label" >Params</span>
                 <br><br>
                 <div class="param_adjuster" >
                     <span class="item_labelpart">&epsilon;</span>
@@ -90,37 +91,30 @@
                 <br><br>
                 <div class="params_confirm">
                     <div class="confirm_button" @click="paramsSwitch('DCPGS_UPDATE')">
-                        <span class="confirm_label">confirm</span>
+                        <span class="confirm_label">Confirm</span>
                     </div>
+                </div>
+                <div class="params_bottom">
+                    <div class="bottom1"></div>
+                    <div class="bottom_line"></div>
+                    <div class="bottom1"></div>
                 </div>
             </el-form>
         </div>
 
         <div
-             class="params" v-if="switchStatus === 'KSTC'" style="height: 480px;">
+             class="kstcparams" v-if="switchStatus === 'KSTC'" >
             <div class="params_header_container">
                 <h3 class="params_header">STC</h3>
                 <img class="params_headerside" src="./img/params/titleside.png">
             </div>
+            <span class="item_label">Algorithm</span>
+            <br><br>
             <el-form :label-position="KSTC.labelPosition" label-width="50px" :model="KSTC">
                 <div class="left_gap"></div>
                 <el-radio v-model="KSTC.query.command" label="SIMPLE_DBSCAN_BASED_APPROACH" >DBSCAN</el-radio>
-                <el-radio v-model="KSTC.query.command" label="OPTICS_BASED_APPROACH_OM" style="margin-bottom: 5%" @change="KstcChangeToOptics" >OPTICS</el-radio>
-                <br>
+                <el-radio v-model="KSTC.query.command" label="OPTICS_BASED_APPROACH_OM" style="margin-bottom: 5%; margin-left:8%;" @change="KstcChangeToOptics" >OPTICS</el-radio>
 
-                <div class="kstc-param-adjuster" >
-                    <span class="keywords">words</span>
-                    <el-autocomplete
-                            class="kstcparam_input"
-                            v-model="KSTC.query.tmpKeywords"
-                            :fetch-suggestions="searchKeywords"
-                            placeholder="separate by ';'"
-                            :trigger-on-focus="false"
-                            @select="handleSelect">
-                    </el-autocomplete>
-                </div>
-                <br>
-                <span class="item_label" >params</span>
                 <br><br>
                 <div class="param_adjuster" >
                     <span class="item_labelpart">&epsilon;</span>
@@ -133,7 +127,7 @@
                     </div>
                 </div>
                 <div class="param_adjuster" >
-                    <span class="item_labelpart">k</span>
+                    <span class="item_labelpartk">k</span>
                     <div class="adjuster" @click="KSTC.query.k = paramAdjust(KSTC.query.k,false,20,1,1,0)" style="margin-left: 5px;">
                         <div class="icon-minus"></div>
                     </div>
@@ -144,11 +138,11 @@
                 </div>
                 <br><br>
                 <div class="param_adjuster" >
-                    <span class="item_labelSTC">lon</span>
+                    <span class="item_labelSTC">Lon</span>
                     <input class="kstclon_input" type="text" v-model="KSTC.query.location.longitude" >
                 </div>
                 <div class="param_adjuster">
-                    <span class="item_labelSTC">lat</span>
+                    <span class="item_labelSTC">Lat</span>
                     <input class="kstclat_input" type="text" v-model="KSTC.query.location.latitude" >
                 </div>
                 <br><br>
@@ -174,47 +168,70 @@
                     </div>
                 </div>
                 <br><br>
-                <div class="params_confirm">
+                <div class="kstc-param-adjuster" >
+                    <span class="keywords">Words</span>
+                    <el-autocomplete
+                            class="kstcparam_input"
+                            v-model="KSTC.query.tmpKeywords"
+                            :fetch-suggestions="searchKeywords"
+                            placeholder="separate by ';'"
+                            :trigger-on-focus="false"
+                            @select="handleSelect">
+                    </el-autocomplete>
+                </div>
+                <br>
+                <div class="params_confirm" >
                     <div class="confirm_button" @click="paramsSwitch('KSTC_UPDATE')">
-                        <span class="confirm_label">confirm</span>
+                        <span class="confirm_label">Confirm</span>
                     </div>
                 </div>
+                <div class="params_bottom" style="margin-top:10%;">
+                    <div class="bottom1"></div>
+                    <div class="bottom_line"></div>
+                    <div class="bottom1"></div>
+                </div>
             </el-form>
-
         </div>
 
         <div
-                class="params" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
+                class="stdparams" v-if="switchStatus === 'spatial_skylines'" style="height: 480px; bottom: -50px">
             <div class="params_header_container">
                 <h3 class="params_header">STD</h3>
                 <img class="params_headerside" src="./img/params/titleside.png">
             </div>
+            <span class="item_label">Algorithm</span>
+            <br><br>
             <el-form :label-position="spatial_skylines.labelPosition" label-width="50px" :model="spatial_skylines">
-
-                <div class="left_gap"></div>
+                <div class="left_gap" style="margin-left:7.5;"></div>
                 <el-radio v-model="spatial_skylines.query.command" label="BSTD" >BSTD</el-radio>
-                <el-radio v-model="spatial_skylines.query.command" label="ASTD" style="margin-bottom: 5%">ASTD</el-radio>
+                <el-radio v-model="spatial_skylines.query.command" label="ASTD" style="margin-bottom: 5%;margin-left:10%;">ASTD</el-radio>
+                <br>
+                <span class="item_label" >Params</span>
                 <br><br>
-
-                <div class="param_adjustSTD" >
-                    <span class="item_labelSTDlon">lon</span>
-                    <input class="param2_input" type="text" v-model="spatial_skylines.query.longitude" style="margin-left:4.5%;">
+                <div class="param_adjustSTD"  style="width: 260px; padding-bottom:3%;">
+                    <span class="item_labelSTDlon">Lon</span>
+                    <input class="param2_input" type="text" v-model="spatial_skylines.query.longitude" style="margin-left:4%;">
                 </div>
                 <br><br>
-                <div class="param_adjustSTD" style="margin-top:8%;width: 260px; padding-bottom: 30px">
-                    <span class="item_labelSTD">lat</span>
-                    <input class="param2_input" type="text" v-model="spatial_skylines.query.latitude" style="margin-left:4.5%;">
+                <div class="param_adjustSTD" style="width: 260px; padding-bottom:3%;">
+                    <span class="item_labelSTD">Lat</span>
+                    <input class="param2_input" type="text" v-model="spatial_skylines.query.latitude" style="margin-left:4%;">
                 </div>
                 <br><br>
-                <div class="inputContainer" style=" width: 280px; padding-bottom: 30px" >
-                    <span class="keywords">words</span>
+                <div class="inputContainer" style=" width: 280px; padding-bottom:3%;" >
+                    <span class="keywords">Words</span>
                     <input class="stdparam_input" type="text" v-model="spatial_skylines.query.keywords">
                 </div>
-                <br><br>
+                <br>
                 <div class="params_confirm" >
                     <div class="confirm_button" @click="paramsSwitch('spatial_skylines_UPDATE')">
-                        <span class="confirm_label">confirm</span>
+                        <span class="confirm_label">Confirm</span>
                     </div>
+                </div>
+                <div class="params_bottom" style="margin-top:10%;">
+                    <div class="bottom1"></div>
+                    <div class="bottom_line"></div>
+                    <div class="bottom1"></div>
                 </div>
             </el-form>
         </div>
@@ -226,15 +243,15 @@
             </div>
         <el-form :label-position="topk.labelPosition" label-width=" 100px" :model="topk" >
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" >lon</span>
+            <span class="item_label1" >Lon</span>
             <input v-model="topk.query.longitude_topk" class="param2_input" type="text" style="margin-left:3%;"></input>
           </div>
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-            <span class="item_label1" >lat</span>
+            <span class="item_label1" >Lat</span>
             <input v-model="topk.query.latitude_topk"  class="param2_input" type="text" style="margin-left:5%;"></input>
           </div>
           <div class="param_adjuster" style="width: 280px; padding-bottom: 30px">
-            <span class="item_labelword" >words</span>
+            <span class="item_labelword" >Words</span>
             <input v-model="topk.query.keywords_topk" class="param1_input" type="text" style="margin-left:3%;"></input>
           </div>
           <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
@@ -244,9 +261,14 @@
 
           <div class="params_confirm">
             <div class="confirm_button" @click="paramsSwitch('topK_UPDATE')" >
-              <span class="confirm_label">confirm</span>
+              <span class="confirm_label">Confirm</span>
             </div>
           </div>
+            <div class="params_bottom" style="margin-top:10%;">
+                <div class="bottom1"></div>
+                <div class="bottom_line"></div>
+                <div class="bottom1"></div>
+            </div>
 
         </el-form>
       </div>
@@ -269,19 +291,24 @@
 
           <div class="params_confirm">
             <div class="confirm_button" @click="paramsSwitch('topK_yago_UPDATE')" >
-              <span class="confirm_label">confirm</span>
+              <span class="confirm_label">Confirm</span>
             </div>
           </div>
+            <div class="params_bottom" style="margin-top:10%;">
+                <div class="bottom1"></div>
+                <div class="bottom_line"></div>
+                <div class="bottom1"></div>
+            </div>
 
         </el-form>
       </div>
 
-        <div class="params"  v-if="switchStatus === 'PA'" style="height: 400px; ">
+        <div class="RPAparams"  v-if="switchStatus === 'PA'" >
             <div class="params_header_container">
                 <h3 class="params_header">RPA</h3>
                 <img class="params_headerside" src="./img/params/titleside.png"></div>
             <el-form :label-position="pa.labelPosition" label-width="50px" :model="pa">
-                <span class="item_label">cluster</span>
+                <span class="item_label">Cluster</span>
                 <div class="param_adjuster" style="width: 100%;display: inline-block">
                     <div class="progress-div">
                         <img src="img/params/pause.png" class="process-pause">
@@ -291,11 +318,15 @@
                     </div>
                 </div>
                 <br><br>
-
-                <div class="params_confirm">
+                <div class="params_confirm" style="margin-top:30%;">
                     <div class="confirm_button" @click="paramsSwitch('PA_UPDATE')">
-                        <span class="confirm_label">confirm</span>
+                        <span class="confirm_label">Confirm</span>
                     </div>
+                </div>
+                <div class="params_bottom" style="margin-top:15%;">
+                    <div class="bottom1"></div>
+                    <div class="bottom_line"></div>
+                    <div class="bottom1"></div>
                 </div>
             </el-form>
         </div>

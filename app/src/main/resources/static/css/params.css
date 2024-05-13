@@ -2,26 +2,62 @@
   font-family: 'Montserrat';
   src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
 }
+@font-face{
+    font-family:'DinCondensed';
+    src:url('D-DINCondensed.ttf') format('truetype');
+}
+#params{
+    background-color: rgba(255,255,255,0.0);
+    /*z-index: 9999;*/
+    position: absolute;
+    right: 0;
+    bottom: 3%;
+    width: 302px;
+    height: 500px;
+}
 .params{
     background-color: rgba(255,255,255,0.0);
     background-image: url(../img/params/bg_popup.png);
     background-repeat: no-repeat;
     background-size: auto 100%;
     position: absolute;
-    width: 298px;
-    height: 357px;
+    width: 302px;
+    height: 370px;
     bottom:0%;
     font-family: Montserrat, Montserrat;
 }
-
-#params{
+.kstcparams{
     background-color: rgba(255,255,255,0.0);
-    /*z-index: 9999;*/
+    background-image: url(../img/params/bg_popup.png);
+    background-repeat: no-repeat;
+    background-size: auto 100%;
     position: absolute;
-    right: 0;
-    bottom: 10%;
-    width: 298px;
-    height: 400px;
+    width: 302px;
+    height: 500px;
+    bottom:0%;
+    font-family: Montserrat, Montserrat;
+}
+.stdparams{
+    background-color: rgba(255,255,255,0.0);
+    background-image: url(../img/params/bg_popup.png);
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    position: absolute;
+    width: 302px;
+    height: 370px;
+    bottom:0%;
+    font-family: Montserrat, Montserrat;
+}
+.RPAparams{
+    background-color: rgba(255,255,255,0.0);
+    background-image: url(../img/params/bg_popup.png);
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    position: absolute;
+    width: 302px;
+    height:345px;
+    bottom:0%;
+    font-family: Montserrat, Montserrat;
 }
 
 .left_gap{
@@ -31,11 +67,11 @@
     display: inline-block;
 }
 
-.paramsSwitch{
+#paramSwitch{
     cursor: pointer;
     position: absolute;
-    right: 298px;
-    bottom: 23%;
+    margin-right: 0;
+    bottom: 15%;
     z-index: 9999;
 }
 
@@ -112,7 +148,11 @@
     font-size:18px;
     color: #00FFFF;
 }
-
+.item_labelpartk{
+    margin-left:10%;
+    font-size:14px;
+    color: #00FFFF;
+}
 .item_labelpart2{
     margin-left:16%;
     font-size:16px;
@@ -131,15 +171,15 @@
 .keywords{
     font-size:14px;
     color: #00FFFF;
-    margin-left:9%;
+    margin-left:7%;
 }
 .item_labelSTD{
-    margin-left:16.5%;
+    margin-left:14.5%;
     font-size:14px;
     color: #00FFFF;
 }
 .item_labelSTDlon{
-    margin-left:19.5%;
+    margin-left:13%;
     font-size:14px;
     color: #00FFFF;
 }
@@ -227,7 +267,7 @@
 }
 
 .param_input{
-    font-family: Montserrat, Montserrat;
+    font-family:DinCondensed;
     /*width: 35px;*/
     width: 45px;
     /*height: 18px;*/
@@ -244,7 +284,7 @@
     background-size: contain;
 }
 .kstclon_input{
-    font-family: Montserrat, Montserrat;
+    font-family: DinCondensed;
     /*width: 35px;*/
     width: 55px;
     /*height: 18px;*/
@@ -262,7 +302,7 @@
     margin-left:4%;
 }
 .kstclat_input{
-     font-family: Montserrat, Montserrat;
+     font-family: DinCondensed;
     /*width: 35px;*/
     width: 55px;
     /*height: 18px;*/
@@ -277,9 +317,10 @@
     line-height: 22px;
     background-image: url(../img/params/bg_popupNumber.png);
     background-size: contain;
-    margin-left:7%;
+    margin-left:5%;
 }
 .kstcparam_input input{
+    font-family: Montserrat, Montserrat;
     /*width: 35px;*/
     width: 180px;
     /*height: 18px;*/
@@ -288,7 +329,7 @@
     background-color: rgba(255,255,255,0.0);
     border: 0;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
     color: #00FFFF;
     line-height: 15px;
@@ -297,6 +338,7 @@
     margin-left:5%;
 }
 .stdparam_input{
+    font-family: Montserrat, Montserrat;
     /*width: 35px;*/
     width: 200px;
     /*height: 18px;*/
@@ -305,7 +347,7 @@
     background-color: rgba(255,255,255,0.0);
     border: 0;
     text-align: center;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: bold;
     color: #00FFFF;
     line-height: 15px;
@@ -314,6 +356,7 @@
     margin-left:5%;
 }
 .param1_input{
+  font-family: Montserrat, Montserrat;
   /*width: 35px;*/
   width: 180px;
   /*height: 18px;*/
@@ -322,7 +365,7 @@
   background-color: rgba(255,255,255,0.0);
   border: 0;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   color: #00FFFF;
   line-height: 15px;
@@ -332,6 +375,7 @@
 }
 
 .param2_input{
+  font-family: DinCondensed;
   width: 70px;
   /*height: 18px;*/
   height: 22px;
@@ -340,7 +384,6 @@
   border: 0;
   text-align: center;
   font-size: 14px;
-  font-weight: bold;
   color: #00FFFF;
   line-height: 15px;
   background-image: url(../img/params/bg_popupNumberMiddle.png);
@@ -368,7 +411,7 @@
     height: 2px;
     line-height: 23px;
     display: inline-flex;
-    margin-bottom: 3px;
+    margin-bottom: 3.5px;
     background-image: url(../img/params/btn_-.png);
 }
 
@@ -378,7 +421,6 @@
     height: 10px;
     line-height: 23px;
     display: inline-flex;
-    margin-bottom: 3px;
     margin-left:20%;
     background-image: url(../img/params/btn_+.png);
 }
@@ -390,7 +432,7 @@
     text-align: center;
     display: inline-block;
     position: absolute;
-    margin-bottom:2%;
+    margin-bottom:12%;
     margin-left:25%;
 }
 
@@ -408,7 +450,7 @@
 }
 
 .progress-div{
-    width: 75%;
+    width: 77.5%;
     background-color: rgba(132, 144, 143, 0);
     /*overflow: hidden;*/
     background-image: url("../img/params/bg_popupProcess.png");
@@ -481,4 +523,22 @@
     display: flex;
     width:100%;
     align-items:center;
+}
+
+.params_bottom{
+    display:flex;
+    flex-direction:row;
+    margin-top:6%;
+}
+.bottom1{
+    width:3px;
+    height:3px;
+    background:#05DFA4;
+    margin-left:1%;
+}
+.bottom_line{
+    width: 298px;
+    height: 2px;
+    border: 1px solid;
+    border-image: linear-gradient(66deg, rgba(7, 98, 60, 0), rgba(30, 87, 72, 1), rgba(19, 110, 102, 1), rgba(15, 110, 103, 0)) 1 1;
 }

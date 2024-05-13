@@ -105,8 +105,8 @@ function paintCurrentLocation(vueThis, longitude, latitude, objectData) {
     let currentLocationMarker = utils.getCustomMark(longitude, latitude, 1);
 
     currentLocationMarker.setPopup(utils.getNewPopUp(
-        "<strong>当前位置</strong>",
-        "pointNum: " + objectData.data.length,
+        "<strong>Query</strong>",
+        "Result: " + objectData.data.length,
 
         false));
     currentLocationMarker.addTo(vueThis.map);
@@ -130,7 +130,7 @@ function doubleClickCoordinate(vueThis) {
 
         let marker = utils.getCustomMark(vueThis.spatial_skylines.query.longitude, vueThis.spatial_skylines.query.latitude, 1);
         marker.setPopup(utils.getNewPopUp(
-            "<strong>当前位置</strong>",
+            "<strong>Query</strong>",
             "",
             false
         ));

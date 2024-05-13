@@ -150,7 +150,7 @@ async function loadMarkers(vueThis){
         marker.setPopup(
             utils.getNewPopUp(
                 "<strong>clusterId "+mrk.clusterId+"</strong>" +
-                "<p>pointNum: "+mrk.pointNum+"</p>" +
+                "<p>Result: "+mrk.pointNum+"</p>" +
                 "<p>description: "+mrk.description+"</p>","",false)
         );
         markers.push(marker);
@@ -231,7 +231,7 @@ async function doLoad(vueThis,lon,lat){
     vueThis.map.doubleClickZoom.disable();
     console.log("current position: "+lon+","+lat);
     let marker = utils.currentPosition(lon, lat);
-    marker.setPopup(utils.getNewPopUp("当前位置",false));
+    marker.setPopup(utils.getNewPopUp("Query",false));
     marker.addTo(vueThis.map);
     vueThis.KSTC.curMarker=marker;
 
@@ -244,17 +244,15 @@ async function doLoad(vueThis,lon,lat){
         vueThis.KSTC.query.location.latitude=e.lngLat.lat;
 
         let marker = utils.currentPosition(e.lngLat.lng, e.lngLat.lat);
-        marker.setPopup(utils.getPopUp("当前位置",false));
+        marker.setPopup(utils.getPopUp("Query",false));
         vueThis.KSTC.curMarker=marker;
         marker.addTo(vueThis.map);
     });
-
     await paintPoints(vueThis,zoomData.clusterSize);
 
 }
 
 async function searchKeywords(vueThis){
-
     // build url
     var url = vueThis.baseUrl+'/kstc/keywords?'
         +'keywords='+vueThis.KSTC.query.keywords;

@@ -224,8 +224,6 @@ new Vue({
             return Number(ans.toFixed(fractionDigits));
         },
 
-
-
         sideBarSwitch(id, switchId,inName, outName, switchInName, switchOutName){
             let sideBar = document.getElementById(id);
             if(sideBar.classList.contains(outName)){//展开
@@ -269,6 +267,8 @@ new Vue({
             }
 
             this.paramsSwitch('DCPGS');
+            // 获取 paramSwitch 元素
+            document.getElementById('paramSwitch').style.bottom = '11%';
             if(location === '')
                 location = this.DCPGS.location;
             if(zoom === -1)
@@ -292,7 +292,8 @@ new Vue({
                 center: [this.KSTC.query.location.longitude, this.KSTC.query.location.latitude],
                 zoom: 5
             });
-
+            // 获取 paramSwitch 元素
+            document.getElementById('paramSwitch').style.bottom = '16%';
             kstc.loadKSTC(
                 this
             )
@@ -331,6 +332,8 @@ new Vue({
         loadSTD() {
             this.currentAlgorithm = "spatial_skylines";
             this.switchStatus = "spatial_skylines";
+            // 获取 paramSwitch 元素
+            document.getElementById('paramSwitch').style.bottom = '10%';
             std.LoadSTD(this);
         },
 
@@ -344,6 +347,8 @@ new Vue({
           var k = this.topk.query.k_topk;
          // topk.LoadtopK(this, lon, la);
           /**页面自动加载首次查询结果**/
+          // 获取 paramSwitch 元素
+          document.getElementById('paramSwitch').style.bottom = '8%';
           topk.StarLoadtopK(this, lon, la, key, k);
         },
 
@@ -369,6 +374,8 @@ new Vue({
             if(dataset==""){
                 dataset=this.pa.dataset;
             }
+            // 获取 paramSwitch 元素
+            document.getElementById('paramSwitch').style.bottom = '7%';
             pa.loadPA(dataset,this,zoom);
             pa.updateClusterNums(this);
         }

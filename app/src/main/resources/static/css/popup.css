@@ -7,7 +7,7 @@
     background-color: rgba(243, 244, 246, 0);
     width: 201px;
     height: 180px;
-    padding: 30px 0 0 0;
+    padding: 0 0 0 0;
     border-bottom: solid 10px transparent;
     background-repeat: no-repeat;
     background-size: 100% 100%;
@@ -15,13 +15,12 @@
 }
 
 .popup-content {
-  position: absolute;
+  position:absolute;
   width:100%;
-  height:100%;
-  top: 15px;
+  height:82%;
+  top: 10%;
   left: 0;
   right: 0;
-  bottom: 5px;
   overflow:auto;
   scrollbar-color: rgba(0, 0, 0, 0) transparent;
 }
@@ -64,18 +63,6 @@
   overflow-y: auto;
   transform: translate(-20px, 40px);
 }
-.popup-window-topk-nokey{
-    background-image: url("../img/popup/bg-bubble.png");
-    background-color: rgba(243, 244, 246, 0);
-    width: 240px;
-    height: 120px;
-    padding: 30px 0 0 0;
-    border-bottom: solid 10px transparent;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    overflow-y: auto;
-}
-
 .popup-title{
     font-family:Montserrat,Montserrat;
     font-weight: bold;
@@ -103,8 +90,9 @@
   font-weight: bold;
   position: relative;
   color: rgba(239, 171, 87, 1);
-  padding: 0 5px;
-  margin-left:8.5%;
+  margin-left:25px;
+  margin-bottom:3%;
+
 }
 
 .popup-img{

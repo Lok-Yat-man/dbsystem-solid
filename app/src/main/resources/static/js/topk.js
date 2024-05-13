@@ -105,7 +105,7 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
     })
 
     vueThis.map.loadImage(
-      'img//point/point_7.png',
+      'img//SP_point/point_7.png',
       (error, image1) => {
         if (error) throw error;
         vueThis.map.addImage('custom-marker1', image1);
@@ -216,7 +216,6 @@ async function StarLoadtopK(vueThis, lon, la, key, k) {
 }
 
 async function LoadResult(vueThis, id, lon, la, finds, key) {
-
     /**关键字之间以空格分隔**/
     let inputKeywordAsString = key.split(" ");
     let array = [];
@@ -248,9 +247,9 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
     let mhtml;
     if(array.length > 0) {
-      mhtml = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><p class=\"popup-message-topk\">' +  array +'</p></div>';
+      mhtml = '<div class="popup-window"><div class="popup-content"><div class="popup-title">' + id + '<img src="./img/popup/bar-nameBar.png" class="popup-img"></div><p class="popup-message-topk">' +  array +'</p></div>';
     } else {
-      mhtml = '<div class="popup-window-topk-nokey"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div></div>';
+      mhtml = '<div class="popup-window"><div class=\"popup-title\">' + id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div></div>';
     }
 
     const el1 = document.createElement('div');
@@ -271,7 +270,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
         if(i ===0) {x1 = lon - 0.15;}
         else {x1 = lon + 0.15;}
         let y1 = la + 0.13228;
-        let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><p class=\"popup-message-topk\">' + point_key.at(i).s_key + '</p></div>';
+        let mhtml1 = '<div class="popup-window"><div class="popup-content"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><p class=\"popup-message-topk\">' + point_key.at(i).s_key + '</p></div></div>';
         let popup1 = new mapboxgl.Popup({closeButton: false})
           .setHTML(mhtml1)
         const el2 = document.createElement('div');
@@ -346,7 +345,7 @@ async function LoadResult(vueThis, id, lon, la, finds, key) {
 
         let x1 = lon + x;
         let y1 = la + y;
-        let mhtml1 = '<div class="popup-window-topk-haskey"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><p class=\"popup-message-topk\">' + point_key.at(i).s_key +'</p></div>';
+        let mhtml1 = '<div class="popup-window"><div class="popup-content"><div class=\"popup-title\">' + point_key.at(i).s_id + '<img src=\"./img/popup/bar-nameBar.png\" class=\"popup-img\"></div><p class=\"popup-message-topk\">' + point_key.at(i).s_key +'</p></div></div>';
         let popup1 = new mapboxgl.Popup({ closeButton: false})
           .setHTML(mhtml1)
         const el2 = document.createElement('div');
