@@ -1,4 +1,8 @@
 @font-face {
+  font-family: 'HanSansSC-Heavy';
+  src: url('SourceHanSansSC-Heavy.otf') format('truetype'); /* 替换字体文件路径 */
+}
+@font-face {
   font-family: 'Montserrat';
   src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
 }
@@ -70,7 +74,7 @@
     width: 505px;
     height: 18px;
     font-size: 16px;
-    font-family: CJNgaiHKS, CJNgaiHKS;
+    font-family: HanSansSC-Heavy;
     font-weight: bold;
     color: #00FFFF;
     line-height: 36px;
