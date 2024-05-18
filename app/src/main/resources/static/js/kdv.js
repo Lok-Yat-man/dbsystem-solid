@@ -69,7 +69,7 @@ function buildHeatmap(vueThis){
                     type: 'exponential',
                     stops: [
                         [0, 0],
-                        [1, 0.35],
+                        [1, 0.25],
                     ]
                 },
                 // increase intensity as zoom level increases
