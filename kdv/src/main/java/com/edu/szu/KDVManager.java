@@ -37,6 +37,7 @@ public class KDVManager {
             features.add(new KDVGeoJson.Feature(
                     new KDVGeoJson.Geometry(new double[]{kdvData.getLongitude(),kdvData.getLatitude()}),
                     new KDVGeoJson.Properties(kdvData.getIndex()/maxIndex)
+
             ));
         }
         return new KDVGeoJson(features);

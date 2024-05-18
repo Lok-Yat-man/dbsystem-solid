@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+
 @Data
 public class KDVGeoJson {
     String type = "FeatureCollection";
@@ -49,7 +51,7 @@ public class KDVGeoJson {
     @Data
     public static class Properties{
         double dph;
-        public Properties(double dph){
+        public Properties(double dph) {
             this.dph = dph;
         }
     }

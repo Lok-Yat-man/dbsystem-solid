@@ -61,7 +61,7 @@ function buildHeatmap(vueThis){
             type: 'heatmap',
             source: 'points-source',
             maxzoom: 24,
-            minzoom: 9,
+            minzoom: 3,
             paint: {
                 // increase weight as diameter breast height increases
                 "heatmap-weight": {
@@ -69,59 +69,46 @@ function buildHeatmap(vueThis){
                     type: 'exponential',
                     stops: [
                         [0, 0],
-                        [1, 1]
+                        [1, 0.35],
                     ]
                 },
                 // increase intensity as zoom level increases
-                'heatmap-intensity': {
-                    stops: [
-                        [15, 1],
-                        [24, 1]
-                    ]
-                },
+                'heatmap-intensity': 1,
                 // assign color values be applied to points depending on their density
                 'heatmap-color': [
                     'interpolate',
                     ['linear'],
                     ['heatmap-density'],
-                    0,
-                    "rgba(0, 0, 0, 0)",
-                    0.1,
-                    "rgb(94,79,162)",
-                    0.2,
-                    "rgb(50,136,189)",
-                    0.3,
-                    "rgb(102,194,165)",
-                    0.4,
-                    "rgb(171,221,164)",
-                    0.5,
-                    "rgb(230,245,152)",
-                    0.6,
-                    "rgb(254,224,139)",
-                    0.7,
-                    "rgb(253,174,97)",
-                    0.8,
-                    "rgb(244,109,67)",
-                    0.9,
-                    "rgb(213,62,79)",
-                    1.0,
-                    "rgb(158,1,66)"
+                    0, 'rgba(0, 0, 0, 0)',
+                    0.05, 'rgb(37, 52, 148)',
+                    0.1, 'rgb(8, 69, 148)',
+                    0.2, 'rgb(7, 107, 158)',
+                    0.3, 'rgb(0, 150, 169)',
+                    0.4, 'rgb(0, 188, 160)',
+                    0.5, 'rgb(95, 205, 125)',
+                    0.6, 'rgb(199, 233, 109)',
+                    0.7, 'rgb(255, 241, 118)',
+                    0.8, 'rgb(255, 160, 64)',
+                    0.85, 'rgb(230, 150, 64)',
+                    0.9, 'rgb(230, 116, 40)',
+                    0.95, 'rgb(218, 95, 42)',
+                    0.97, 'rgb(216, 135, 34)',
+                    0.98, 'rgb(200, 93, 37)',
+                    0.985, 'rgb(199, 109, 65)',
+                    0.99,'rgb(191, 86, 34)',
+                    0.995,'rgb(191, 86, 34)',
+                    0.998,'rgb(191, 86, 34)',
+                    1.0,'rgb(240, 28, 28)',
                 ],
                 // increase radius as zoom increases
                 'heatmap-radius': {
                     stops: [
-                        [11.5,10],
-                        [24, 30]
+                        [11.5,25],
+                        [24, 40]
                     ]
                 },
                 // decrease opacity to transition into the circle layer
-                'heatmap-opacity': {
-                    default: 0.93,
-                    stops: [
-                        [9, 0.93],
-                        [24, 0.93]
-                    ]
-                }
+                'heatmap-opacity': 1
             }
         },
     );
