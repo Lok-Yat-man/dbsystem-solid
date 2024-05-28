@@ -35,6 +35,7 @@ new Vue({
             collapseIcon: './img/sidebar/btn-fold.png',// sidebar收起时的图标路径
             paramExpandIcon:'./img/params/btn-popupOpen.png',
             paramCollapseIcon:'./img/params/btn-popupFold.png',
+            isLoading: false, // 控制加载动画显示的状态
             DCPGS: {
                 loading: false,
                 dataset: "gowalla",//gowalla or brightkite
@@ -151,6 +152,14 @@ new Vue({
     },
 
     methods: {
+        showLoader() {
+          console.log("showLoader");
+          this.isLoading = true; // 设置 isLoading 为 true
+        },
+        hideLoader() {
+          console.log("hideLoader");
+          this.isLoading = false; // 设置 isLoading 为 false
+        },
         async paramsSwitch(state){
             this.$forceUpdate();
             if(state === ''){
@@ -261,6 +270,7 @@ new Vue({
         },
 
         async loadDSPGS(location, zoom){
+            this.showLoader(); // 显示加载动画
             this.currentAlgorithm = "DCPGS";
             if(location !== ''){
                 this.DCPGS.location = location;
@@ -275,29 +285,35 @@ new Vue({
                 zoom = this.map.getZoom();
             await dcpgs.loadDCPGS(this,location, zoom);
             console.log("location: ",this.DCPGS.location)
+            this.hideLoader();
         },
 
-        loadKDV(){
-            this.currentAlgorithm = "kdv";
-            this.paramsSwitch('kdv');
-            kdv.loadHeatMap(this);
-        },
+         async loadKDV() {
+            this.showLoader(); // 显示加载动画
+            try{
+              this.currentAlgorithm = "kdv";
+              this.paramsSwitch('kdv');
+              await kdv.loadHeatMap(this);
+              console.log("KDV loaded");
+              await new Promise(resolve => setTimeout(resolve, 7500));
+            }finally{
+              this.hideLoader(); // 隐藏加载动画
+            }
+         },
 
-        loadKStc(str){
-            this.currentAlgorithm = "KSTC";
-            this.switchStatus = "KSTC"
-            this.map = new mapboxgl.Map({
-                container: 'map', // container id
-                style: this.mapStyle,
-                center: [this.KSTC.query.location.longitude, this.KSTC.query.location.latitude],
-                zoom: 5
-            });
-            // 获取 paramSwitch 元素
-            document.getElementById('paramSwitch').style.bottom = '16%';
-            kstc.loadKSTC(
-                this
-            )
-
+        async loadKStc(str){
+          this.showLoader(); // 显示加载动画
+          this.currentAlgorithm = "KSTC";
+          this.switchStatus = "KSTC"
+          this.map = new mapboxgl.Map({
+              container: 'map', // container id
+              style: this.mapStyle,
+              center: [this.KSTC.query.location.longitude, this.KSTC.query.location.latitude],
+              zoom: 5
+          });
+          // 获取 paramSwitch 元素
+          document.getElementById('paramSwitch').style.bottom = '16%';
+          await kstc.loadKSTC(this);
         },
 
         KstcChangeToOptics(){
@@ -314,7 +330,8 @@ new Vue({
             this.KSTC.query.tmpKeywords=this.KSTC.query.keywords
         },
 
-        searchKeywords(queryStr,cb){
+        async searchKeywords(queryStr,cb){
+            this.showLoader();
             this.KSTC.query.keywords = this.KSTC.query.tmpKeywords;
             kstc.searchKeywords(this).then(res=>{
 
@@ -326,30 +343,42 @@ new Vue({
                 console.log(values);
                 cb(values)
             })
-
+            this.hideLoader();
         },
 
-        loadSTD() {
+        async loadSTD() {
+            this.showLoader();
             this.currentAlgorithm = "spatial_skylines";
             this.switchStatus = "spatial_skylines";
             // 获取 paramSwitch 元素
-            document.getElementById('paramSwitch').style.bottom = '10%';
-            std.LoadSTD(this);
+            document.getElementById('paramSwitch').style.bottom = '15%';
+            try{
+              await std.LoadSTD(this);
+              await new Promise(resolve => setTimeout(resolve, 5000));
+            }finally{
+              this.hideLoader();
+            }
         },
 
-        loadTopK(){
-          this.currentAlgorithm = "topK";
-          this.paramsSwitch('topK');
-          this.switchStatus = "topK"
-          var lon = this.topk.query.longitude_topk;
-          var la = this.topk.query.latitude_topk;
-          var key = this.topk.query.keywords_topk;
-          var k = this.topk.query.k_topk;
-         // topk.LoadtopK(this, lon, la);
-          /**页面自动加载首次查询结果**/
-          // 获取 paramSwitch 元素
-          document.getElementById('paramSwitch').style.bottom = '8%';
-          topk.StarLoadtopK(this, lon, la, key, k);
+        async loadTopK(){
+          try{
+            this.showLoader();
+            this.currentAlgorithm = "topK";
+            this.paramsSwitch('topK');
+            this.switchStatus = "topK"
+            var lon = this.topk.query.longitude_topk;
+            var la = this.topk.query.latitude_topk;
+            var key = this.topk.query.keywords_topk;
+            var k = this.topk.query.k_topk;
+           // topk.LoadtopK(this, lon, la);
+            /**页面自动加载首次查询结果**/
+            // 获取 paramSwitch 元素
+            document.getElementById('paramSwitch').style.bottom = '8%';
+            await topk.StarLoadtopK(this, lon, la, key, k);
+            await new Promise(resolve => setTimeout(resolve, 4000));
+          }finally{
+              this.hideLoader();
+          }
         },
 
         loadTopK_yago() {
@@ -367,7 +396,8 @@ new Vue({
             test.testTree(this);
         },
 
-        loadPA(dataset,zoom){
+        async loadPA(dataset,zoom){
+            this.showLoader();
            this.currentAlgorithm = "PA";
            this.switchStatus="PA";
            this.paramsSwitch('PA_UPDATE');
@@ -376,7 +406,7 @@ new Vue({
             }
             // 获取 paramSwitch 元素
             document.getElementById('paramSwitch').style.bottom = '7%';
-            pa.loadPA(dataset,this,zoom);
+            await pa.loadPA(dataset,this,zoom);
             pa.updateClusterNums(this);
         }
 

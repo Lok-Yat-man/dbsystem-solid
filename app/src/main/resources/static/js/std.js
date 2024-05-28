@@ -107,7 +107,6 @@ function paintCurrentLocation(vueThis, longitude, latitude, objectData) {
     currentLocationMarker.setPopup(utils.getNewPopUp(
         "<strong>Query</strong>",
         "Result: " + objectData.data.length,
-
         false));
     currentLocationMarker.addTo(vueThis.map);
     return currentLocationMarker;
@@ -161,16 +160,16 @@ async function paintPoints(vueThis, size) {
         });
 
         for (let i = 0; i < size; ++i) {
-            let color = utils.getColor(i, size);
+            let color = utils.getNewColor(i, size);
             vueThis.map.addLayer({
                 id: 'layer' + i,
                 type: 'circle',
                 source: 'points-source',
                 filter: ['==', 'skylineId', "" + i],
                 paint: {
-                    'circle-radius': 5.0,
+                    'circle-radius': 7,
                     'circle-color': color,
-                    'circle-opacity': 0.7,
+                    'circle-opacity': 0.35,
                 },
             });
             layerPopup(i, vueThis, color);
@@ -225,9 +224,9 @@ function layerPopup(i, vueThis, color) {
             source: 'points-source',
             filter: ['==', 'skylineId', "" + i],
             paint: {
-                'circle-radius': 7.5,
+                'circle-radius': 10,
                 'circle-color': color,
-                'circle-opacity': 0.7,
+                'circle-opacity': 0.6,
             },
         });
         vueThis.map.getCanvas().style.cursor = 'pointer';
@@ -240,9 +239,9 @@ function layerPopup(i, vueThis, color) {
             source: 'points-source',
             filter: ['==', 'skylineId', "" + i],
             paint: {
-                'circle-radius': 5.0,
+                'circle-radius': 7,
                 'circle-color': color,
-                'circle-opacity': 0.7,
+                'circle-opacity': 0.35,
             },
         });
         vueThis.map.getCanvas().style.cursor = '';

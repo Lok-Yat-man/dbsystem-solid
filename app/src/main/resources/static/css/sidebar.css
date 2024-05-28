@@ -150,3 +150,24 @@
 .el-submenu__icon-arrow{
     display: none;
 }
+
+.kdv_secondmenu{
+    margin-left: 30px;
+    background-image: url(../img/sidebar/bg_tabMiddleBtnNormal.png);
+    background-repeat: no-repeat;
+
+}
+
+.kdv_secondmenu.is-active{
+    background-image: url(../img/sidebar/bg_tabMiddleBtnClick.png);
+    background-repeat: no-repeat;
+}
+
+.kdv_text{
+    position:absolute;
+    font-family: Montserrat,Montserrat;
+    font-weight: bold;
+    color: #00FFFF;
+    margin-left:1.5%;
+    margin-top:2.5%;
+}

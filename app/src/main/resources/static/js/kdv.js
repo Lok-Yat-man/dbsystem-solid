@@ -13,13 +13,13 @@ function loadHeatMap(vueThis){
         let request = compute(vueThis.kdv);
         axios.post(vueThis.baseUrl + "/kdv/geojson", request)
             .then(function (response) {
-                console.log(response.data);
+                //console.log(response.data);
                 // 添加 GeoJSON 数据源
                 vueThis.map.addSource('points-source', {
                     type: 'geojson',
                     data: response.data
                 });
-                console.log(response.data);
+                //console.log(response.data);
                 buildHeatmap(vueThis);
             });
     });

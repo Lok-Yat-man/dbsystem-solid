@@ -248,8 +248,11 @@ async function doLoad(vueThis,lon,lat){
         vueThis.KSTC.curMarker=marker;
         marker.addTo(vueThis.map);
     });
-    await paintPoints(vueThis,zoomData.clusterSize);
-
+    try{
+      await paintPoints(vueThis,zoomData.clusterSize);
+    }finally{
+      vueThis.hideLoader();
+    }
 }
 
 async function searchKeywords(vueThis){

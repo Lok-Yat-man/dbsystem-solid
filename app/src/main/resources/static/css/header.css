@@ -42,12 +42,11 @@
 }
 .title1{
     position: absolute;
+    margin-top:1.1%;
     left: 1%;
-    top: 15px;
 }
 .title2 {
     display: flex;
-    justify-content:space-between;
     margin-top:1%;
     margin-left:33%;
 }

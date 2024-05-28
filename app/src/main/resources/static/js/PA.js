@@ -108,6 +108,7 @@ async function loadPA(dataset,vueThis, zoom) {
     vueThis.sideBarDisabled = false;
     vueThis.pa.loading = false;
     vueThis.mapLoading = false;
+    vueThis.hideLoader();
 }
 //HTTP请求获取数据
 async function getClusters(dataset, zoom, vueThis) {
