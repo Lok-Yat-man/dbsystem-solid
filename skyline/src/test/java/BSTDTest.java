@@ -22,10 +22,10 @@ public class BSTDTest {
 
         Query query1 = Query.create(
                 Coordinate.create(
-                        -75.166,
-                        39.942
+                        -75.1624,
+                        39.9454
                 ),
-                Arrays.asList("Fast","Burgers","Salad")
+                Arrays.asList("Burgers")
                 //Arrays.asList("Water")
         );
 //        Query query2 = Query.create(

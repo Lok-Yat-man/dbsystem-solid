@@ -100,7 +100,7 @@ new Vue({
                 query:{
                     longitude: -75.157,
                     latitude: 39.95,
-                    keywords: "Fast,Burgers,Salad",
+                    keywords: "Fast Burgers Salad",
                     command: "BSTD"
                 },
                 loading: false,

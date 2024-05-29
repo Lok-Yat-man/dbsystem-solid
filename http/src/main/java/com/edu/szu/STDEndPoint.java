@@ -36,7 +36,7 @@ public class STDEndPoint {
                                 latitude
                         )
                 )
-                .keyword(Arrays.stream(keywords.split(",")).collect(Collectors.toList()))
+                .keyword(Arrays.stream(keywords.split("\\s+")).collect(Collectors.toList()))
                 .build();
         log.info("objectPoints: " + query.toString());
         return stdService.loadBstdObjectPoint(query);
@@ -55,7 +55,7 @@ public class STDEndPoint {
                                 latitude
                         )
                 )
-                .keyword(Arrays.stream(keywords.split(",")).collect(Collectors.toList()))
+                .keyword(Arrays.stream(keywords.split("\\s+")).collect(Collectors.toList()))
                 .build();
         log.info("geoJson: " + query.toString());
         return stdService.loadBstdGeoJsonSkyline(query);
@@ -74,7 +74,7 @@ public class STDEndPoint {
                                 latitude
                         )
                 )
-                .keyword(Arrays.stream(keywords.split(",")).collect(Collectors.toList()))
+                .keyword(Arrays.stream(keywords.split("\\s+")).collect(Collectors.toList()))
                 .build();
         log.info("objectPoints: " + query.toString());
         return stdService.loadAstdObjectPoint(query);
@@ -93,7 +93,7 @@ public class STDEndPoint {
                                 latitude
                         )
                 )
-                .keyword(Arrays.stream(keywords.split(",")).collect(Collectors.toList()))
+                .keyword(Arrays.stream(keywords.split("\\s+")).collect(Collectors.toList()))
                 .build();
         log.info("geoJson: " + query.toString());
         return stdService.loadAstdGeoJsonSkyline(query);

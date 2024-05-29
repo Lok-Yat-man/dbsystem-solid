@@ -5,17 +5,15 @@ async function LoadSTD(vueThis) {
     vueThis.spatial_skylines.loading = true;
     vueThis.spatial_skylines.timeout = false;
 
-    let lonFloat = parseFloat(vueThis.spatial_skylines.query.longitude);
-    let lonString = lonFloat.toFixed(4);
-    let longitude = parseFloat(lonString);
 
-    let latFloat = parseFloat(vueThis.spatial_skylines.query.latitude);
-    let latString = latFloat.toFixed(4);
-    let latitude = parseFloat(latString);
 
-    vueThis.spatial_skylines.query.keywords = vueThis
-        .spatial_skylines.query.keywords.replace(/\s/g, "");
-    vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
+    let longitude = vueThis.spatial_skylines.query.longitude;
+    let latitude = vueThis.spatial_skylines.query.latitude;
+
+    // vueThis.spatial_skylines.query.keywords = vueThis
+    //     .spatial_skylines.query.keywords.replace(/\s/g, "");
+    // vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(",");
+    vueThis.spatial_skylines.lastKeywords = vueThis.spatial_skylines.query.keywords.split(/\s+/);
 
     console.time("time");
     let objectData = await loadData(vueThis);
@@ -119,13 +117,8 @@ function doubleClickCoordinate(vueThis) {
             vueThis.spatial_skylines.curmarker.remove();
         }
 
-        let lonFloat = e.lngLat.lng;
-        let lonString = lonFloat.toFixed(4);
-        vueThis.spatial_skylines.query.longitude = parseFloat(lonString);
-
-        let latFloat = e.lngLat.lat;
-        let latString = latFloat.toFixed(4);
-        vueThis.spatial_skylines.query.latitude = parseFloat(latString);
+        vueThis.spatial_skylines.query.longitude = e.lngLat.lng;
+        vueThis.spatial_skylines.query.latitude = e.lngLat.lat;
 
         let marker = utils.getCustomMark(vueThis.spatial_skylines.query.longitude, vueThis.spatial_skylines.query.latitude, 1);
         marker.setPopup(utils.getNewPopUp(
