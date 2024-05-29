@@ -151,7 +151,7 @@ public class KstcServiceImpl implements KstcService {
         if(StrUtil.isBlank(keywords)){
             return Collections.emptyList();
         }
-        String[] split = keywords.split(";");
+        String[] split = keywords.split(" ");
         String keyword = split[split.length - 1];
 
         LabelPrefixMatchQueryDTO labelPrefixMatchQueryDTO = new LabelPrefixMatchQueryDTO();

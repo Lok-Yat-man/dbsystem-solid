@@ -75,17 +75,17 @@ new Vue({
                 layerLoaded: 0,
                 markers: [],
                 query:{
-                    "tmpKeywords": "restaurants;food",
-                    "keywords": "restaurants;food",
+                    "tmpKeywords": "restaurants",
+                    "keywords": "restaurants",
                     "location":{
                         "longitude":-75.18782594247841,
                         "latitude":39.939905740202335
                     },
                     "k":5,
-                    "epsilon": 100.0,
+                    "epsilon": 50.0,
                     "minPts":10,
                     "maxDist":-1,
-                    "command":"OPTICS_BASED_APPROACH_OM"
+                    "command":"SIMPLE_DBSCAN_BASED_APPROACH"
                 },
                 loading: false,
                 timeout: false,
@@ -322,11 +322,11 @@ new Vue({
 
         },
         handleSelect(item){
-            let arr = this.KSTC.query.keywords.split(";")
+            let arr = this.KSTC.query.keywords.split(" ")
             if(arr.length > 0){
                 arr[arr.length - 1] = item.value;
             }
-            this.KSTC.query.keywords = arr.join(";")
+            this.KSTC.query.keywords = arr.join(" ")
             this.KSTC.query.tmpKeywords=this.KSTC.query.keywords
         },
 

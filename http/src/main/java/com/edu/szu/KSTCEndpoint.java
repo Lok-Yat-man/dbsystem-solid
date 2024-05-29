@@ -43,7 +43,7 @@ public class KSTCEndpoint {
                                                                 @RequestParam("command") String command){
         KstcQuery kstcQuery = KstcQuery.builder()
                 .keywords(
-                        Arrays.stream(keywords.split(";")).collect(Collectors.toList())
+                        Arrays.stream(keywords.split(" ")).collect(Collectors.toList())
                 )
                 .coordinate(new double[]{lon, lat})
                 .k(k)
@@ -69,7 +69,7 @@ public class KSTCEndpoint {
             @RequestParam("command") String command){
         KstcQuery kstcQuery = KstcQuery.builder()
                 .keywords(
-                        Arrays.stream(keywords.split(";")).collect(Collectors.toList())
+                        Arrays.stream(keywords.split(" ")).collect(Collectors.toList())
                 )
                 .coordinate(new double[]{lon, lat})
                 .k(k)
