@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="PA_PIV:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/PA_PIV_jar</output-path>
-    <root id="archive" name="PA_PIV.jar">
-      <element id="module-output" name="PA" />
-    </root>
-  </artifact>
-</component>

@@ -8,6 +8,10 @@ module.exports = {
     publicPath: '/',
     filename: 'bundle.js'
   },
+  // 文件监听配置
+  watchOptions: {
+    ignored: ['**/DumpStack.log.tmp', '**/hiberfil.sys'],
+  },
   module: {
     rules: [
       { test: /deck.gl\/package.json$/, loader: 'json-loader' },

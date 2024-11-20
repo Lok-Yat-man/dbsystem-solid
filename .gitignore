@@ -1,15 +1,14 @@
 target/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/**/node_modules/
 
 ### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-.idea/encodings.xml
-.idea/runConfigurations.xml
+/**/.idea/
 *.iws
 *.iml
 *.ipr
