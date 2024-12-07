@@ -1,5 +1,32 @@
 # DBsystemSolid
 
+## app
+
+## dbsystem-master
+
+    原KDV项目的Gitee仓库版本
+
+## DCPGS
+
+## http
+
+    后端接口模块
+
+## k-stc
+
+    基于SpringBoot框架的聚类算法模块
+
+## kdv
+
+    KDV数据获取模块
+
+## PA
+
+    基于Maven布局的GeoJson数据格式转换模块
+
+## skyline
+    
+    基于Maven布局的Skyline天际线模块
 
 #### 说明
 
