@@ -70,6 +70,17 @@
     bottom:4%;
     font-family: Montserrat, Montserrat;
 }
+.KDVparams{
+    background-color: rgba(255,255,255,0.0);
+    background-image: url(../img/params/bg_popup.png);
+    background-repeat: no-repeat;
+    background-size: auto 100%;
+    position: absolute;
+    width: 302px;
+    height:345px;
+    bottom:4%;
+    font-family: Montserrat, Montserrat;
+}
 
 .left_gap{
     margin-left:2.5%;
