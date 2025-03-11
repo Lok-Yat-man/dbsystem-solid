@@ -1,13 +1,15 @@
 async function compute_kdv(kdv_type,bandwidth,resolution,ratio,
   st,ed,long_L,long_U,lat_L,lat_U,t_L,t_U,t_pixels,bw_t){
-
+    console.time("module")
+  console.log({bandwidth})
   bandwidth = bandwidth * (long_U-long_L) /0.111
-
+  console.log({kdv_type,bandwidth,resolution,ratio,st,ed,long_L,long_U,lat_L,lat_U,t_L,t_U,t_pixels,bw_t})
   const result = await this.lib.compute(1,kdv_type,bandwidth,resolution,resolution*ratio,
     st,ed,long_L,long_U,lat_L,lat_U,t_L,t_U,t_pixels,bw_t)
 
   const radius = (Math.round((long_L-long_U)*-10000)/resolution*1.15)
   //const result = lib.compute(1, 0.001, 256, 256, 2789, 2919, 113.52580648132354, 113.56786351867696, 22.17086086934504, 22.21735166312359)
+  console.timeEnd("module")
   return [str2ab(result),radius]
 }
 

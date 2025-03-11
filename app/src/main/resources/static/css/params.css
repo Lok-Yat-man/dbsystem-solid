@@ -77,7 +77,7 @@
     background-size: auto 100%;
     position: absolute;
     width: 302px;
-    height:345px;
+    height:505px;
     bottom:4%;
     font-family: Montserrat, Montserrat;
 }
@@ -257,6 +257,49 @@
 .el-radio__label{
     color: #00FFFF;
 }
+
+/* 隐藏原生勾选符号（√） */
+.el-checkbox__inner::after {
+    display: none;
+}
+/* 未选中的 el-checkbox */
+.el-checkbox__input .el-checkbox__inner {
+    width: 23px;
+    height: 23px;
+    line-height: 23px;
+    color: rgba(255, 255, 255, 0.0);
+    background-color: rgba(255, 255, 255, 0.0);
+    border-color: rgba(255, 255, 255, 0.0);
+    background-image: url(../img/params/bg_popupNormal.png); /* 未选中时的背景图片 */
+    background-repeat: no-repeat;
+}
+
+.el-checkbox__input.is-focus .el-checkbox__inner{
+    border-color: rgba(255, 255, 255, 0.0);
+}
+
+/* 选中的 el-checkbox */
+.el-checkbox__input.is-checked .el-checkbox__inner {
+    width: 23px;
+    height: 23px;
+    line-height: 23px;
+    color: rgba(255, 255, 255, 0.0);
+    background-color: rgba(255, 255, 255, 0.0);
+    border-color: rgba(255, 255, 255, 0.0);
+    background-image: url(../img/params/btn_popupClick.png); /* 选中时的背景图片 */
+    background-repeat: no-repeat;
+}
+/* 选中时的 el-checkbox 标签文字 */
+.el-checkbox__input.is-checked + .el-checkbox__label {
+    font-weight: bold;
+    color: #00FFFF;
+}
+
+/* 默认 el-checkbox 标签文字 */
+.el-checkbox__label {
+    color: #00FFFF; /* 默认字体颜色 */
+}
+
 
 .param_adjuster{
     width: 130px;

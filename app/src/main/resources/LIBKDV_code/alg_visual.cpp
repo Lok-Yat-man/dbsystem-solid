@@ -49,14 +49,14 @@ void alg_visual::load_parameters(int argc, char**argv)
 	stat.bandwidth_s = 0.0001;*/
 
 	stat.num_threads = atoi(argv[3]);
-	stat.x_L = atof(argv[4]);  //xè½´èŒƒå›´æœ€ä½Žå€¼
-	stat.x_U = atof(argv[5]);  //xè½´èŒƒå›´æœ€é«˜å€¼
-	stat.y_L = atof(argv[6]);  //yè½´èŒƒå›´æœ€ä½Žå€¼
-	stat.y_U = atof(argv[7]);  //yè½´èŒƒå›´æœ€é«˜å€¼
+	stat.x_L = atof(argv[4]);  //xÖá·¶Î§×îµÍÖµ
+	stat.x_U = atof(argv[5]);  //xÖá·¶Î§×î¸ßÖµ
+	stat.y_L = atof(argv[6]);  //yÖá·¶Î§×îµÍÖµ
+	stat.y_U = atof(argv[7]);  //yÖá·¶Î§×î¸ßÖµ
 	stat.row_pixels = atoi(argv[8]);
 	stat.col_pixels = atoi(argv[9]);
 	stat.kernel_s_type = atoi(argv[10]);
-	stat.bandwidth_s = atof(argv[11]);  //å¸¦å®½
+	stat.bandwidth_s = atof(argv[11]);  //´ø¿í
 
 	if (stat.KDV_type == 1) //KDV
 		stat.dim = 2;

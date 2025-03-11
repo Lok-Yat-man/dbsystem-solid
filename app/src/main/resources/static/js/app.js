@@ -15,7 +15,7 @@ new Vue({
   el: "#app",
   data() {
     return {
-      baseUrl: "http://localhost:8080",
+      baseUrl: "http://localhost: ",
       // mapStyle: "./js/mapstyle/style.json",
       mapStyle: "./js/mapstyle/dark-purple.json",
       // mapStyle: "mapbox://styles/mapbox/basic-v9",
@@ -26,7 +26,7 @@ new Vue({
       // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
       map: "",
       API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-      env: "prod",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
+      env: "local",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
       switchStatus: "SWITCH",
       currentAlgorithm: 'DCPGS',
       sideBarDisabled: false,
@@ -131,23 +131,30 @@ new Vue({
         }
       },
       kdv: {
-        opacity:0.6,
+        labelPosition: "right",
+        opacity: 0.6,
         dataFileName: "./cases.csv",
-        kdv_type: 3,
+        interval:null,
+        temporal: 0,
+        kdv_type: 1,
         num_threads: 1,
         x_L: 113.8482,
         x_U: 114.4473,
         y_L: 22.2025,
         y_U: 22.4655,
-        row_pixels: 500,
+        resolution: 2,
+        resolution_levels: [150, 250, 500, 750, 1000],
+        row_pixels: 250,
         col_pixels: 250,
-        kernel_s_type: 1,
-        bandwidth_s: 1000,
-        t_L: 1,
-        t_U: 1,
-        kernel_t_type: 1,
-        bandwidth_t: 1000,
-        cur_time: 1
+        kernel_s_type: 1,//用不上
+        kernel_t_type: 1,//用不上
+        bandwidth_origin: 5,
+        bandwidth_s: 0.0025,//参数和HK COVID-19页面相同
+        bandwidth_t: 3,
+        t_L: 7,
+        t_U: 14,
+        t_pixels: 28,//时间维度上的栅格数
+        cur_t: 7,
       }
     }
   },
@@ -218,7 +225,7 @@ new Vue({
       else if (state === 'PA_UPDATE') {
         this.pa.loading = true;
         this.sideBarDisabled = true;
-      }else if(state === 'kdv_UPDATE'){
+      } else if (state === 'kdv_UPDATE') {
         this.switchStatus = 'kdv'
         await kdv.loadHeatMap(this);
       }
@@ -272,8 +279,45 @@ new Vue({
     updatePAClusterNums() {
       pa.updateClusterNums(this);
     },
-    updateKDVOpacity(){
-      kdv.updateOpacity(this);
+
+    updateKDVOpacity() {
+      kdv.updateAtriibution(this);
+    },
+    updateKDVResolution() {
+      this.kdv.row_pixels = this.kdv.resolution_levels[this.kdv.resolution - 1];
+      kdv.updateAtriibution(this);
+    },
+    updateKDVBandwidth() {
+      this.kdv.bandwidth_s = 0.0005 * this.kdv.bandwidth_origin
+      kdv.updateAtriibution(this);
+    },
+    updateKDVBandwidth_t() {
+      kdv.updateAtriibution(this);
+    },
+    updateTemporalSwitch() {
+      if (this.kdv.temporal == true) {
+        this.kdv.kdv_type = 3;
+      } else {
+        this.kdv.kdv_type = 1;
+      }
+      kdv.updateCurrentTime(this);//移除或添加过滤器
+      kdv.updateAtriibution(this);
+    },
+    updateKDVCur_t() {
+      kdv.updateCurrentTime(this);
+    },
+    switchPlay(){
+      console.log("123")
+      if(this.kdv.interval==null){
+        this.kdv.interval = setInterval(()=>{
+            this.kdv.cur_t +=(this.kdv.t_U-this.kdv.t_L)/this.kdv.t_pixels;
+            if(this.kdv.cur_t>=this.kdv.t_U) this.kdv.cur_t = this.kdv.t_L;
+            kdv.updateCurrentTime(this)
+        },150);
+      }else{
+        clearInterval(this.kdv.interval)
+        this.kdv.interval = null;
+      }
     },
 
     async loadDSPGS(location, zoom) {
@@ -303,7 +347,7 @@ new Vue({
         this.paramsSwitch('kdv');
         await kdv.loadHeatMap(this);
         console.log("KDV loaded");
-        
+
         // await new Promise(resolve => setTimeout(resolve, 7500));
       } finally {
         this.hideLoader(); // 隐藏加载动画

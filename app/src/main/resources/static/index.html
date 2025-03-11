@@ -377,37 +377,88 @@
                     <h3 class="params_header">KDV</h3>
                     <img class="params_headerside" src="./img/params/titleside.png">
                 </div>
-                <el-form :label-position="kdv.labelPosition" label-width="50px" :model="kdv">
-                    <span class="item_label">Opacity</span>
-                    <div class="param_adjuster" style="width: 100%;display: inline-block">
-                        <div class="progress-div">
-                            <img src="img/params/pause.png" class="process-pause">
-                            <el-slider v-model="kdv.opacity" :min="0" :max="1" :step="0.1"
-                                @change="updateKDVOpacity"></el-slider>
-                            <input class="param_input" type="text" v-model="kdv.opacity"
-                                @change="updateKDVOpacity();updateProcess();"
-                                style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px">
+                <el-form :label-position="kdv.labelPosition" :model="kdv">
+                    <div style="margin-top: 10px;">
+                        <span class="item_label">Opacity</span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause">
+                                <el-slider v-model="kdv.opacity" :min="0" :max="1" :step="0.1"
+                                    @change="updateKDVOpacity"></el-slider>
+                                <input class="param_input" type="number" v-model="kdv.opacity"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
                         </div>
                     </div>
-                    <br><br>
-                    <span class="item_label">Params</span>
-                    <br><br>
-                    <div class="param_adjuster" style="width: 260px; padding-bottom: 30px">
-                        <span class="item_label">Time</span>
-                        <input v-model.number="kdv.cur_time" class="param_input" type="text"
-                            style="margin-left:3%;"></input>
+                    <div style="margin-top: 10px;">
+                        <span class="item_label">Resolution Level</span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause">
+                                <el-slider v-model="kdv.resolution" :min="1" :max="5" :step="1"
+                                    @change="updateKDVResolution"></el-slider>
+                                <input class="param_input" type="number" v-model="kdv.resolution"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
+                        </div>
                     </div>
-                    <br><br>
-                    <!-- <el-form-item label="Keywords">
-                        <input v-model="kdv.cur_time"
-                            style="width: 120px; height: 20px; border-radius: 8px; margin-right: 30px; margin-left: 10px"></input>
-                    </el-form-item> -->
-                    <div class="params_confirm">
+                    <div style="margin-top: 10px;">
+                        <span class="item_label">Influence Range</span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause">
+                                <el-slider v-model="kdv.bandwidth_origin" :min="1" :max="10" :step="0.1"
+                                    @change="updateKDVBandwidth"></el-slider>
+                                <input class="param_input" type="number" v-model="kdv.bandwidth_origin"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <span class="item_label">
+                            <span>Temporal KDV</span>
+                            <el-checkbox v-model="kdv.temporal" @change="updateTemporalSwitch"
+                                style="font-size:14px;"></el-checkbox>
+                        </span>
+                    </div>
+                    <div style="margin-top: 10px;" v-show="kdv.kdv_type==3">
+                        <span class="item_label">Influence Days</span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause">
+                                <el-slider v-model="kdv.bandwidth_t" :min="1" :max="7" :step="1"
+                                    @change="updateKDVBandwidth_t"></el-slider>
+                                <input class="param_input" type="number" v-model="kdv.bandwidth_t"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;" v-show="kdv.kdv_type==3">
+                        <span class="item_label">
+                            <span>Current Time</span>
+                            <span @click="switchPlay">
+                                <span style="font-size: 20px;" class="el-icon-video-play" v-if="kdv.interval==null"></span>
+                                <span style="font-size: 20px;" class="el-icon-video-pause" v-else></span>
+                            </span>
+                            
+                        </span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause" >
+                                <el-slider v-model="kdv.cur_t" :min="kdv.t_L"
+                                    :max="kdv.t_U-(kdv.t_U-kdv.t_L)/kdv.t_pixels" :step="(kdv.t_U-kdv.t_L)/kdv.t_pixels"
+                                    @input="updateKDVCur_t"></el-slider>
+                                <input class="param_input" type="number" v-model="kdv.cur_t"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="params_confirm">
                         <div class="confirm_button" @click="paramsSwitch('kdv_UPDATE')">
                             <span class="confirm_label">Confirm</span>
                         </div>
-                    </div>
-                    <div class="params_bottom" style="margin-top:15%;">
+                    </div> -->
+                    <div class="params_bottom" style="margin-top:10%;">
                         <div class="bottom1"></div>
                         <div class="bottom_line"></div>
                         <div class="bottom1"></div>
