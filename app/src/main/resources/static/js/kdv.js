@@ -324,7 +324,7 @@ function compute(kdv) {
     //     st, ed, kdv.x_L, kdv.x_U, kdv.y_L, kdv.y_U, kdv.t_L, kdv.t_U, kdv.cur_time, kdv.bandwidth_t);
 }
 function updateAtriibution(vueThis) {
-        upadateMap(vueThis)
+    upadateMap(vueThis);
 }
 
 export default {

@@ -26,7 +26,7 @@ new Vue({
       // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
       map: "",
       API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-      env: "local",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
+      env: "szu_server",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
       switchStatus: "SWITCH",
       currentAlgorithm: 'DCPGS',
       sideBarDisabled: false,
@@ -281,7 +281,7 @@ new Vue({
     },
 
     updateKDVOpacity() {
-      kdv.updateAtriibution(this);
+      this.map.setPaintProperty('matrix-heat', 'fill-opacity', this.kdv.opacity);
     },
     updateKDVResolution() {
       this.kdv.row_pixels = this.kdv.resolution_levels[this.kdv.resolution - 1];
@@ -341,7 +341,7 @@ new Vue({
 
     async loadKDV() {
       this.showLoader(); // 显示加载动画
-      document.getElementById('paramSwitch').style.bottom = '6%';
+      document.getElementById('paramSwitch').style.bottom = '16%';
       try {
         this.currentAlgorithm = "kdv";
         this.paramsSwitch('kdv');

@@ -475,7 +475,7 @@
                     @click="sideBarSwitch('sideBar','sideBarSwitch','sideIn','sideOut','switchIn','switchOut', null)"
                     id="sideBarSwitch" class="sideBarSwitch switchOut" style="cursor: pointer">
                 <!-- 侧边导航栏-->
-                <el-row class="tac sideOut" id="sideBar" style="overflow:auto;">
+                <el-row class="tac sideOut" id="sideBar" style="overflow:auto; height: 100vh; background-size: cover;">
                     <el-col :span="12">
                         <!--              <h3 style="text-align: center">Menu</h3>-->
 
@@ -535,22 +535,15 @@
                                 </template>
                                 <!--<el-submenu index="2-1" >-->
                                 <!--<template slot="title" >kdv</template>-->
-                                <el-menu-item index="2-1-1" @click="loadKDV" class="kdv_secondmenu">
+                                <el-menu-item index="2-1" @click="loadKDV" class="kdv_secondmenu">
                                     <span slot="title" class="kdv_text">KDV</span>
-                                </el-menu-item>
-                                <!--</el-submenu>-->
-
-                                <!--<el-submenu index="2-2">
-                        <template slot="title">Temporal KDV</template>-->
-                                <el-menu-item index="2-2-1" @click="loadKDV" class="kdv_secondmenu">
-                                    <span slot="title" class="kdv_text">Temporal KDV</span>
                                 </el-menu-item>
                                 <!--</el-submenu>-->
 
                                 <!--<el-submenu index="2-3">
                         <template slot="title">Line KDV</template>-->
-                                <el-menu-item index="2-3-1" @click="loadKDV" class="kdv_secondmenu">
-                                    <span slot="title" class="kdv_text">Line KDV</span>
+                                <el-menu-item index="2-2" @click="loadKDV" class="kdv_secondmenu">
+                                    <span slot="title" class="kdv_text">Network KDV</span>
                                 </el-menu-item>
                             </el-submenu>
                         </el-menu>
