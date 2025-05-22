@@ -6,6 +6,7 @@ import topk from "./topk.js";
 import topk_yago from "./topk_yago.js";
 import std from "./std.js";
 import pa from "./PA.js";
+import NKDV from "./NKDV.js";
 // import { Loading } from './environment/elementUI'
 
 mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
@@ -155,6 +156,12 @@ new Vue({
         t_U: 14,
         t_pixels: 28,//时间维度上的栅格数
         cur_t: 7,
+      },
+      NKDV: {
+        labelPosition: "right",
+        opacity: 0.6,
+        bandwidth_level: 2,
+        bandwidth:500,
       }
     }
   },
@@ -225,10 +232,7 @@ new Vue({
       else if (state === 'PA_UPDATE') {
         this.pa.loading = true;
         this.sideBarDisabled = true;
-      } else if (state === 'kdv_UPDATE') {
-        this.switchStatus = 'kdv'
-        await kdv.loadHeatMap(this);
-      }
+      } 
       else {
         this.switchStatus = state;
       }
@@ -307,7 +311,6 @@ new Vue({
       kdv.updateCurrentTime(this);
     },
     switchPlay(){
-      console.log("123")
       if(this.kdv.interval==null){
         this.kdv.interval = setInterval(()=>{
             this.kdv.cur_t +=(this.kdv.t_U-this.kdv.t_L)/this.kdv.t_pixels;
@@ -318,6 +321,15 @@ new Vue({
         clearInterval(this.kdv.interval)
         this.kdv.interval = null;
       }
+    },
+
+    updateNKDVBandwidth() {
+      let bandwidthMap = [0,100,500,1000,5000]
+      this.NKDV.bandwidth = bandwidthMap[this.NKDV.bandwidth_level]
+      NKDV.upadateMap(this);
+    },
+    updateNKDVOpacity() {
+      this.map.setPaintProperty('nkdv-lines', 'line-opacity', this.NKDV.opacity);
     },
 
     async loadDSPGS(location, zoom) {
@@ -349,6 +361,18 @@ new Vue({
         console.log("KDV loaded");
 
         // await new Promise(resolve => setTimeout(resolve, 7500));
+      } finally {
+        this.hideLoader(); // 隐藏加载动画
+      }
+    },
+    async loadNKDV() {
+      this.showLoader(); // 显示加载动画
+      document.getElementById('paramSwitch').style.bottom = '10%';
+      try {
+        this.currentAlgorithm = "NKDV";
+        this.paramsSwitch('NKDV');
+        await NKDV.loadHeatMap(this);
+        console.log("NKDV loaded");
       } finally {
         this.hideLoader(); // 隐藏加载动画
       }

@@ -437,14 +437,15 @@
                         <span class="item_label">
                             <span>Current Time</span>
                             <span @click="switchPlay">
-                                <span style="font-size: 20px;" class="el-icon-video-play" v-if="kdv.interval==null"></span>
+                                <span style="font-size: 20px;" class="el-icon-video-play"
+                                    v-if="kdv.interval==null"></span>
                                 <span style="font-size: 20px;" class="el-icon-video-pause" v-else></span>
                             </span>
-                            
+
                         </span>
                         <div class="param_adjuster" style="width: 100%;display: inline-block">
                             <div class="progress-div">
-                                <img src="img/params/pause.png" class="process-pause" >
+                                <img src="img/params/pause.png" class="process-pause">
                                 <el-slider v-model="kdv.cur_t" :min="kdv.t_L"
                                     :max="kdv.t_U-(kdv.t_U-kdv.t_L)/kdv.t_pixels" :step="(kdv.t_U-kdv.t_L)/kdv.t_pixels"
                                     @input="updateKDVCur_t"></el-slider>
@@ -453,11 +454,43 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="params_confirm">
-                        <div class="confirm_button" @click="paramsSwitch('kdv_UPDATE')">
-                            <span class="confirm_label">Confirm</span>
+                    <div class="params_bottom" style="margin-top:10%;">
+                        <div class="bottom1"></div>
+                        <div class="bottom_line"></div>
+                        <div class="bottom1"></div>
+                    </div>
+                </el-form>
+            </div>
+            <div class="NKDVparams" v-if="switchStatus === 'NKDV'">
+                <div class="params_header_container">
+                    <h3 class="params_header">KDV</h3>
+                    <img class="params_headerside" src="./img/params/titleside.png">
+                </div>
+                <el-form :label-position="NKDV.labelPosition" :model="NKDV">
+                   <div style="margin-top: 10px;">
+                        <span class="item_label">Opacity</span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause">
+                                <el-slider v-model="NKDV.opacity" :min="0" :max="1" :step="0.1"
+                                    @change="updateNKDVOpacity"></el-slider>
+                                <input class="param_input" type="number" v-model="NKDV.opacity"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
                         </div>
-                    </div> -->
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <span class="item_label">Bandwidth Level</span>
+                        <div class="param_adjuster" style="width: 100%;display: inline-block">
+                            <div class="progress-div">
+                                <img src="img/params/pause.png" class="process-pause">
+                                <el-slider v-model="NKDV.bandwidth_level" :min="1" :max="4" :step="1"
+                                    @change="updateNKDVBandwidth"></el-slider>
+                                <input class="param_input" type="number" v-model="NKDV.bandwidth"
+                                    style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px" readonly>
+                            </div>
+                        </div>
+                    </div>
                     <div class="params_bottom" style="margin-top:10%;">
                         <div class="bottom1"></div>
                         <div class="bottom_line"></div>
@@ -533,18 +566,14 @@
                                 <template slot="title">
                                     <span slot="title">Visualization</span>
                                 </template>
-                                <!--<el-submenu index="2-1" >-->
-                                <!--<template slot="title" >kdv</template>-->
                                 <el-menu-item index="2-1" @click="loadKDV" class="kdv_secondmenu">
                                     <span slot="title" class="kdv_text">KDV</span>
                                 </el-menu-item>
-                                <!--</el-submenu>-->
 
-                                <!--<el-submenu index="2-3">
-                        <template slot="title">Line KDV</template>-->
-                                <el-menu-item index="2-2" @click="loadKDV" class="kdv_secondmenu">
+                                <el-menu-item index="2-2" @click="loadNKDV" class="kdv_secondmenu">
                                     <span slot="title" class="kdv_text">Network KDV</span>
                                 </el-menu-item>
+
                             </el-submenu>
                         </el-menu>
                     </el-col>
