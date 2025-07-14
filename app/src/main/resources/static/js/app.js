@@ -6,17 +6,18 @@ import topk from "./topk.js";
 import topk_yago from "./topk_yago.js";
 import std from "./std.js";
 import pa from "./PA.js";
-import NKDV from "./NKDV.js";
+import NKDV from "./NKdv.js";
+import LDV from "./LDV.js";
 // import { Loading } from './environment/elementUI'
 
-mapboxgl.accessToken = 'pk.eyJ1IjoieGlhb3NoaWhkIiwiYSI6ImNrNngzYnRhdzBqNm0zZnJ4eWZjdndrYzkifQ.qQjf8zANr9PsMpwq2NsRWQ';
+mapboxgl.accessToken = 'pk.eyJ1Ijoid3VkaW5nbWluZyIsImEiOiJjbWJrZXdrMnYwcjR5MmtxMXM0Zm1rZGdiIn0.Fz8EL7TeK6_OB7FIRNQkyw';
 
 
 new Vue({
   el: "#app",
   data() {
     return {
-      baseUrl: "http://localhost: ",
+      baseUrl: "",
       // mapStyle: "./js/mapstyle/style.json",
       mapStyle: "./js/mapstyle/dark-purple.json",
       // mapStyle: "mapbox://styles/mapbox/basic-v9",
@@ -27,7 +28,7 @@ new Vue({
       // mapStyle: "mapbox://styles/mapbox/navigation-night-v1",
       map: "",
       API_TOKEN: "c721d12c7b7f41d2bfc7d46a796b1d50",
-      env: "szu_server",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
+      env: "local",//local(DCPGS算法读取本地文件) or prod(DCPGS算法读取本地开发环境文件) or szu_server（更换baseUrl）
       switchStatus: "SWITCH",
       currentAlgorithm: 'DCPGS',
       sideBarDisabled: false,
@@ -162,6 +163,12 @@ new Vue({
         opacity: 0.6,
         bandwidth_level: 2,
         bandwidth:500,
+      },
+      LDV: {
+        labelPosition: "right",
+        opacity: 0.6,
+        bandwidth_level: 2,
+        bandwidth:500,
       }
     }
   },
@@ -248,22 +255,23 @@ new Vue({
       return Number(ans.toFixed(fractionDigits));
     },
 
+    // 屎山建议重构
     sideBarSwitch(id, switchId, inName, outName, switchInName, switchOutName) {
       let sideBar = document.getElementById(id);
       if (sideBar.classList.contains(outName)) {//展开
         sideBar.classList.add(inName);
         sideBar.classList.remove(outName);
-        if (id == 'sideBar') {
+        if (id == 'sideBarContainer') {
           this.$refs.sideBarIcon.src = this.collapseIcon;
-        } else if (id == 'params') {
+        } else if (id == 'paramsContainor') {
           this.$refs.paramIcon.src = this.paramExpandIcon;
         }
       } else if (sideBar.classList.contains(inName)) {//收起
         sideBar.classList.add(outName);
         sideBar.classList.remove(inName);
-        if (id == 'sideBar') {
+        if (id == 'sideBarContainer') {
           this.$refs.sideBarIcon.src = this.expandIcon;
-        } else if (id == 'params') {
+        } else if (id == 'paramsContainor') {
           this.$refs.paramIcon.src = this.paramCollapseIcon;
         }
       }
@@ -332,6 +340,14 @@ new Vue({
       this.map.setPaintProperty('nkdv-lines', 'line-opacity', this.NKDV.opacity);
     },
 
+    updateLDVOpacity() {
+      this.map.setPaintProperty('ldv-points', 'circle-opacity', this.LDV.opacity);
+    },
+
+    updateLDVBandwidth(){
+
+    },
+
     async loadDSPGS(location, zoom) {
       this.showLoader(); // 显示加载动画
       this.currentAlgorithm = "DCPGS";
@@ -341,7 +357,6 @@ new Vue({
 
       this.paramsSwitch('DCPGS');
       // 获取 paramSwitch 元素
-      document.getElementById('paramSwitch').style.bottom = '11%';
       if (location === '')
         location = this.DCPGS.location;
       if (zoom === -1)
@@ -353,7 +368,6 @@ new Vue({
 
     async loadKDV() {
       this.showLoader(); // 显示加载动画
-      document.getElementById('paramSwitch').style.bottom = '16%';
       try {
         this.currentAlgorithm = "kdv";
         this.paramsSwitch('kdv');
@@ -367,12 +381,23 @@ new Vue({
     },
     async loadNKDV() {
       this.showLoader(); // 显示加载动画
-      document.getElementById('paramSwitch').style.bottom = '10%';
       try {
         this.currentAlgorithm = "NKDV";
         this.paramsSwitch('NKDV');
         await NKDV.loadHeatMap(this);
         console.log("NKDV loaded");
+      } finally {
+        this.hideLoader(); // 隐藏加载动画
+      }
+    },
+
+    async loadLDV() {
+      this.showLoader(); // 显示加载动画
+      try {
+        this.currentAlgorithm = "LDV";
+        this.paramsSwitch('LDV');
+        await LDV.loadHeatMap(this);
+        console.log("LDV loaded");
       } finally {
         this.hideLoader(); // 隐藏加载动画
       }
@@ -389,7 +414,6 @@ new Vue({
         zoom: 5
       });
       // 获取 paramSwitch 元素
-      document.getElementById('paramSwitch').style.bottom = '16%';
       await kstc.loadKSTC(this);
     },
 
@@ -428,7 +452,6 @@ new Vue({
       this.currentAlgorithm = "spatial_skylines";
       this.switchStatus = "spatial_skylines";
       // 获取 paramSwitch 元素
-      document.getElementById('paramSwitch').style.bottom = '15%';
       try {
         await std.LoadSTD(this);
         await new Promise(resolve => setTimeout(resolve, 5000));
@@ -450,7 +473,6 @@ new Vue({
         // topk.LoadtopK(this, lon, la);
         /**页面自动加载首次查询结果**/
         // 获取 paramSwitch 元素
-        document.getElementById('paramSwitch').style.bottom = '8%';
         await topk.StarLoadtopK(this, lon, la, key, k);
         await new Promise(resolve => setTimeout(resolve, 4000));
       } finally {
@@ -482,7 +504,6 @@ new Vue({
         dataset = this.pa.dataset;
       }
       // 获取 paramSwitch 元素
-      document.getElementById('paramSwitch').style.bottom = '7%';
       await pa.loadPA(dataset, this, zoom);
       pa.updateClusterNums(this);
     }

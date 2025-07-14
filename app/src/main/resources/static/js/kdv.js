@@ -13,6 +13,7 @@ function loadHeatMap(vueThis) {
             Module.load_data();//首次计算加载数据集，不能放在compute中加载
 
             let request = compute(vueThis.kdv);
+            console.log("compute request", request)
             vueThis.map.addSource('matrix-source', {
                 type: 'geojson',
                 data: {

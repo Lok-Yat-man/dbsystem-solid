@@ -2,13 +2,22 @@
   font-family: 'Montserrat';
   src: url('Montserrat-ExtraBold.ttf') format('truetype'); /* 替换字体文件路径 */
 }
-.tac{
-    background-image: url(../img/sidebar/bg_tab.png);
+#sideBarContainer{
+    display: flex  ;
+    align-items: center;
+    justify-content: center;
     position: absolute;
     z-index: 1000;
-    width: 372px;
-    height: 94%;
+    bottom: 0px;
     top: 65px;
+}
+.tac{
+    background-image: url(../img/sidebar/bg_tab.png);
+    background-repeat: no-repeat;
+    background-size:100% 100%!important;
+    width: 372px;
+    height: 100%;
+    
 }
 
 .el-col{
@@ -89,9 +98,8 @@
 }
 
 #sideBarSwitch{
-    position: absolute;
-    top: 40%;
-    left: 367px;
+    position: relative;
+    top: -10px;
 }
 
 .sideOut{
