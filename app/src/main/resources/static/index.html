@@ -496,9 +496,22 @@
                             <div class="param_adjuster" style="width: 100%;display: inline-block">
                                 <div class="progress-div">
                                     <img src="img/params/pause.png" class="process-pause">
-                                    <el-slider v-model="NKDV.bandwidth_level" :min="1" :max="4" :step="1"
+                                    <el-slider v-model="NKDV.bandwidth_level" :min="1" :max="7" :step="1"
                                         @change="updateNKDVBandwidth"></el-slider>
                                     <input class="param_input" type="number" v-model="NKDV.bandwidth"
+                                        style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px"
+                                        readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <span class="item_label">Lixel Length</span>
+                            <div class="param_adjuster" style="width: 100%;display: inline-block">
+                                <div class="progress-div">
+                                    <img src="img/params/pause.png" class="process-pause">
+                                    <el-slider v-model="NKDV.lixel" :min="100" :max="1000" :step="100"
+                                        @change="updateNKDVLixel"></el-slider>
+                                    <input class="param_input" type="number" v-model="NKDV.lixel"
                                         style="height: 18px;width: 35px;position: relative;left: 20px;top: 2px"
                                         readonly>
                                 </div>

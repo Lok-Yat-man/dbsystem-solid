@@ -6,7 +6,7 @@ import topk from "./topk.js";
 import topk_yago from "./topk_yago.js";
 import std from "./std.js";
 import pa from "./PA.js";
-import NKDV from "./NKdv.js";
+import NKDV from "./NKDV.js";
 import LDV from "./LDV.js";
 // import { Loading } from './environment/elementUI'
 
@@ -163,12 +163,14 @@ new Vue({
         opacity: 0.6,
         bandwidth_level: 2,
         bandwidth:500,
+        lixel:200,
       },
       LDV: {
         labelPosition: "right",
         opacity: 0.6,
         bandwidth_level: 2,
         bandwidth:500,
+        
       }
     }
   },
@@ -332,13 +334,17 @@ new Vue({
     },
 
     updateNKDVBandwidth() {
-      let bandwidthMap = [0,100,500,1000,5000]
+      let bandwidthMap = [0,100,500,1000,2000,3000,4000,5000]
       this.NKDV.bandwidth = bandwidthMap[this.NKDV.bandwidth_level]
+      NKDV.upadateMap(this);
+    },
+    updateNKDVLixel() {
       NKDV.upadateMap(this);
     },
     updateNKDVOpacity() {
       this.map.setPaintProperty('nkdv-lines', 'line-opacity', this.NKDV.opacity);
     },
+
 
     updateLDVOpacity() {
       this.map.setPaintProperty('ldv-points', 'circle-opacity', this.LDV.opacity);
